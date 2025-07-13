@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getCountryById } from './api/countries.ts';
-import type { Country } from './models/country.ts';
-import { ROUTES } from "@/app/core/routes/routes.ts";
+import { getCountryById } from '../api/countries.ts';
+import type { Country } from '../models/country.ts';
+import { COUNTRY_ROUTES } from "@/app/modules/country/routes/country-route-elements.ts";
 
 const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,9 +31,9 @@ const CountryDetails = () => {
       <p><strong>Name (Bangla):</strong> {country.nameBn}</p>
       <p><strong>Name (Arabic):</strong> {country.nameAr}</p>
       <p><strong>Name (Hindi):</strong> {country.nameHi}</p>
-      <Link to={ROUTES.countryEdit(country.id.toString())}>Edit</Link>
+      <Link to={COUNTRY_ROUTES.edit(country.id.toString())}>Edit</Link>
       {' | '}
-      <Link to={ROUTES.countries}>Back to List</Link>
+      <Link to={COUNTRY_ROUTES.index()}>Back to List</Link>
     </div>
   );
 };

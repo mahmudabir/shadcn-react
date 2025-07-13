@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCountryById, updateCountry } from './api/countries.ts';
-import type { Country } from './models/country.ts';
-import CountryForm from './CountryForm.tsx';
-import { ROUTES } from "@/app/core/routes/routes.ts";
+import { getCountryById, updateCountry } from '../api/countries.ts';
+import type { Country } from '../models/country.ts';
+import CountryForm from '../components/CountryForm.tsx';
+import { COUNTRY_ROUTES } from "@/app/modules/country/routes/country-route-elements.ts";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -33,7 +33,7 @@ const CountryEdit = () => {
         setError(null);
         try {
             await updateCountry(id, data);
-            navigate(ROUTES.countries);
+            navigate(COUNTRY_ROUTES.index());
         } catch (err: any) {
             setError(err.message || 'Failed to update country');
         }

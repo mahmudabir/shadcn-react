@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Country } from './models/country.ts';
+import { Country } from '../models/country.ts';
 import { useEffect } from "react";
 import { logFormErrors } from "@/lib/formUtils.ts";
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createCountry } from './api/countries.ts';
-import CountryForm from './CountryForm.tsx';
-import type { Country } from './models/country.ts';
-import { ROUTES } from "@/app/core/routes/routes.ts";
+import { createCountry } from '../api/countries.ts';
+import CountryForm from '../components/CountryForm.tsx';
+import type { Country } from '../models/country.ts';
+import { COUNTRY_ROUTES } from "@/app/modules/country/routes/country-route-elements.ts";
 
 const CountryCreate = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const CountryCreate = () => {
     setError(null);
     try {
       await createCountry(data);
-      navigate(ROUTES.countries);
+      navigate(COUNTRY_ROUTES.index());
     } catch (err) {
       setError(err.message || 'Failed to create country');
     }

@@ -1,6 +1,6 @@
 import type { Country } from '../models/country';
-import type { PagedData } from '../../../core/types/pagination';
-import type { Result } from '../../../core/types/result';
+import type { PagedData } from '@/app/core/models/pagination';
+import type { Result } from '@/app/core/models/result';
 import api from "@/app/core/api/base-api.ts";
 
 const API_BASE = '/countries';

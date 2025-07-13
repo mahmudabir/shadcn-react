@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteCountry, getCountries } from './api/countries';
-import type { Country } from './models/country';
-import { ROUTES } from "@/app/core/routes/routes.ts";
+import { deleteCountry, getCountries } from '../api/countries.ts';
+import type { Country } from '../models/country.ts';
+import { COUNTRY_ROUTES } from "@/app/modules/country/routes/country-route-elements.ts";
 
 const CountryList= () => {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -34,7 +34,7 @@ const CountryList= () => {
     if (!window.confirm('Are you sure you want to delete this country?')) return;
     try {
       await deleteCountry(id);
-      fetchData(false);
+      await fetchData(false);
     } catch (err) {
       setError(err.message || 'Failed to delete country');
     }
@@ -51,15 +51,15 @@ const CountryList= () => {
         ? <h5>No countries found</h5>
         : countries.map(country => (
           <li key={country.id}>
-            <Link to={ROUTES.countryDetails(country.id.toString())}>{country.nameEn}</Link>
+            <Link to={COUNTRY_ROUTES.details(country.id.toString())}>{country.nameEn}</Link>
             {' | '}
-            <Link to={ROUTES.countryEdit(country.id.toString())}>Edit</Link>
+            <Link to={COUNTRY_ROUTES.edit(country.id.toString())}>Edit</Link>
             {' | '}
             <button onClick={() => handleDelete(country.id.toString())} style={{ color: 'red' }}>Delete</button>
           </li>
         ))}
       </ul>
-      <Link to={ROUTES.countryCreate}>Create New Country</Link>
+      <Link to={COUNTRY_ROUTES.create()}>Create New Country</Link>
     </div>
   );
 };
