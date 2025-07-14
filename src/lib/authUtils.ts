@@ -1,4 +1,4 @@
-import { navigateToLogin } from "@/app/core/api/base-api.tsx";
+import { navigateToLogin } from "@/app/core/api/base-api.ts";
 
 
 export const ACCESS_TOKEN_KEY = "access_token";

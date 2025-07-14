@@ -1,6 +1,14 @@
 import { ExternalToast, toast } from "sonner";
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react"
 
+const defaultOptions: ExternalToast = {
+    position: "bottom-left",
+    duration: 5000,
+    closeButton: true,
+    dismissible: true,
+    richColors: true
+}
+
 export function toastSuccess(message: string, header: string = 'Success') {
     toast.success(header, {
         description: message,
@@ -47,13 +55,5 @@ export function toastError(message: string, header: string = 'Error') {
         },
         ...defaultOptions,
     })
-}
-
-const defaultOptions: ExternalToast = {
-    position: "top-center",
-    duration: 5000,
-    closeButton: true,
-    dismissible: true,
-    richColors: true
 }
 

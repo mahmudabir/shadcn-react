@@ -3,6 +3,8 @@ import { ACCESS_TOKEN_KEY, getRefreshTokenFormData, logout, REFRESH_TOKEN_KEY, s
 import { Result } from "@/app/core/models/result.ts";
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
+import { NavigateFunction } from "react-router-dom";
+import { getErrorMessages } from "@/lib/formUtils.ts";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -16,7 +18,7 @@ export const api = axios.create({
 export let navigateToLogin = null;
 
 
-export const setNavigateFunction = (navigateFn) => {
+export const setNavigateFunction = (navigateFn: NavigateFunction) => {
     navigateToLogin = navigateFn;
 };
 
@@ -65,11 +67,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-export function getErrorMessages(result: Result<any>) {
-    return Object.entries(result.errors)
-        .map(([property, messages], index) => `• ${messages.join(' • ')}`)
-        .join(' \n• ');
-}
 
 export default api;

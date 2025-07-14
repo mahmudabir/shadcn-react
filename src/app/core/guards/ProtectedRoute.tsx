@@ -1,7 +1,7 @@
 import { useAuthToken } from "@/hooks/use-auth-token.ts"
 import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import { useEffect } from "react";
-import { setNavigateFunction } from "@/app/core/api/base-api.tsx";
+import { setNavigateFunction } from "@/app/core/api/base-api.ts";
 
 export default function ProtectedRoute() {
 

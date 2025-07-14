@@ -11,7 +11,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 <Link to="/countries">
-                    <Card>
+                    <Card className="hover:shadow-2xl">
                         <CardHeader>
                             <CardTitle>Countries</CardTitle>
                             <CardDescription>Go to countries list</CardDescription>
@@ -22,7 +22,7 @@ export default function Dashboard() {
                     </Card>
                 </Link>
 
-                <Card>
+                <Card className="hover:shadow-2xl">
                     <CardHeader>
                         <CardTitle>Statistics</CardTitle>
                         <CardDescription>Your account overview</CardDescription>
@@ -32,7 +32,7 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="hover:shadow-2xl">
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
                         <CardDescription>Your latest actions</CardDescription>
@@ -42,7 +42,7 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="hover:shadow-2xl">
                     <CardHeader>
                         <CardTitle>Notifications</CardTitle>
                         <CardDescription>Recent updates</CardDescription>
