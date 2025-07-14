@@ -67,3 +67,15 @@ export default tseslint.config([
   },
 ])
 ```
+
+```markdown
+https://www.radix-ui.com/
+https://ui.shadcn.com/
+https://shadcn-admin.netlify.app/
+
+https://tweakcn.com/editor/theme
+https://skiper-ui.com/
+https://www.kibo-ui.com/
+https://originui.com/layouts
+https://ui.aceternity.com/
+```

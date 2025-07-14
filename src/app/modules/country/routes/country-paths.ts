@@ -1,4 +1,4 @@
-export const COUNTRY_ROUTES = {
+export const COUNTRY_PATHS = {
     index: () => '/countries',
     create: () => '/countries/create',
     edit: (id: string = ':id') => `/countries/${id}/edit`,

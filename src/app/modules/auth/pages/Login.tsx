@@ -7,18 +7,22 @@ import React, { useState } from "react";
 import { getLoginFormData, setLoginData, USERNAME_KEY } from "@/lib/authUtils.ts";
 import axios from "axios";
 import { cn } from "@/lib/utils.ts";
+import { Loader2Icon } from "lucide-react";
+import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";
+import { toastError } from "@/lib/toasterUtils.tsx";
 
 const API_LOGIN = "http://localhost:5000/api/auth/token";
 
-export default function Login({ className, ...props }) {
+export default function Login({ className , ...props }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
+        setIsLoading(true);
         try {
             const formData = getLoginFormData(username, password);
 
@@ -26,8 +30,11 @@ export default function Login({ className, ...props }) {
             const { access_token, refresh_token } = res.data;
             localStorage.setItem(USERNAME_KEY, username);
             setLoginData(access_token, refresh_token);
-            navigate("/");
+            setIsLoading(false);
+            navigate(BASE_PATHS.index());
         } catch (err) {
+            setIsLoading(false);
+            toastError(err.response?.data?.message || "Login failed");
             setError(err.response?.data?.message || "Login failed");
         }
     };
@@ -69,13 +76,15 @@ export default function Login({ className, ...props }) {
                                                onChange={e => setPassword(e.target.value)}/>
                                     </div>
                                     <div className="flex flex-col gap-3">
-                                        <Button type="submit" className="w-full">
+                                        <Button disabled={isLoading} type="submit" className="w-full">
+                                            {isLoading && <Loader2Icon className="animate-spin"/>}
                                             Login
                                         </Button>
                                         {/*<Button variant="outline" className="w-full">*/}
                                         {/*    Login with Google*/}
                                         {/*</Button>*/}
                                     </div>
+                                    <small className="flex justify-center items-center text-destructive">{error}</small>
                                 </div>
                                 {/*<div className="mt-4 text-center text-sm">*/}
                                 {/*    Don&apos;t have an account?{" "}*/}

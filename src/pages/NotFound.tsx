@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";
 
 export default function NotFound() {
   const navigate = useNavigate()
@@ -12,7 +13,7 @@ export default function NotFound() {
         Sorry, we couldn't find the page you're looking for.
       </p>
       <Button 
-        onClick={() => navigate('/')} 
+        onClick={() => navigate(BASE_PATHS.index())}
         className="mt-8"
       >
         Go back home
