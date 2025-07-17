@@ -19,7 +19,10 @@ const initialState: ThemeProviderState = {
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
-
+// Add toggleTheme to ThemeProviderState
+type ThemeProviderStateExtended = ThemeProviderState & {
+  toggleTheme: () => void;
+};
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -48,13 +51,26 @@ export function ThemeProvider({
     root.classList.add(theme)
   }, [theme])
 
-  const value = {
+  const value: ThemeProviderStateExtended = {
     theme,
     setTheme: (theme: Theme) => {
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },
-  }
+    toggleTheme: () => {
+    if (theme === "light") {
+      setTheme("dark");
+      localStorage.setItem(storageKey, "dark");
+    } else if (theme === "dark") {
+      setTheme("light");
+      localStorage.setItem(storageKey, "light");
+    } else {
+      // If system, default to light
+      setTheme("light");
+      localStorage.setItem(storageKey, "light");
+    }
+  },
+  };
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
@@ -65,7 +81,8 @@ export function ThemeProvider({
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
-  const context = useContext(ThemeProviderContext)
+  // Type assertion to include toggleTheme
+  const context = useContext(ThemeProviderContext) as ThemeProviderStateExtended;
 
   if (context === undefined)
     throw new Error("useTheme must be used within a ThemeProvider")
