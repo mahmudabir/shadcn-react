@@ -23,7 +23,7 @@ const CountryDetails = () => {
   if (!country) return <div>Country not found</div>;
 
   return (
-    <div>
+    <>
       <h2>Country Details</h2>
       <p><strong>Name (English):</strong> {country.nameEn}</p>
       <p><strong>Name (Bangla):</strong> {country.nameBn}</p>
@@ -32,7 +32,7 @@ const CountryDetails = () => {
       <Link to={COUNTRY_PATHS.edit(country.id.toString())}>Edit</Link>
       {' | '}
       <Link to={COUNTRY_PATHS.index()}>Back to List</Link>
-    </div>
+    </>
   );
 };
 

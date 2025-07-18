@@ -1,10 +1,12 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createCountry } from '../api/countries.ts';
 import CountryForm from '../components/CountryForm.tsx';
 import type { Country } from '../models/country.ts';
 import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../../../components/ui/card.tsx';
+import { Car } from 'lucide-react';
+import { Button } from '../../../../components/ui/button.tsx';
 
 const CountryCreate = () => {
   const navigate = useNavigate();
@@ -21,10 +23,7 @@ const CountryCreate = () => {
   };
 
   return (
-    <div>
-      <h2>Create Country</h2>
-      <CountryForm onSubmit={handleCreate} submitLabel="Create" />
-    </div>
+    <CountryForm onSubmit={handleCreate} submitLabel="Create" />
   );
 };
 

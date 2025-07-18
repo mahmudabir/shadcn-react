@@ -44,10 +44,7 @@ const CountryEdit = () => {
     if (!initialData) return <div>Country not found</div>;
 
     return (
-        <div>
-            <h2>Edit Country</h2>
-            <CountryForm initialData={initialData} onSubmit={handleEdit} submitLabel="Update"/>
-        </div>
+        <CountryForm initialData={initialData} onSubmit={handleEdit} submitLabel="Update" />
     );
 };
 
