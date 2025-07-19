@@ -5,7 +5,7 @@ import { NavActions } from "../nav-actions";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 
-export default function MainLayout() {
+export default function AuthorizedLayout() {
     return (
         <SidebarProvider>
             <AppSidebar />

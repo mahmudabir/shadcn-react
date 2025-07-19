@@ -2,7 +2,7 @@ import { ExternalToast, toast } from "sonner";
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react"
 
 const defaultOptions: ExternalToast = {
-    position: "bottom-left",
+    position: "bottom-right",
     duration: 5000,
     closeButton: true,
     dismissible: true,
