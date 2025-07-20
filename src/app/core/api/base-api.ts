@@ -1,10 +1,10 @@
-import axios, { AxiosResponse } from "axios";
-import { ACCESS_TOKEN_KEY, getRefreshTokenFormData, logout, REFRESH_TOKEN_KEY, setLoginData } from "@/lib/authUtils.ts";
 import { Result } from "@/app/core/models/result.ts";
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts";
-import { toastError } from "@/lib/toasterUtils.tsx";
-import { NavigateFunction } from "react-router-dom";
+import { ACCESS_TOKEN_KEY, getRefreshTokenFormData, logout, REFRESH_TOKEN_KEY, setLoginData } from "@/lib/authUtils.ts";
 import { getErrorMessages } from "@/lib/formUtils";
+import { toastError } from "@/lib/toasterUtils.tsx";
+import axios, { AxiosResponse } from "axios";
+import { NavigateFunction } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -15,34 +15,57 @@ export const api = axios.create({
     }
 });
 
-export let navigateToLogin = null;
-
-
+export let navigateToLogin: NavigateFunction | null = null;
 export const setNavigateFunction = (navigateFn: NavigateFunction) => {
     navigateToLogin = navigateFn;
 };
 
-// Request interceptor to add the JWT token
+// Preloader handler for API calls
+type PreloaderHandler = {
+    increment: () => void;
+    decrement: () => void;
+    isManual: boolean;
+};
+let preloaderHandler: PreloaderHandler | null = null;
+export const setPreloaderHandler = (handler: PreloaderHandler) => {
+    preloaderHandler = handler;
+};
+
+// Request interceptor to add the JWT token and trigger preloader
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem(ACCESS_TOKEN_KEY);
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`;
         }
+        if (preloaderHandler && !preloaderHandler.isManual) {
+            preloaderHandler.increment();
+        }
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        if (preloaderHandler && !preloaderHandler.isManual) {
+            preloaderHandler.decrement();
+        }
+        return Promise.reject(error);
+    }
 );
 
-// Response interceptor for refresh token logic
+// Response interceptor for refresh token logic and preloader
 api.interceptors.response.use(
     (response: AxiosResponse<Result<any>, any>) => {
+        if (preloaderHandler && !preloaderHandler.isManual) {
+            preloaderHandler.decrement();
+        }
         if (response && !response.data.isSuccess) {
             toastError(getErrorMessages(response.data), response.data.message || 'Failed to perform action');
         }
         return response;
     },
     async (error) => {
+        if (preloaderHandler && !preloaderHandler.isManual) {
+            preloaderHandler.decrement();
+        }
         const originalRequest = error.config;
         if (error.response && error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;

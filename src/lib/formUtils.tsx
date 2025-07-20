@@ -1,6 +1,7 @@
 import type { FieldErrors } from "react-hook-form";
 import { Result } from "@/app/core/models/result.ts";
 import { toastInfo } from "./toasterUtils";
+import usePreloader from "../hooks/use-preloader";
 
 
 export function logFormErrors(errors: FieldErrors): void {
@@ -17,6 +18,7 @@ export function getErrorMessages(result: Result<any>) {
 }
 
 export function onSubmitTest(data) {
+    console.log("Form submitted with data:", data);
     toastInfo((
         <pre>
             <code className="">{JSON.stringify(data, null, 2)}</code>

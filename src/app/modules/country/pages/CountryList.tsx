@@ -2,16 +2,13 @@ import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Preloader } from '../../../../components/custom/preloader.tsx';
 import { deleteCountry, getCountries } from '../api/countries.ts';
 import type { Country } from '../models/country.ts';
 
 const CountryList = () => {
   const [countries, setCountries] = useState<Country[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  const fetchData = async (loading: boolean = true) => {
-    setLoading(loading);
+  const fetchData = async () => {
     try {
       const data = await getCountries();
       if (data.isSuccess) {
@@ -22,7 +19,6 @@ const CountryList = () => {
     } catch (err) {
       toastError(err.message || 'Failed to fetch countries');
     } finally {
-      setLoading(false);
     }
   };
 
@@ -37,14 +33,11 @@ const CountryList = () => {
       if (result.isSuccess) {
         toastSuccess(result.message || 'Deleted successfully')
       }
-      await fetchData(false);
+      await fetchData();
     } catch (err) {
       toastError(err.message || 'Failed to delete country');
     }
   };
-
-  if (loading) return <Preloader/>;
-
 
   return (
     <div>

@@ -79,7 +79,7 @@ export function ThemeProvider({
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+
 export const useTheme = () => {
   // Type assertion to include toggleTheme
   const context = useContext(ThemeProviderContext) as ThemeProviderStateExtended;

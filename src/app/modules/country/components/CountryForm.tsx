@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
+import z from "zod"
 import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
-import { logFormErrors, onSubmitTest } from "../../../../lib/formUtils"
-import { Country } from "../models/country"
+import { Switch } from "../../../../components/ui/switch"
+import { logFormErrors } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { City } from "../models/city"
-import z from "zod"
-import { Switch } from "../../../../components/ui/switch"
+import { Country } from "../models/country"
 
 
 // Main CountryForm component
@@ -114,7 +114,8 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8">
+            <form className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8"
+                onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex justify-between mb-4 border-b">
                     <h2 className="text-2xl font-semibold pb-2">
                         🌍 {submitLabel} Country

@@ -1,11 +1,21 @@
+import { setPreloaderHandler } from "@/app/core/api/base-api";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "../app-sidebar";
+import { Preloader } from "../custom/preloader";
+import { PreloaderProvider, usePreloader } from "../custom/preloader-provider";
 import { NavActions } from "../nav-actions";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 
-export default function AuthorizedLayout() {
+function AuthorizedLayoutContent() {
+    const { visible, increment, decrement, isManual } = usePreloader();
+    useEffect(() => {
+        setPreloaderHandler({ increment, decrement, isManual });
+        // Optionally cleanup: unset handler on unmount
+        return () => setPreloaderHandler({ increment: () => { }, decrement: () => { }, isManual: false });
+    }, [increment, decrement, isManual]);
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -33,9 +43,19 @@ export default function AuthorizedLayout() {
                     </div>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                    <Outlet/>
+                    <Outlet />
                 </div>
             </SidebarInset>
+            <Preloader visible={visible} />
         </SidebarProvider>
-    )
+    );
 }
+
+export default function AuthorizedLayout() {
+    return (
+        <PreloaderProvider>
+            <AuthorizedLayoutContent />
+        </PreloaderProvider>
+    );
+}
+

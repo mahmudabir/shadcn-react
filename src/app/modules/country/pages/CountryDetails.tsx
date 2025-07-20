@@ -1,27 +1,34 @@
+import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
+import { toastError } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getCountryById } from '../api/countries.ts';
 import type { Country } from '../models/country.ts';
-import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
-import { toastError } from "@/lib/toasterUtils.tsx";
-import { Preloader } from '@/components/custom/preloader.tsx';
 
 const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [country, setCountry] = useState<Country | null>(null);
-  const [loading, setLoading] = useState(true);
+
+      const fetchData = async (id: string) => {
+        try {
+            const data = await getCountryById(id);
+            if (data.isSuccess) {
+                setCountry(data.payload);
+            } else {
+                toastError(data.message || 'Failed to fetch country');
+            }
+        } catch (err) {
+            toastError(err.message || 'Failed to fetch country');
+        } finally {
+        }
+    };
 
   useEffect(() => {
     if (!id) return;
-    setLoading(true);
-    getCountryById(id)
-      .then(data => setCountry(data.payload))
-      .catch(err => toastError(err.message || 'Failed to fetch country'))
-      .finally(() => setLoading(false));
+    fetchData(id);
   }, [id]);
 
-  if (loading) return <Preloader/>;
-  if (!country) return <div>Country not found</div>;
+  if (!country) return <h1>Country not found</h1>;
 
   return (
     <>
