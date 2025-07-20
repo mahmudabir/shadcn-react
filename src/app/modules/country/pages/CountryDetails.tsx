@@ -4,6 +4,7 @@ import { getCountryById } from '../api/countries.ts';
 import type { Country } from '../models/country.ts';
 import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
+import { Preloader } from '@/components/custom/preloader.tsx';
 
 const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +20,7 @@ const CountryDetails = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Preloader/>;
   if (!country) return <div>Country not found</div>;
 
   return (

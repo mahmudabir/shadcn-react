@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { deleteCountry, getCountries } from '../api/countries.ts';
-import type { Country } from '../models/country.ts';
 import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Preloader } from '../../../../components/custom/preloader.tsx';
+import { deleteCountry, getCountries } from '../api/countries.ts';
+import type { Country } from '../models/country.ts';
 
 const CountryList = () => {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -42,7 +43,8 @@ const CountryList = () => {
     }
   };
 
-  if (loading) return <div>Loading countries...</div>;
+  if (loading) return <Preloader/>;
+
 
   return (
     <div>
