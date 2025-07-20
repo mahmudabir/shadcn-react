@@ -1,4 +1,5 @@
 import z from "zod";
+import { City } from "./city";
 
 export class Country {
   public id?: number;
@@ -6,7 +7,8 @@ export class Country {
   public nameBn: string;
   public nameAr: string;
   public nameHi: string;
-  public isIndependent: boolean | null;
+  // public isIndependent: boolean | null;
+  public cities: City[] = [];
 
   constructor(data?: Partial<Country>) {
     this.id = data?.id;
@@ -14,7 +16,7 @@ export class Country {
     this.nameBn = data?.nameBn;
     this.nameAr = data?.nameAr;
     this.nameHi = data?.nameHi;
-    this.isIndependent = data?.isIndependent ?? null;
+    // this.isIndependent = data?.isIndependent ?? null;
   }
 
     static schema = z.object({
@@ -23,6 +25,7 @@ export class Country {
     nameBn: z.string("Name (Bengali) is required").nonempty("Name (Bengali) is required"),
     nameAr: z.string("Name (Arabic) is required").nonempty("Name (Arabic) is required"),
     nameHi: z.string("Name (Hindi) is required").nonempty("Name (Hindi) is required"),
+    cities: City.schema.array().optional(),
     // isIndependent: z.boolean().nullable().refine(val => val !== null, {
     //   message: "Must be checked or unchecked"
     // }),

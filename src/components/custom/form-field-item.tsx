@@ -1,12 +1,23 @@
+import { FormFieldItemConfig } from "../../app/core/models/form-field-item-config";
 import { Checkbox } from "../ui/checkbox";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 
 
+export function FormFieldItems(props: { items: FormFieldItemConfig<any>[] }) {
+    return (
+        <>
+            {props.items.map((item, index) => (
+                <FormFieldItem key={index} {...item} />
+            ))}
+        </>
+    );
+}
+
 export function FormFieldItem(props: { type?: string; control: any; name: string; label: string; description: string; className?: string }) {
 
-    const { type, control, name, label, description, className } = props;
+    const { type, control, name, label, description, className = "w-full" } = props;
 
     const fieldType = type || "text"; // Default to text if no type is provided
     const fieldElement = (field) => {

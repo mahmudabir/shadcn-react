@@ -4,7 +4,7 @@ import { Result } from "@/app/core/models/result.ts";
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
 import { NavigateFunction } from "react-router-dom";
-import { getErrorMessages } from "@/lib/formUtils.ts";
+import { getErrorMessages } from "@/lib/formUtils";
 
 const API_BASE = "http://localhost:5000/api";
 

@@ -1,5 +1,5 @@
+import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import { ExternalToast, toast } from "sonner";
-import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react"
 
 const defaultOptions: ExternalToast = {
     position: "bottom-right",
@@ -9,10 +9,12 @@ const defaultOptions: ExternalToast = {
     richColors: true
 }
 
-export function toastSuccess(message: string, header: string = 'Success') {
+type titleT = (() => React.ReactNode) | React.ReactNode;
+
+export function toastSuccess(message: titleT, header: titleT = 'Success') {
     toast.success(header, {
         description: message,
-        icon: <CheckCircle className="text-green-500"/>,
+        icon: <CheckCircle className="text-green-500" />,
         classNames: {
             title: 'text-green-500',
             content: 'text-green-500',
@@ -21,10 +23,10 @@ export function toastSuccess(message: string, header: string = 'Success') {
     })
 }
 
-export function toastInfo(message: string, header: string = 'Info') {
+export function toastInfo(message: titleT, header: titleT = 'Info') {
     toast.info(header, {
         description: message,
-        icon: <Info className="text-blue-500"/>,
+        icon: <Info className="text-blue-500" />,
         classNames: {
             title: 'text-blue-500',
             content: 'text-blue-500'
@@ -33,10 +35,10 @@ export function toastInfo(message: string, header: string = 'Info') {
     })
 }
 
-export function toastWarning(message: string, header: string = 'Warning') {
+export function toastWarning(message: titleT, header: titleT = 'Warning') {
     toast.warning(header, {
         description: message,
-        icon: <AlertTriangle className="text-yellow-500"/>,
+        icon: <AlertTriangle className="text-yellow-500" />,
         classNames: {
             title: 'text-yellow-500',
             content: 'text-yellow-500'
@@ -45,10 +47,10 @@ export function toastWarning(message: string, header: string = 'Warning') {
     })
 }
 
-export function toastError(message: string, header: string = 'Error') {
+export function toastError(message: titleT, header: titleT = 'Error') {
     toast.error(header, {
         description: message,
-        icon: <XCircle className="text-red-500"/>,
+        icon: <XCircle className="text-red-500" />,
         classNames: {
             title: 'text-destructive',
             content: 'text-destructive',
