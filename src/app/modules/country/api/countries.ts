@@ -6,7 +6,7 @@ import api from "@/app/core/api/base-api.ts";
 const API_BASE = '/countries';
 
 export async function getCountries(): Promise<Result<PagedData<Country>>> {
-    const res = await api.get(API_BASE);
+    const res = await api.get(API_BASE, { skipPreloader: true });
     return res.data;
 }
 

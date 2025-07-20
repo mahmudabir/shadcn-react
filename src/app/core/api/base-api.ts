@@ -4,6 +4,7 @@ import { ACCESS_TOKEN_KEY, getRefreshTokenFormData, logout, REFRESH_TOKEN_KEY, s
 import { getErrorMessages } from "@/lib/formUtils";
 import { toastError } from "@/lib/toasterUtils.tsx";
 import axios, { AxiosResponse } from "axios";
+
 import { NavigateFunction } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/api";
@@ -38,13 +39,14 @@ api.interceptors.request.use(
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`;
         }
-        if (preloaderHandler && !preloaderHandler.isManual) {
+        // Allow skipping preloader for specific requests
+        if (preloaderHandler && !preloaderHandler.isManual && !config.skipPreloader) {
             preloaderHandler.increment();
         }
         return config;
     },
     (error) => {
-        if (preloaderHandler && !preloaderHandler.isManual) {
+        if (preloaderHandler && !preloaderHandler.isManual && !(error.config && error.config.skipPreloader)) {
             preloaderHandler.decrement();
         }
         return Promise.reject(error);
@@ -54,7 +56,7 @@ api.interceptors.request.use(
 // Response interceptor for refresh token logic and preloader
 api.interceptors.response.use(
     (response: AxiosResponse<Result<any>, any>) => {
-        if (preloaderHandler && !preloaderHandler.isManual) {
+        if (preloaderHandler && !preloaderHandler.isManual && !(response.config && response.config.skipPreloader)) {
             preloaderHandler.decrement();
         }
         if (response && !response.data.isSuccess) {
