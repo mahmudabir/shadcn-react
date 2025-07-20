@@ -39,7 +39,7 @@ export default function Login({ className , ...props }) {
         }
     };
     return (
-        <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="flex min-h-full w-full items-center justify-center p-6 md:p-10">
             <div className="w-full max-w-sm">
                 <div className={cn("flex flex-col gap-6", className)} {...props}>
                     <Card>
@@ -62,6 +62,7 @@ export default function Login({ className , ...props }) {
                                             value={username} onChange={e => setUsername(e.target.value)}
                                         />
                                     </div>
+                                    
                                     <div className="grid gap-3">
                                         <div className="flex items-center">
                                             <Label htmlFor="password">Password</Label>
