@@ -7,10 +7,11 @@ import { useFieldArray, useForm } from "react-hook-form"
 import z from "zod"
 import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors } from "../../../../lib/formUtils"
+import { logFormErrors, onSubmitTest } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { City } from "../models/city"
 import { Country } from "../models/country"
+import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 
 
 // Main CountryForm component
@@ -41,6 +42,20 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         logFormErrors(form.formState.errors);
         console.log(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
+
+    const confirmationOptions = {
+        title: `${submitLabel}?`,
+        description: "Are you sure you want to delete this country?",
+        cancelText: "Cancel",
+        confirmText: submitLabel,
+        onCancel() {
+            form.reset();
+        },
+        onConfirm() {
+            onSubmitTest(formValues);
+        },
+
+    };
 
     const countryFieldsConfig: FormFieldItemConfig<Country>[] = [
         {
@@ -115,7 +130,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     return (
         <Form {...form}>
             <form className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8"
-                onSubmit={form.handleSubmit(onSubmit)}>
+                onSubmit={form.handleSubmit(() => confirmPopup(confirmationOptions))}>
                 <div className="flex justify-between mb-4 border-b">
                     <h2 className="text-2xl font-semibold pb-2">
                         🌍 {submitLabel} Country

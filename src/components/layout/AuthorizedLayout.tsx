@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "../app-sidebar";
 import { Preloader } from "../custom/preloader";
-import { PreloaderProvider, usePreloader } from "../custom/preloader-provider";
+import { PreloaderProvider, usePreloader } from "../providers/preloader-provider";
 import { NavActions } from "../nav-actions";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";

@@ -1,3 +1,3 @@
-import { usePreloader } from "../components/custom/preloader-provider";
+import { usePreloader } from "../components/providers/preloader-provider";
 
 export default usePreloader;

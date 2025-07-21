@@ -1,3 +1,3 @@
-import { useTheme } from "../components/theme-provider";
+import { useTheme } from "../components/providers/theme-provider";
 
 export default useTheme;
