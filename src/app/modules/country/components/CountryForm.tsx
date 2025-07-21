@@ -52,9 +52,8 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
             form.reset();
         },
         onConfirm() {
-            onSubmitTest(formValues);
+            onSubmit(formValues);
         },
-
     };
 
     const countryFieldsConfig: FormFieldItemConfig<Country>[] = [

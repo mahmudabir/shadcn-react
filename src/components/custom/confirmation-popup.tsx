@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "../ui/dialog";
 import { Button } from "../ui/button";
 
@@ -48,7 +49,8 @@ export function ConfirmationPopupContainer() {
 
   return (
     <Dialog open={state.open} onOpenChange={(open) => !open && handleClose(false)}>
-      <DialogContent>
+      <DialogPrimitive.Overlay className="fixed inset-0 z-[50] bg-white/60 dark:bg-black/60 backdrop-blur-sm" />
+      <DialogContent className="z-[1000]">
         <DialogHeader>
           <DialogTitle>{state.title || "Are you sure?"}</DialogTitle>
           {state.description && <DialogDescription>{state.description}</DialogDescription>}
