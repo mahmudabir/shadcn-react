@@ -1,4 +1,4 @@
-import { Control, FieldValues } from "react-hook-form";
+import { Control } from "react-hook-form";
 
 export type FormFieldItemConfig<T> = {
     type: "checkbox" | "switch" | "radio" | "textarea" | "number" | "email" | "password" | "date" | "time" | "url" | "tel" | "color" | "range" | "text",

@@ -5,7 +5,7 @@ import './index.css'
 import { router } from './routes'
 import { ThemeProvider, useTheme } from './components/providers/theme-provider'
 import { Toaster } from "sonner";
-import { ConfirmationPopupContainer, mountConfirmationPopup } from "./components/custom/confirmation-popup";
+import { ConfirmationPopupContainer } from "./components/custom/confirmation-popup";
 
 // eslint-disable-next-line react-refresh/only-export-components
 function ThemedToaster() {

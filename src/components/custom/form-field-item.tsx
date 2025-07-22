@@ -44,7 +44,7 @@ export function FormFieldItem(props: { type?: string; control: any; name: string
             case "range":
             case "text":
             default:
-                return <Input {...field} type={fieldType} />;
+                return <Input {...field} value={field.value ?? ""} type={fieldType} />;
         }
     }
 

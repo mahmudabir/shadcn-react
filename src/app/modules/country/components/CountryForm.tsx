@@ -26,8 +26,8 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     // Initialize form with Zod schema validation
     const form = useForm<CountryData>({
         resolver: zodResolver(Country.schema),
-        mode: "onChange",
-        defaultValues: initialData,
+        mode: "onBlur",
+        defaultValues: { ...initialData },
     });
 
     const formValues = form.watch(); // watch entire form
@@ -49,7 +49,8 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         cancelText: "Cancel",
         confirmText: submitLabel,
         onCancel() {
-            form.reset();
+            form.reset({ ...initialData }, { keepValues: false }); // Reset form to initial data
+            console.log(formValues);
         },
         onConfirm() {
             onSubmit(formValues);
