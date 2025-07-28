@@ -45,7 +45,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
     const confirmationOptions = {
         title: `${submitLabel}?`,
-        description: "Are you sure you want to delete this country?",
+        description: `Are you sure you want to ${submitLabel.toLowerCase()} this country?`,
         cancelText: "Cancel",
         confirmText: submitLabel,
         onCancel() {

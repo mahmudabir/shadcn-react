@@ -1,52 +1,40 @@
-import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCountryById, updateCountry } from '../api/countries.ts';
 import CountryForm from '../components/CountryForm.tsx';
 import type { Country } from '../models/country.ts';
+import { useCountries } from '../viewModels/use-countries.ts';
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [country, setCountry] = useState<Omit<Country, 'id'> | null>(null);
-
-    const fetchData = async (id: string) => {
-        try {
-            const data = await getCountryById(id);
-            if (data.isSuccess) {
-                setCountry(data.payload);
-            } else {
-                toastError(data.message || 'Failed to fetch country');
-            }
-        } catch (err) {
-            toastError(err.message || 'Failed to fetch country');
-        } finally {
-        }
-    };
+    const countryViewModel = useCountries();
 
     useEffect(() => {
         if (!id) return;
-        fetchData(id);
+        countryViewModel.getById(id);
     }, [id]);
 
     const handleEdit = async (data: Country) => {
         if (!id || !data.id) return;
         try {
-            const result = await updateCountry(id, data);
-            if (result.isSuccess) {
-                toastSuccess(result.message || 'Updated successfully')
+            await countryViewModel.update(id, data);
+            if (countryViewModel.isUpdateSuccess.current) {
+                toastSuccess(countryViewModel.message || 'Updated successfully');
                 // navigate(COUNTRY_PATHS.index());
+            } else {
+                toastError(countryViewModel.message || 'Failed to update country');
             }
         } catch (err: any) {
             toastError(err.message || 'Failed to update country');
         }
     };
 
-    if (!country) return <div>Country not found</div>;
+    if (countryViewModel.isLoading) return <div>Loading...</div>;
+    if (!countryViewModel.item?.isSuccess) return <div>Country not found</div>;
 
     return (
-        <CountryForm initialData={country} onSubmit={handleEdit} submitLabel="Update" />
+        <CountryForm initialData={countryViewModel.item?.payload} onSubmit={handleEdit} submitLabel="Update" />
     );
 };
 

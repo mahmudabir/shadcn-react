@@ -9,7 +9,8 @@ import { NavigateFunction } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/api";
 
-export const api = axios.create({
+export const baseApi = axios.create({
+
     baseURL: API_BASE,
     headers: {
         "Content-Type": "application/json"
@@ -33,7 +34,7 @@ export const setPreloaderHandler = (handler: PreloaderHandler) => {
 };
 
 // Request interceptor to add the JWT token and trigger preloader
-api.interceptors.request.use(
+baseApi.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem(ACCESS_TOKEN_KEY);
         if (token) {
@@ -54,7 +55,7 @@ api.interceptors.request.use(
 );
 
 // Response interceptor for refresh token logic and preloader
-api.interceptors.response.use(
+baseApi.interceptors.response.use(
     (response: AxiosResponse<Result<any>, any>) => {
         if (preloaderHandler && !preloaderHandler.isManual && !(response.config && response.config.skipPreloader)) {
             preloaderHandler.decrement();
@@ -77,7 +78,7 @@ api.interceptors.response.use(
                 const { access_token, refresh_token } = res.data;
                 setLoginData(access_token, refresh_token);
                 originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
-                return api(originalRequest);
+                return baseApi(originalRequest);
             } catch (refreshError) {
                 logout();
                 if (navigateToLogin) {
@@ -93,4 +94,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
+export default baseApi;

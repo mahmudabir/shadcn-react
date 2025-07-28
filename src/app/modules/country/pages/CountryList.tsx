@@ -1,73 +1,52 @@
-import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteCountry, getCountries } from "../api/countries.ts";
-import type { Country } from "../models/country.ts";
-import { Pagination } from "@/app/core/models/pagination";
-import { Table, TableHeader, TableRow, TableCell, TableBody } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-// import { Pagination as ShadcnPagination } from "@/components/ui/pagination";
+import { useCountries } from '../viewModels/use-countries';
+import { confirmPopup } from "../../../../components/custom/confirmation-popup";
+import { COUNTRY_PATHS } from "../routes/CountryRoutes";
 
 const CountryList = () => {
-  const [countries, setCountries] = useState<Country[]>([]);
   const [search, setSearch] = useState("");
-  const [pagination, setPagination] = useState(new Pagination());
-  const [totalRecord, setTotalRecord] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = async (searchValue = search, pageNumber = pagination.pageNumber, pageSize = pagination.pageSize) => {
-    setLoading(true);
-    try {
-      // You may need to update getCountries to accept search, pageNumber, pageSize
-      const data = await getCountries(/*{ search: searchValue, pageNumber, pageSize }*/);
-      if (data.isSuccess) {
-        setCountries(data.payload.content || []);
-        setTotalRecord(data.payload.totalRecord || 0);
-        setPagination(new Pagination({
-          pageNumber: data.payload.pageNumber,
-          pageSize: data.payload.pageSize,
-          totalRecord: data.payload.totalRecord,
-        }));
-      } else {
-        toastError(data.message || "Failed to fetch countries");
-      }
-    } catch (err) {
-      toastError(err.message || "Failed to fetch countries");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const countryViewModel = useCountries();
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line
+    countryViewModel.getAll();
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this country?")) return;
-    try {
-      const result = await deleteCountry(id);
-      if (result.isSuccess) {
-        toastSuccess(result.message || "Deleted successfully");
-        // Recalculate pagination after delete
-        setPagination((prev) => new Pagination(prev).recalculate(1));
-      }
-      await fetchData();
-    } catch (err) {
-      toastError(err.message || "Failed to delete country");
-    }
+    confirmPopup({
+      title: `Delete?`,
+      description: `Are you sure you want to delete this country?`,
+      cancelText: "Cancel",
+      confirmText: `Delete`,
+      onConfirm: async () => {
+        try {
+          await countryViewModel.remove(id);
+          if (countryViewModel.isRemoveSuccess.current) {
+            toastSuccess(countryViewModel.message || "Deleted successfully");
+            // Optionally update pagination here
+          } else {
+            toastError(countryViewModel.message || "Failed to delete country");
+          }
+          countryViewModel.getAll();
+        } catch (err: any) {
+          toastError(err.message || "Failed to delete country");
+        }
+      },
+    });
   };
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    fetchData(search, 1, pagination.pageSize);
+    // Optionally implement search with fetchCountries if supported
   };
 
   const handlePageChange = (page: number) => {
-    fetchData(search, page, pagination.pageSize);
+    // Optionally implement pagination with fetchCountries if supported
   };
 
   return (
@@ -98,16 +77,16 @@ const CountryList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {loading ? (
+          {countryViewModel.isLoading ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !countries?.length ? (
+          ) : !countryViewModel.items?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            countries.map((country) => (
+            countryViewModel.items?.payload?.content?.map((country: any) => (
               <TableRow key={country.id}>
                 <TableCell>{country.nameEn}</TableCell>
                 <TableCell>{country.nameBn}</TableCell>

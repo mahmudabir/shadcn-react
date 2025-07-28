@@ -1,9 +1,15 @@
 import { Route } from "react-router-dom";
-import { COUNTRY_PATHS } from "@/app/modules/country/routes/country-paths.ts";
 import CountryCreate from "../pages/CountryCreate";
 import CountryList from "@/app/modules/country/pages/CountryList.tsx";
 import CountryEdit from "@/app/modules/country/pages/CountryEdit.tsx";
 import CountryDetails from "@/app/modules/country/pages/CountryDetails.tsx";
+
+export const COUNTRY_PATHS = {
+    index: () => '/countries',
+    create: () => '/countries/create',
+    edit: (id: string = ':id') => `/countries/${id}/edit`,
+    details: (id: string = ':id') => `/countries/${id}`,
+};
 
 export const CountryRoutes = (
     <Route path={COUNTRY_PATHS.index()}>
