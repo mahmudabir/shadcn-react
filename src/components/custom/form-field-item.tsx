@@ -1,23 +1,30 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { FormFieldItemConfig } from "../../app/core/models/form-field-item-config";
-import { Checkbox } from "../ui/checkbox";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { Switch } from "../ui/switch";
+import { SelectOption } from "../../app/core/models/select-option";
 
 
-export function FormFieldItems(props: { items: FormFieldItemConfig<any>[] }) {
+export function FormFieldItems(props: { items: FormFieldItemConfig<any>[], options?: SelectOption[] }) {
+
+    const options = props.options ?? [];
+
     return (
         <>
-            {props.items.map((item, index) => (
-                <FormFieldItem key={index} {...item} />
+            {props.items.map((item, index) => (//<FormFieldItem key={index} {...item} />
+                item.type != "select"
+                    ? <FormFieldItem key={index} {...item} />
+                    : <SelectFieldItem key={index} {...item} options={options} />
             ))}
         </>
     );
 }
 
-export function FormFieldItem(props: { type?: string; control: any; name: string; label: string; description: string; className?: string }) {
+export function FormFieldItem(props: { type?: string; control: any; name: string; label: string; description: string; placeholder?: string; className?: string, options?: SelectOption[] }) {
 
-    const { type, control, name, label, description, className = "w-full" } = props;
+    const { type, control, name, label, description, placeholder, options, className = "w-full" } = props;
 
     const fieldType = type || "text"; // Default to text if no type is provided
     const fieldElement = (field) => {
@@ -48,6 +55,12 @@ export function FormFieldItem(props: { type?: string; control: any; name: string
         }
     }
 
+    if (fieldType == "select") {
+        return (
+            <SelectFieldItem {...props} />
+        )
+    }
+
     return (
         <div className={className}>
             <FormField
@@ -59,11 +72,50 @@ export function FormFieldItem(props: { type?: string; control: any; name: string
                             <strong>{label}</strong>
                             <FormDescription>
                                 {description}
-                            </FormDescription></FormLabel>
+                            </FormDescription>
+                        </FormLabel>
                         <FormControl>
                             {fieldElement(field)}
                         </FormControl>
 
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
+    )
+}
+
+export function SelectFieldItem(props: { control: any; name: string; label: string; description: string; placeholder?: string; className?: string, options?: SelectOption[] }) {
+    const { control, name, label, description, placeholder, options, className = "w-full" } = props;
+
+    return (
+        <div className={className}>
+            <FormField
+                control={control}
+                name={name}
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{label}</FormLabel>
+                        <Select
+                            value={field.value === undefined || field.value === null ? "" : String(field.value)}
+                            onValueChange={val => field.onChange(val)}
+                        >
+                            <FormControl>
+                                {/* Force SelectTrigger to full width */}
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder={placeholder} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {options && options?.map((item, index) => (
+                                    <SelectItem key={index} value={String(item.value)}>{item.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormDescription>
+                            {description}
+                        </FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}

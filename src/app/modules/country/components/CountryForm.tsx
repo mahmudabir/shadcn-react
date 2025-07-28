@@ -9,9 +9,9 @@ import { FormFieldItem, FormFieldItems } from "../../../../components/custom/for
 import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors, onSubmitTest } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { City } from "../models/city"
 import { Country } from "../models/country"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
+import { City } from "../../city/models/city"
 
 
 // Main CountryForm component
@@ -24,7 +24,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     type CountryData = z.infer<typeof Country.schema>;
 
     // Initialize form with Zod schema validation
-    const form = useForm<CountryData>({
+    const form = useForm({
         resolver: zodResolver(Country.schema),
         mode: "onBlur",
         defaultValues: { ...initialData },

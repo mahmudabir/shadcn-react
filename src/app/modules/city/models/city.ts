@@ -8,10 +8,7 @@ export class City {
     public nameHi: string;
     public countryId: number;
 
-    /**
-     *
-     */
-    constructor(data: Partial<City>) {
+    constructor(data?: Partial<City>) {
         this.id = data?.id;
         this.nameEn = data?.nameEn;
         this.nameBn = data?.nameBn;
@@ -26,6 +23,6 @@ export class City {
         nameBn: z.string("Name (Bengali) is required").nonempty("Name (Bengali) is required"),
         nameAr: z.string("Name (Arabic) is required").nonempty("Name (Arabic) is required"),
         nameHi: z.string("Name (Hindi) is required").nonempty("Name (Hindi) is required"),
-        countryId: z.number("Country ID is required").int("Country ID must be an integer"),
+        countryId: z.preprocess(val => Number(val), z.coerce.number("Country is required").min(1, "Country is required").int("Country is required")),
     });
 }

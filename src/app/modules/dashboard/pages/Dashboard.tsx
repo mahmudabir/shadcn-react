@@ -22,6 +22,18 @@ export default function Dashboard() {
                     </Card>
                 </Link>
 
+                <Link to="/cities">
+                    <Card className="hover:shadow-2xl">
+                        <CardHeader>
+                            <CardTitle>Cities</CardTitle>
+                            <CardDescription>Go to cities list</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Dashboard content goes here</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
                 <Card className="hover:shadow-2xl">
                     <CardHeader>
                         <CardTitle>Statistics</CardTitle>

@@ -1,5 +1,5 @@
 import z from "zod";
-import { City } from "./city";
+import { City } from "../../city/models/city";
 
 export class Country {
   public id?: number;
@@ -7,7 +7,6 @@ export class Country {
   public nameBn: string;
   public nameAr: string;
   public nameHi: string;
-  // public isIndependent: boolean | null;
   public cities: City[] = [];
 
   constructor(data?: Partial<Country>) {

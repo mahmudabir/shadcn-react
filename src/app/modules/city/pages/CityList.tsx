@@ -5,36 +5,37 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCountries } from '../viewModels/use-countries';
+import { useCities } from '../viewModels/use-cities';
 import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { COUNTRY_PATHS } from "../routes/CountryRoutes";
+import { CITY_PATHS } from "../routes/CityRoutes";
+import { useCountries } from "../../country/viewModels/use-countries";
 
-const CountryList = () => {
+const CityList = () => {
   const [search, setSearch] = useState("");
-  const countryViewModel = useCountries();
+  const cityViewModel = useCities();
 
   useEffect(() => {
-    countryViewModel.getAll();
+    cityViewModel.getAll();
   }, []);
 
   const handleDelete = async (id: string) => {
     confirmPopup({
       title: `Delete?`,
-      description: `Are you sure you want to delete this country?`,
+      description: `Are you sure you want to delete this city?`,
       cancelText: "Cancel",
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await countryViewModel.remove(id);
-          if (countryViewModel.isRemoveSuccess.current) {
-            toastSuccess(countryViewModel.message || "Deleted successfully");
+          await cityViewModel.remove(id);
+          if (cityViewModel.isRemoveSuccess.current) {
+            toastSuccess(cityViewModel.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(countryViewModel.message || "Failed to delete country");
+            toastError(cityViewModel.message || "Failed to delete city");
           }
-          await countryViewModel.getAll();
+          await cityViewModel.getAll();
         } catch (err: any) {
-          toastError(err.message || "Failed to delete country");
+          toastError(err.message || "Failed to delete city");
         }
       },
     });
@@ -42,24 +43,24 @@ const CountryList = () => {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Optionally implement search with fetchCountries if supported
+    // Optionally implement search with fetchCities if supported
   };
 
   const handlePageChange = (page: number) => {
-    // Optionally implement pagination with fetchCountries if supported
+    // Optionally implement pagination with fetchCities if supported
   };
 
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Countries</h1>
+        <h1 className="text-2xl font-bold">Cities</h1>
         <Button asChild>
-          <Link to={COUNTRY_PATHS.create()}>Create New Country</Link>
+          <Link to={CITY_PATHS.create()}>Create New city</Link>
         </Button>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
         <Input
-          placeholder="Search countries..."
+          placeholder="Search cities..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
@@ -77,30 +78,30 @@ const CountryList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {countryViewModel.isLoading ? (
+          {cityViewModel.isLoading ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !countryViewModel.items?.payload?.content?.length ? (
+          ) : !cityViewModel.items?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            countryViewModel.items?.payload?.content?.map((country: any) => (
-              <TableRow key={country.id}>
-                <TableCell>{country.nameEn}</TableCell>
-                <TableCell>{country.nameBn}</TableCell>
-                <TableCell>{country.nameAr}</TableCell>
-                <TableCell>{country.nameHi}</TableCell>
+            cityViewModel.items?.payload?.content?.map((city: any) => (
+              <TableRow key={city.id}>
+                <TableCell>{city.nameEn}</TableCell>
+                <TableCell>{city.nameBn}</TableCell>
+                <TableCell>{city.nameAr}</TableCell>
+                <TableCell>{city.nameHi}</TableCell>
                 <TableCell>
                   <div className="flex gap-2 justify-end">
                     <Button size="sm" variant="outline" asChild>
-                      <Link to={COUNTRY_PATHS.details(country.id.toString())}>Details</Link>
+                      <Link to={CITY_PATHS.details(city.id.toString())}>Details</Link>
                     </Button>
                     <Button size="sm" variant="secondary" asChild>
-                      <Link to={COUNTRY_PATHS.edit(country.id.toString())}>Edit</Link>
+                      <Link to={CITY_PATHS.edit(city.id.toString())}>Edit</Link>
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(country.id.toString())}>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(city.id.toString())}>
                       Delete
                     </Button>
                   </div>
@@ -122,4 +123,4 @@ const CountryList = () => {
   );
 };
 
-export default CountryList;
+export default CityList;

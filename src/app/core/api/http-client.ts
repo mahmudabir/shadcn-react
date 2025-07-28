@@ -4,8 +4,18 @@ import baseApi from "./base-api";
 
 export function useHttpClient<T, TCreate, TUpdate>(apiBaseUrl: string) {
 
-    async function getAll(): Promise<Result<PagedData<T>>> {
-        const res = await baseApi.get(apiBaseUrl, { skipPreloader: false });
+    async function getAll(props?: { skipPreloader?: boolean; asPage?: boolean; asDropdown?: boolean; }): Promise<Result<PagedData<T>>> {
+
+        // const { skipPreloader = false, asPage = false, asDropdown = false } = props;
+
+        const query: Record<string, any> = { asPage: props?.asPage, asDropdown: props?.asDropdown };
+        // if (typeof asPage !== 'undefined') query.asPage = asPage;
+        // if (typeof asDropdown !== 'undefined') query.asDropdown = asDropdown;
+
+        const res = await baseApi.get(apiBaseUrl, {
+            skipPreloader: props?.skipPreloader || false,
+            params: query
+        });
         return res.data;
     }
 

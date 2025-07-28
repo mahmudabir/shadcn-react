@@ -9,6 +9,7 @@ import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts"
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts"
 import { CountryRoutes } from "@/app/modules/country/routes/CountryRoutes.tsx"
 import UnauthorizedLayout from "../components/layout/UnauthorizedLayout.tsx"
+import { CityRoutes } from "../app/modules/city/routes/CityRoutes.tsx"
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -30,6 +31,7 @@ export const router = createBrowserRouter(
                     </Route>
 
                     {CountryRoutes}
+                    {CityRoutes}
 
                 </Route>
 

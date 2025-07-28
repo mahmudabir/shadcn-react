@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useHttpClient } from "../api/http-client";
 import { PagedData } from "../models/pagination";
 import { Result } from "../models/result";
+import { SelectOption } from "../models/select-option";
 
 /**
  * Generic CRUD ViewModel hook for any entity API
@@ -9,6 +10,7 @@ import { Result } from "../models/result";
 export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>>(apiBaseUrl) {
     const [items, setItems] = useState<Result<PagedData<T>> | null>(null);
     const [item, setItem] = useState<Result<T> | null>(null);
+    const [selectItems, setSelectItems] = useState<SelectOption[]>([]);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -46,6 +48,42 @@ export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>
                 setItem(res);
             } else {
                 setMessage(res.message || "Failed to fetch item");
+            }
+        } catch (e: any) {
+            setMessage(e.message || "Unknown error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const getSelectItems = async (labelPropertyName: string, valuePropertyName: string, placeholder?: string) => {
+        setIsLoading(true);
+        setMessage(null);
+
+        const generateSelectItems = (data: T[] = []): SelectOption[] => {
+            return [
+                {
+                    label: placeholder || 'Select any item',
+                    value: undefined,
+                },
+                ...(data?.map(item => ({
+                    label: item[labelPropertyName],
+                    value: String(item[valuePropertyName]),
+                })) ?? [])
+            ];
+        };
+
+        try {
+            if (items) {
+                setSelectItems(generateSelectItems(items.payload.content));
+                return;
+            }
+            const res = await httpClient.getAll({ skipPreloader: true, asDropdown: true });
+            if (res.isSuccess && res.payload) {
+                setItems(res);
+                setSelectItems(generateSelectItems(res?.payload?.content));
+            } else {
+                setMessage(res.message || "Failed to fetch items");
             }
         } catch (e: any) {
             setMessage(e.message || "Unknown error");
@@ -117,10 +155,12 @@ export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>
     return {
         items,
         item,
+        selectItems,
         isLoading,
         message,
         getAll,
         getById,
+        getSelectItems,
         create,
         isCreateSuccess,
         update,
