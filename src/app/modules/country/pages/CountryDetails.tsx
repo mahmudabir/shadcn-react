@@ -12,11 +12,17 @@ const CountryDetails = () => {
   useEffect(() => {
     if (!params.id) return;
     countryViewModel.getById(params.id);
-    // eslint-disable-next-line
   }, [params.id]);
 
-  if (countryViewModel.isLoading) return <div className="flex justify-center items-center h-40">Loading...</div>;
-  if (!countryViewModel.item.isSuccess) return <Card className="p-6"><h2 className="text-xl font-bold mb-2">Country not found</h2></Card>;
+  if (countryViewModel.isLoading) return (
+    <div className="flex justify-center items-center h-40">Loading...</div>
+  );
+
+  if (!countryViewModel.item?.isSuccess) return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-2">Country not found</h2>
+    </Card>
+  );
 
   return (
     <Card className="max-w-xl mx-auto p-8">

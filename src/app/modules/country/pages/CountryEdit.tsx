@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CountryForm from '../components/CountryForm.tsx';
 import type { Country } from '../models/country.ts';
 import { useCountries } from '../viewModels/use-countries.ts';
+import { Card } from "../../../../components/ui/card.tsx";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -30,8 +31,15 @@ const CountryEdit = () => {
         }
     };
 
-    if (countryViewModel.isLoading) return <div>Loading...</div>;
-    if (!countryViewModel.item?.isSuccess) return <div>Country not found</div>;
+    if (countryViewModel.isLoading) return (
+        <div className="flex justify-center items-center h-40">Loading...</div>
+    );
+
+    if (!countryViewModel.item?.isSuccess) return (
+        <Card className="p-6">
+            <h2 className="text-xl font-bold mb-2">Country not found</h2>
+        </Card>
+    );
 
     return (
         <CountryForm initialData={countryViewModel.item?.payload} onSubmit={handleEdit} submitLabel="Update" />
