@@ -10,6 +10,7 @@ import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts"
 import { CountryRoutes } from "@/app/modules/country/routes/CountryRoutes.tsx"
 import UnauthorizedLayout from "../components/layout/UnauthorizedLayout.tsx"
 import { CityRoutes } from "../app/modules/city/routes/CityRoutes.tsx"
+import { CityTanstackRoutes } from "../app/modules/city-tanstack/routes/CityTanstackRoutes.tsx"
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -32,6 +33,7 @@ export const router = createBrowserRouter(
 
                     {CountryRoutes}
                     {CityRoutes}
+                    {CityTanstackRoutes}
 
                 </Route>
 

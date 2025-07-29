@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export class City {
-    public id?: number;
+    public id?: string | number;
     public nameEn: string;
     public nameBn: string;
     public nameAr: string;

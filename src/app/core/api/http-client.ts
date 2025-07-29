@@ -19,7 +19,7 @@ export function useHttpClient<T, TCreate, TUpdate>(apiBaseUrl: string) {
         return res.data;
     }
 
-    async function getById(id: string): Promise<Result<T>> {
+    async function getById(id: any): Promise<Result<T>> {
         const res = await baseApi.get(`${apiBaseUrl}/${id}`);
         return res.data;
     }
@@ -29,12 +29,12 @@ export function useHttpClient<T, TCreate, TUpdate>(apiBaseUrl: string) {
         return res.data;
     }
 
-    async function update(id: string, data: Omit<TUpdate, 'id'>): Promise<Result<T>> {
+    async function update(id: any, data: Omit<TUpdate, 'id'>): Promise<Result<T>> {
         const res = await baseApi.put(`${apiBaseUrl}/${id}`, data);
         return res.data;
     }
 
-    async function remove(id: string): Promise<Result<boolean>> {
+    async function remove(id: any): Promise<Result<boolean>> {
         const res = await baseApi.delete(`${apiBaseUrl}/${id}`);
         return res.data;
     }

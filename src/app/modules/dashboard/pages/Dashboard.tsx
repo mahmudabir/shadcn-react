@@ -34,6 +34,18 @@ export default function Dashboard() {
                     </Card>
                 </Link>
 
+                <Link to="/cities-tanstack">
+                    <Card className="hover:shadow-2xl">
+                        <CardHeader>
+                            <CardTitle>Cities (Tanstack)</CardTitle>
+                            <CardDescription>Go to cities list (Tanstack)</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Dashboard content goes here</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
                 <Card className="hover:shadow-2xl">
                     <CardHeader>
                         <CardTitle>Statistics</CardTitle>

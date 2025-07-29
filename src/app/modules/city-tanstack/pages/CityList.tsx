@@ -6,16 +6,12 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { CITY_PATHS } from "../routes/CityRoutes";
-import { useCities } from '../viewModels/use-cities';
+import { useCities } from "../viewModels/use-cities";
+import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes";
 
 const CityList = () => {
   const [search, setSearch] = useState("");
-  const cityViewModel = useCities();
-
-  useEffect(() => {
-    cityViewModel.getAll();
-  }, []);
+  const { getAll, remove } = useCities();
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -25,14 +21,14 @@ const CityList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await cityViewModel.remove(id);
-          if (cityViewModel.successFlags.remove) {
-            toastSuccess(cityViewModel.message || "Deleted successfully");
+          await remove.mutateAsync(id);
+          if (remove.isSuccess) {
+            toastSuccess(remove.data?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(cityViewModel.message || "Failed to delete city");
+            toastError(remove.data?.message || "Failed to delete city");
           }
-          await cityViewModel.getAll();
+          await getAll.refetch();
         } catch (err: any) {
           toastError(err.message || "Failed to delete city");
         }
@@ -54,7 +50,7 @@ const CityList = () => {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Cities</h1>
         <Button asChild>
-          <Link to={CITY_PATHS.create()}>Create New city</Link>
+          <Link to={CITY_TANSTACK_PATHS.create()}>Create New city (Tanstack)</Link>
         </Button>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
@@ -77,16 +73,16 @@ const CityList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cityViewModel.isLoading ? (
+          {getAll.isLoading ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !cityViewModel.items?.payload?.content?.length ? (
+          ) : !getAll.data?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            cityViewModel.items?.payload?.content?.map((city: any) => (
+            getAll.data?.payload?.content?.map((city: any) => (
               <TableRow key={city.id}>
                 <TableCell>{city.nameEn}</TableCell>
                 <TableCell>{city.nameBn}</TableCell>
@@ -95,10 +91,10 @@ const CityList = () => {
                 <TableCell>
                   <div className="flex gap-2 justify-end">
                     <Button size="sm" variant="outline" asChild>
-                      <Link to={CITY_PATHS.details(city.id.toString())}>Details</Link>
+                      <Link to={CITY_TANSTACK_PATHS.details(city.id.toString())}>Details</Link>
                     </Button>
                     <Button size="sm" variant="secondary" asChild>
-                      <Link to={CITY_PATHS.edit(city.id.toString())}>Edit</Link>
+                      <Link to={CITY_TANSTACK_PATHS.edit(city.id.toString())}>Edit</Link>
                     </Button>
                     <Button size="sm" variant="destructive" onClick={() => handleDelete(city.id.toString())}>
                       Delete

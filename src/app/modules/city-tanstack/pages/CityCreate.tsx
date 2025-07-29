@@ -1,21 +1,21 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate } from 'react-router-dom';
-import { useCities } from '../viewModels/use-cities.ts';
 import CountryForm from '../components/CityForm.tsx';
-import { City } from "../models/city.ts";
+import { City } from "../../city/models/city.ts";
+import { useCities } from "../viewModels/use-cities.ts";
 
 const CountryCreate = () => {
   const navigate = useNavigate();
-  const cityViewModel = useCities();
+  const { create } = useCities();
 
   const handleCreate = async (data: City) => {
     try {
-      await cityViewModel.create(data);
-      if (cityViewModel.successFlags.create) {
-        toastSuccess(cityViewModel.message || 'Added successfully');
+      await create.mutateAsync(data);
+      if (create.isSuccess) {
+        toastSuccess(create.data?.message || 'Added successfully');
         // navigate(COUNTRY_PATHS.index());
       } else {
-        toastError(cityViewModel.message || 'Failed to create city');
+        toastError(create.data?.message || 'Failed to create city');
       }
     } catch (err: any) {
       toastError(err.message || 'Failed to create city');
