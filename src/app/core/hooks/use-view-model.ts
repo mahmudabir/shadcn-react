@@ -63,7 +63,8 @@ const generateSelectOptions = <T>(items: T[], labelKey: keyof T, valueKey: keyof
 };
 
 /* Hook */
-export function useViewModel<T extends { id?: any }, TCreate, TUpdate>(apiBaseUrl: string) {
+export function useViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(apiBaseUrl: string) {
+
   const [state, dispatch] = useReducer(viewModelReducer<T>, {
     items: null,
     item: null,

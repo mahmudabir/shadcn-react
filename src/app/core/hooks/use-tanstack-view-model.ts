@@ -3,7 +3,7 @@ import { useHttpClient } from '../api/use-http-client';
 import { PagedData } from '../models/pagination';
 import { Result } from '../models/result';
 
-export interface TanstackViewModelOptions<T, TCreate, TUpdate> {
+export interface TanstackViewModelOptions<T, TCreate = T, TUpdate = T> {
   query?: {
     getAll?: UseQueryOptions<Result<PagedData<T>>, unknown, Result<PagedData<T>>, any[]>;
     getById?: (id?: any) => UseQueryOptions<Result<T>, unknown, Result<T>, any[]>;
@@ -15,7 +15,7 @@ export interface TanstackViewModelOptions<T, TCreate, TUpdate> {
   };
 }
 
-export function useTanstackViewModel<T extends { id?: any }, TCreate, TUpdate>(
+export function useTanstackViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(
   apiBaseUrl: string,
   options: TanstackViewModelOptions<T, TCreate, TUpdate> = {}
 ) {

@@ -2,7 +2,8 @@ import { PagedData } from "../models/pagination";
 import { Result } from "../models/result";
 import baseApi from "./base-api";
 
-export function useHttpClient<T, TCreate, TUpdate>(apiBaseUrl: string) {
+export function useHttpClient<T, TCreate = T, TUpdate = T>(apiBaseUrl: string) {
+
 
     async function getAll(props?: { skipPreloader?: boolean; asPage?: boolean; asDropdown?: boolean; }): Promise<Result<PagedData<T>>> {
 

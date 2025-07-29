@@ -2,14 +2,14 @@ import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/ho
 import { City } from "../../city/models/city";
 
 // MVVM ViewModel for City using Tanstack Query
-export function useCities(options: TanstackViewModelOptions<City, City, City> = {}) {
+export function useCities(options: TanstackViewModelOptions<City> = {}) {
 
   const apiBaseUrl = '/cities';
 
-  return useTanstackViewModel<City, City, City>(apiBaseUrl, {
+  return useTanstackViewModel<City>(apiBaseUrl, {
     query: {
       getAll: { staleTime: 10_000, queryKey: [apiBaseUrl] },
-      getById: (id) => ({ staleTime: 10_000, enabled: !!id, queryKey: [apiBaseUrl, '/' , id] }),
+      getById: (id) => ({ staleTime: 10_000, enabled: !!id, queryKey: [apiBaseUrl, '/', id] }),
     },
   });
 }
