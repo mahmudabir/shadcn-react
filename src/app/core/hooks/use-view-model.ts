@@ -1,66 +1,122 @@
-import { useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 import { useHttpClient } from "../api/http-client";
 import { PagedData } from "../models/pagination";
 import { Result } from "../models/result";
 import { SelectOption } from "../models/select-option";
 
+enum ViewModelActionType {
+    SetItems = "SET_ITEMS",
+    SetItem = "SET_ITEM",
+    SetSelectItems = "SET_SELECT_ITEMS",
+    SetLoading = "SET_LOADING",
+    SetMessage = "SET_MESSAGE",
+    Reset = "RESET",
+}
+
+type State<T> = {
+    items: Result<PagedData<T>> | null;
+    item: Result<T> | null;
+    selectItems: SelectOption[];
+    isLoading: boolean;
+    message: string | null;
+};
+
+type Action<T> = | { type: ViewModelActionType; payload?: any };
+
+function reducer<T>(state: State<T>, action: Action<T>): State<T> {
+    switch (action.type) {
+        case ViewModelActionType.SetItems:
+            return { ...state, items: action.payload };
+        case ViewModelActionType.SetItem:
+            return { ...state, item: action.payload };
+        case ViewModelActionType.SetSelectItems:
+            return { ...state, selectItems: action.payload };
+        case ViewModelActionType.SetLoading:
+            return { ...state, isLoading: action.payload };
+        case ViewModelActionType.SetMessage:
+            return { ...state, message: action.payload };
+        case ViewModelActionType.Reset:
+            return { ...state, item: null, message: null };
+        default:
+            return state;
+    }
+}
+
 /**
  * Generic CRUD ViewModel hook for any entity API
  */
 export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>>(apiBaseUrl) {
-    const [items, setItems] = useState<Result<PagedData<T>> | null>(null);
-    const [item, setItem] = useState<Result<T> | null>(null);
-    const [selectItems, setSelectItems] = useState<SelectOption[]>([]);
-
-    const [isLoading, setIsLoading] = useState(false);
+    const [state, dispatch] = useReducer(reducer<T>, {
+        items: null,
+        item: null,
+        selectItems: [],
+        isLoading: false,
+        message: null,
+    });
 
     const isCreateSuccess = useRef(false);
     const isUpdateSuccess = useRef(false);
     const isRemoveSuccess = useRef(false);
 
-    const [message, setMessage] = useState<string | null>(null);
-
     const httpClient = useHttpClient<T, TCreate, TUpdate>(apiBaseUrl);
 
     const getAll = async () => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
         try {
             const res = await httpClient.getAll();
             if (res.isSuccess && res.payload) {
-                setItems(res);
+                dispatch({ type: ViewModelActionType.SetItems, payload: res });
             } else {
-                setMessage(res.message || "Failed to fetch items");
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to fetch items" });
             }
         } catch (e: any) {
-            setMessage(e.message || "Unknown error");
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
         }
     };
 
     const getById = async (id: string) => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
         try {
             const res = await httpClient.getById(id);
             if (res.isSuccess && res.payload) {
-                setItem(res);
+                dispatch({ type: ViewModelActionType.SetItem, payload: res });
             } else {
-                setMessage(res.message || "Failed to fetch item");
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to fetch item" });
             }
         } catch (e: any) {
-            setMessage(e.message || "Unknown error");
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
         }
     };
 
     const getSelectItems = async (labelPropertyName: string, valuePropertyName: string, placeholder?: string) => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
 
-        const generateSelectItems = (data: T[] = []): SelectOption[] => {
+        try {
+            if (state.items) {
+                dispatch({ type: ViewModelActionType.SetSelectItems, payload: generateSelectItems(state.items.payload.content) });
+                return;
+            }
+            const res = await httpClient.getAll({ skipPreloader: true, asDropdown: true });
+            if (res.isSuccess && res.payload) {
+                dispatch({ type: ViewModelActionType.SetItems, payload: res });
+                dispatch({ type: ViewModelActionType.SetSelectItems, payload: generateSelectItems(res?.payload?.content) });
+            } else {
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to fetch items" });
+            }
+        } catch (e: any) {
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
+        } finally {
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
+        }
+
+        function generateSelectItems(data: T[] = []): SelectOption[] {
             return [
                 {
                     label: placeholder || 'Select any item',
@@ -70,94 +126,72 @@ export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>
                     label: item[labelPropertyName],
                     value: String(item[valuePropertyName]),
                 })) ?? [])
-            ];
+            ]
         };
-
-        try {
-            if (items) {
-                setSelectItems(generateSelectItems(items.payload.content));
-                return;
-            }
-            const res = await httpClient.getAll({ skipPreloader: true, asDropdown: true });
-            if (res.isSuccess && res.payload) {
-                setItems(res);
-                setSelectItems(generateSelectItems(res?.payload?.content));
-            } else {
-                setMessage(res.message || "Failed to fetch items");
-            }
-        } catch (e: any) {
-            setMessage(e.message || "Unknown error");
-        } finally {
-            setIsLoading(false);
-        }
     };
 
     const create = async (data: TCreate) => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
         try {
             const res = await httpClient.create(data);
             if (res.isSuccess) {
-                setItem(res);
+                dispatch({ type: ViewModelActionType.SetItem, payload: res });
                 isCreateSuccess.current = true;
             } else {
-                setMessage(res.message || "Failed to create item");
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to create item" });
                 isCreateSuccess.current = false;
             }
         } catch (e: any) {
-            setMessage(e.message || "Unknown error");
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
             isCreateSuccess.current = false;
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
         }
     };
 
     const update = async (id: string, data: TUpdate) => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
         try {
             const res = await httpClient.update(id, data);
             if (res.isSuccess) {
-                setItem(res);
+                dispatch({ type: ViewModelActionType.SetItem, payload: res });
                 isUpdateSuccess.current = true;
             } else {
-                setMessage(res.message || "Failed to update item");
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to update item" });
                 isUpdateSuccess.current = false;
             }
         } catch (e: any) {
-            setMessage(e.message || "Unknown error");
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
             isUpdateSuccess.current = false;
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
         }
     };
 
     const remove = async (id: string) => {
-        setIsLoading(true);
-        setMessage(null);
+        dispatch({ type: ViewModelActionType.SetLoading, payload: true });
+        dispatch({ type: ViewModelActionType.SetMessage, payload: null });
         try {
             const res = await httpClient.remove(id);
             if (res.isSuccess) {
-                setItem(null);
+                dispatch({ type: ViewModelActionType.SetItem, payload: null });
                 isRemoveSuccess.current = true;
             } else {
-                setMessage(res.message || "Failed to delete item");
+                dispatch({ type: ViewModelActionType.SetMessage, payload: res.message || "Failed to delete item" });
                 isRemoveSuccess.current = false;
             }
         } catch (e: any) {
-            setMessage(e.message || "Unknown error");
+            dispatch({ type: ViewModelActionType.SetMessage, payload: e.message || "Unknown error" });
             isRemoveSuccess.current = false;
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ViewModelActionType.SetLoading, payload: false });
         }
     };
 
     return {
-        items,
-        item,
-        selectItems,
-        isLoading,
-        message,
+        ...state,
         getAll,
         getById,
         getSelectItems,
@@ -167,7 +201,7 @@ export function useViewModel<T, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>
         isUpdateSuccess,
         remove,
         isRemoveSuccess,
-        setItem,
-        setItems,
+        setItem: (item: Result<T> | null) => dispatch({ type: ViewModelActionType.SetItem, payload: item }),
+        setItems: (items: Result<PagedData<T>> | null) => dispatch({ type: ViewModelActionType.SetItems, payload: items }),
     };
 }
