@@ -29,7 +29,7 @@ export function useHttpClient<T, TCreate, TUpdate>(apiBaseUrl: string) {
         return res.data;
     }
 
-    async function update(id: any, data: Omit<TUpdate, 'id'>): Promise<Result<T>> {
+    async function update(id: any, data: TUpdate): Promise<Result<T>> {
         const res = await baseApi.put(`${apiBaseUrl}/${id}`, data);
         return res.data;
     }

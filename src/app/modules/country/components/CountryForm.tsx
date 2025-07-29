@@ -19,10 +19,6 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
 
-    // Define the type for form data using Zod schema
-    // This ensures that the form data adheres to the structure defined in the Country schema
-    type CountryData = z.infer<typeof Country.schema>;
-
     // Initialize form with Zod schema validation
     const form = useForm({
         resolver: zodResolver(Country.schema),

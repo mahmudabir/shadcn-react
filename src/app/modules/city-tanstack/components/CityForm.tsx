@@ -3,15 +3,14 @@ import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import z from "zod"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { SelectOption } from "../../../core/models/select-option"
-import { useCountries } from "../../country/viewModels/use-countries"
 import { City } from "../../city/models/city"
+import { useCountries } from "../../country/viewModels/use-countries"
 
 
 // Main CountryForm component
@@ -19,10 +18,6 @@ import { City } from "../../city/models/city"
 const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }) => {
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
     const countryViewModel = useCountries();
-
-    // Define the type for form data using Zod schema
-    // This ensures that the form data adheres to the structure defined in the Country schema
-    type CityData = z.infer<typeof City.schema>;
 
     // Initialize form with Zod schema validation
     const form = useForm({
@@ -113,7 +108,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                 onSubmit={form.handleSubmit(() => confirmPopup(confirmationOptions))}>
                 <div className="flex justify-between mb-4 border-b">
                     <h2 className="text-2xl font-semibold pb-2">
-                        🌍 {submitLabel} City
+                        🌍 {submitLabel} City (Tanstack)
                     </h2>
                     <Switch
                         className="mb-4"

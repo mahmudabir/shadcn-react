@@ -4,18 +4,18 @@ import { useCities } from '../viewModels/use-cities.ts';
 import CountryForm from '../components/CityForm.tsx';
 import { City } from "../models/city.ts";
 
-const CountryCreate = () => {
+const CityCreate = () => {
   const navigate = useNavigate();
   const cityViewModel = useCities();
 
   const handleCreate = async (data: City) => {
     try {
-      await cityViewModel.create(data);
-      if (cityViewModel.successFlags.create) {
-        toastSuccess(cityViewModel.message || 'Added successfully');
+      const result = await cityViewModel.create(data);
+      if (result?.isSuccess) {
+        toastSuccess(result?.message || 'Added successfully');
         // navigate(COUNTRY_PATHS.index());
       } else {
-        toastError(cityViewModel.message || 'Failed to create city');
+        toastError(result?.message || 'Failed to create city');
       }
     } catch (err: any) {
       toastError(err.message || 'Failed to create city');
@@ -27,4 +27,4 @@ const CountryCreate = () => {
   );
 };
 
-export default CountryCreate;
+export default CityCreate;

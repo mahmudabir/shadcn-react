@@ -25,12 +25,12 @@ const CityList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await cityViewModel.remove(id);
-          if (cityViewModel.successFlags.remove) {
-            toastSuccess(cityViewModel.message || "Deleted successfully");
+          const result = await cityViewModel.remove(id);
+          if (result?.isSuccess) {
+            toastSuccess(result.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(cityViewModel.message || "Failed to delete city");
+            toastError(result.message || "Failed to delete city");
           }
           await cityViewModel.getAll();
         } catch (err: any) {

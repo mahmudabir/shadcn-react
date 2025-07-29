@@ -13,5 +13,5 @@ export function useCities() {
   //   setCustomState,
   // };
 
-  return useViewModel<City>("/cities");
+  return useViewModel<City, City, City>("/cities");
 }

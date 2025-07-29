@@ -19,15 +19,15 @@ const CountryEdit = () => {
     const handleEdit = async (data: Country) => {
         if (!id || !data.id) return;
         try {
-            await countryViewModel.update(id, data);
-            if (countryViewModel.isUpdateSuccess.current) {
-                toastSuccess(countryViewModel.message || 'Updated successfully');
+            const result = await countryViewModel.update(id, data);
+            if (result?.isSuccess) {
+                toastSuccess(result?.message || 'Updated successfully');
                 // navigate(COUNTRY_PATHS.index());
             } else {
-                toastError(countryViewModel.message || 'Failed to update country');
+                toastError(result?.message || 'Failed to update country');
             }
         } catch (err: any) {
-            toastError(err.message || 'Failed to update country');
+            toastError(err?.message || 'Failed to update country');
         }
     };
 

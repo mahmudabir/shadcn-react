@@ -61,7 +61,7 @@ baseApi.interceptors.response.use(
             preloaderHandler.decrement();
         }
         if (response && !response.data.isSuccess) {
-            toastError(getErrorMessages(response.data), response.data.message || 'Failed to perform action');
+            toastError(getErrorMessages(response.data), response.data?.message || 'Failed to perform action');
         }
         return response;
     },

@@ -3,7 +3,6 @@ import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import z from "zod"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
@@ -19,10 +18,6 @@ import { City } from "../models/city"
 const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }) => {
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
     const countryViewModel = useCountries();
-
-    // Define the type for form data using Zod schema
-    // This ensures that the form data adheres to the structure defined in the Country schema
-    type CityData = z.infer<typeof City.schema>;
 
     // Initialize form with Zod schema validation
     const form = useForm({

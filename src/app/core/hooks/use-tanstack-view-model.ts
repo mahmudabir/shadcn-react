@@ -1,5 +1,5 @@
 import { useMutation, UseMutationOptions, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { useHttpClient } from '../api/http-client';
+import { useHttpClient } from '../api/use-http-client';
 import { PagedData } from '../models/pagination';
 import { Result } from '../models/result';
 
@@ -15,7 +15,7 @@ export interface TanstackViewModelOptions<T, TCreate, TUpdate> {
   };
 }
 
-export function useTanstackViewModel<T extends { id?: string | number }, TCreate = Omit<T, 'id'>, TUpdate = Omit<T, 'id'>>(
+export function useTanstackViewModel<T extends { id?: any }, TCreate, TUpdate>(
   apiBaseUrl: string,
   options: TanstackViewModelOptions<T, TCreate, TUpdate> = {}
 ) {
@@ -42,18 +42,20 @@ export function useTanstackViewModel<T extends { id?: string | number }, TCreate
     ...options.mutation?.create,
   });
 
-  const update = useMutation<Result<T>, unknown, TUpdate & { id?: string | number }>({
-    mutationFn: ({ id, ...data }) => api.update(id, data),
+  const update = useMutation<Result<T>, unknown, TUpdate & { id?: any }>({
+    mutationFn: (data) => api.update(data.id, data),
     onSuccess: (res) => {
-      const id = res.payload.id;
-      queryClient.invalidateQueries({ queryKey: [apiBaseUrl] });
-      queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id] });
+      const id = res.payload?.id;
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: [apiBaseUrl] });
+        queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id] });
+      }
     },
     ...options.mutation?.update,
   });
 
   const remove = useMutation<Result<boolean>, unknown, string>({
-    mutationFn: (id: string | number) => api.remove(id),
+    mutationFn: (id: any) => api.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [apiBaseUrl] }),
     ...options.mutation?.remove,
   });

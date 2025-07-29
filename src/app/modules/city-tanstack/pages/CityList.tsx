@@ -30,7 +30,7 @@ const CityList = () => {
           }
           await getAll.refetch();
         } catch (err: any) {
-          toastError(err.message || "Failed to delete city");
+          toastError(err?.message || "Failed to delete city");
         }
       },
     });
@@ -48,9 +48,9 @@ const CityList = () => {
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Cities</h1>
+        <h1 className="text-2xl font-bold">Cities (Tanstack)</h1>
         <Button asChild>
-          <Link to={CITY_TANSTACK_PATHS.create()}>Create New city (Tanstack)</Link>
+          <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>
         </Button>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">

@@ -6,7 +6,7 @@ import type { City } from '../models/city.ts';
 import { useCities } from '../viewModels/use-cities.ts';
 import { Card } from "../../../../components/ui/card.tsx";
 
-const cityEdit = () => {
+const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const cityViewModel = useCities();
@@ -19,12 +19,12 @@ const cityEdit = () => {
     const handleEdit = async (data: City) => {
         if (!id || !data.id) return;
         try {
-            await cityViewModel.update(id, data);
-            if (cityViewModel.successFlags.update) {
-                toastSuccess(cityViewModel.message || 'Updated successfully');
+            const result = await cityViewModel.update(id, data);
+            if (result?.isSuccess) {
+                toastSuccess(result?.message || 'Updated successfully');
                 // navigate(city_PATHS.index());
             } else {
-                toastError(cityViewModel.message || 'Failed to update city');
+                toastError(result?.message || 'Failed to update city');
             }
         } catch (err: any) {
             toastError(err.message || 'Failed to update city');
@@ -46,4 +46,4 @@ const cityEdit = () => {
     );
 };
 
-export default cityEdit;
+export default CityEdit;

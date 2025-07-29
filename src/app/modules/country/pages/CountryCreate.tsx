@@ -10,15 +10,15 @@ const CountryCreate = () => {
 
   const handleCreate = async (data: Country) => {
     try {
-      await countryViewModel.create(data);
-      if (countryViewModel.isCreateSuccess.current) {
-        toastSuccess(countryViewModel.message || 'Added successfully');
+      const result = await countryViewModel.create(data);
+      if (result?.isSuccess) {
+        toastSuccess(result?.message || 'Added successfully');
         // navigate(COUNTRY_PATHS.index());
       } else {
-        toastError(countryViewModel.message || 'Failed to create country');
+        toastError(result?.message || 'Failed to create country');
       }
     } catch (err: any) {
-      toastError(err.message || 'Failed to create country');
+      toastError(err?.message || 'Failed to create country');
     }
   };
 

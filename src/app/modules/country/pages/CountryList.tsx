@@ -25,16 +25,16 @@ const CountryList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await countryViewModel.remove(id);
-          if (countryViewModel.isRemoveSuccess.current) {
-            toastSuccess(countryViewModel.message || "Deleted successfully");
+          const result = await countryViewModel.remove(id);
+          if (result?.isSuccess) {
+            toastSuccess(result?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(countryViewModel.message || "Failed to delete country");
+            toastError(result?.message || "Failed to delete country");
           }
           await countryViewModel.getAll();
         } catch (err: any) {
-          toastError(err.message || "Failed to delete country");
+          toastError(err?.message || "Failed to delete country");
         }
       },
     });
