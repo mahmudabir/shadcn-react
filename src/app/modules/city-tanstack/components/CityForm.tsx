@@ -108,7 +108,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                 onSubmit={form.handleSubmit(() => confirmPopup(confirmationOptions))}>
                 <div className="flex justify-between mb-4 border-b">
                     <h2 className="text-2xl font-semibold pb-2">
-                        🌍 {submitLabel} City (Tanstack)
+                        🏙️ {submitLabel} City (Tanstack)
                     </h2>
                     <Switch
                         className="mb-4"

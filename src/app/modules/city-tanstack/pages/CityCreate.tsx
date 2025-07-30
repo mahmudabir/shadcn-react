@@ -1,8 +1,8 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate } from 'react-router-dom';
 import CountryForm from '../components/CityForm.tsx';
-import { City } from "../../city/models/city.ts";
 import { useCities } from "../viewModels/use-cities.ts";
+import { City } from "@/app/modules/city-tanstack/models/city.ts";
 
 const CityCreate = () => {
   const navigate = useNavigate();

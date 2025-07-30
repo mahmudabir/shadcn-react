@@ -4,6 +4,7 @@ import CityDetails from "../pages/CityDetails";
 import CityEdit from "../pages/CityEdit";
 import CityList from "../pages/CityList";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const CITY_PATHS = {
     index: () => '/cities',
     create: () => '/cities/create',

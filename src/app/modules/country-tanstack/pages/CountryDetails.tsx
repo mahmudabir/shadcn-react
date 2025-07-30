@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams } from "react-router-dom";
-import { useCities } from "../viewModels/use-cities";
-import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes";
+import { useCountries } from "../viewModels/use-countries.ts";
+import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
 
-const CityDetails = () => {
+const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { getById } = useCities();
+  const { getById } = useCountries();
   const { data, isLoading, isSuccess } = getById(id);
 
   if (isLoading) return (
@@ -15,13 +15,13 @@ const CityDetails = () => {
 
   if (!isSuccess) return (
     <Card className="p-6">
-      <h2 className="text-xl font-bold mb-2">City not found (Tanstack)</h2>
+      <h2 className="text-xl font-bold mb-2">Country not found (Tanstack)</h2>
     </Card>
   );
 
   return (
     <Card className="max-w-xl mx-auto p-8">
-      <h2 className="text-2xl font-bold mb-6">City Details (Tanstack)</h2>
+      <h2 className="text-2xl font-bold mb-6">Country Details (Tanstack)</h2>
       <div className="grid grid-cols-1 gap-4 mb-6">
         <div>
           <span className="font-semibold">Name (English): </span>
@@ -42,14 +42,14 @@ const CityDetails = () => {
       </div>
       <div className="flex gap-2">
         <Button asChild variant="secondary">
-          <Link to={CITY_TANSTACK_PATHS.edit(data?.payload?.id.toString())}>Edit</Link>
+          <Link to={COUNTRY_TANSTACK_PATHS.edit(data?.payload?.id.toString())}>Edit</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link to={CITY_TANSTACK_PATHS.index()}>Back to List</Link>
+          <Link to={COUNTRY_TANSTACK_PATHS.index()}>Back to List</Link>
         </Button>
       </div>
     </Card>
   );
 };
 
-export default CityDetails;
+export default CountryDetails;

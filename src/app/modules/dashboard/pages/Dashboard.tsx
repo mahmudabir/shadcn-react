@@ -34,6 +34,28 @@ export default function Dashboard() {
                     </Card>
                 </Link>
 
+                <Card className="hover:shadow-2xl">
+                    <CardHeader>
+                        <CardTitle>Statistics</CardTitle>
+                        <CardDescription>Your account overview</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p>Dashboard content goes here</p>
+                    </CardContent>
+                </Card>
+
+                <Link to="/countries-tanstack">
+                    <Card className="hover:shadow-2xl">
+                        <CardHeader>
+                            <CardTitle>Countries (Tanstack)</CardTitle>
+                            <CardDescription>Go to countries list (Tanstack)</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Dashboard content goes here</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
                 <Link to="/cities-tanstack">
                     <Card className="hover:shadow-2xl">
                         <CardHeader>
@@ -73,6 +95,16 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent>
                         <p>Notifications go here</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-2xl">
+                    <CardHeader>
+                        <CardTitle>Statistics</CardTitle>
+                        <CardDescription>Your account overview</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p>Dashboard content goes here</p>
                     </CardContent>
                 </Card>
             </div>

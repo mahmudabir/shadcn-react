@@ -1,28 +1,25 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import CountryForm from '../components/CountryForm.tsx';
-import { useCountries } from '../viewModels/use-countries.ts';
 import { Card } from "../../../../components/ui/card.tsx";
-import { Country } from "@/app/modules/country-tanstack/models/country.ts";
+import CountryForm from '../components/CountryForm.tsx';
+import { Country } from "../models/country.ts";
+import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
+import { useCountries } from "../viewModels/use-countries.ts";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const countryViewModel = useCountries();
+    const { update, getById } = useCountries();
 
-    useEffect(() => {
-        if (!id) return;
-        countryViewModel.getById(id);
-    }, [id]);
+    const { data, isLoading, error, isSuccess } = getById(id);
 
     const handleEdit = async (data: Country) => {
         if (!id || !data.id) return;
         try {
-            const result = await countryViewModel.update(id, data);
-            if (result?.isSuccess) {
+            const result = await update.mutateAsync({id, ...data});
+            if (update?.isSuccess || result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
-                // navigate(COUNTRY_PATHS.index());
+                navigate(COUNTRY_TANSTACK_PATHS.index());
             } else {
                 toastError(result?.message || 'Failed to update country');
             }
@@ -31,18 +28,18 @@ const CountryEdit = () => {
         }
     };
 
-    if (countryViewModel.isLoading) return (
+    if (isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>
     );
 
-    if (!countryViewModel.item?.isSuccess) return (
+    if (!isSuccess) return (
         <Card className="p-6">
-            <h2 className="text-xl font-bold mb-2">Country not found</h2>
+            <h2 className="text-xl font-bold mb-2">Country not found (Tanstack)</h2>
         </Card>
     );
 
     return (
-        <CountryForm initialData={countryViewModel.item?.payload} onSubmit={handleEdit} submitLabel="Update" />
+        <CountryForm initialData={data?.payload} onSubmit={handleEdit} submitLabel="Update" />
     );
 };
 
