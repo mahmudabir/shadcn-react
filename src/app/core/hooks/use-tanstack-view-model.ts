@@ -11,8 +11,18 @@ export interface TanstackViewModelOptions<
 > {
   queryClient: QueryClient,
   query?: {
-    getAll?: (query?: TQuery) => UseQueryOptions<Result<PagedData<T>>, unknown, Result<PagedData<T>>, any[]>;
-    getById?: (id?: any) => UseQueryOptions<Result<T>, unknown, Result<T>, any[]>;
+    getAll?: (query?: TQuery) => UseQueryOptions<
+      Result<PagedData<T>>,
+      unknown,
+      Result<PagedData<T>>,
+      any[]
+    > & { onSuccess?: (data: Result<PagedData<T>>) => void; };
+    getById?: (id?: any) => UseQueryOptions<
+      Result<T>,
+      unknown,
+      Result<T>,
+      any[]
+    > & { onSuccess?: (data: Result<T>) => void; };
   };
   mutation?: {
     create?: UseMutationOptions<Result<T>, unknown, TCreate>;
@@ -39,23 +49,39 @@ export function useTanstackViewModel<
     retry: 3,
   };
 
-  const getAll = (query?: TQuery) => useQuery<Result<PagedData<T>>, unknown>({
-    queryKey: [apiBaseUrl],
-    queryFn: () => api.getAll(query),
-    ...defaultQueryOptions,
-    ...(options?.query?.getAll ? options?.query.getAll(query) : {}),
-    // onSuccess: () => {
-    //   console.log("getAll success:");
-    // }
-  });
+  const getAll = (query?: TQuery) => {
+    const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };
+    return useQuery<Result<PagedData<T>>, unknown>({
+      queryKey: [apiBaseUrl],
+      queryFn: async () => {
+        const result = await api.getAll(query);
+        if (customOptions.onSuccess) {
+          customOptions.onSuccess(result);
+        }
+        return result;
+      },
+      enabled: true,
+      ...defaultQueryOptions,
+      ...(options?.query?.getAll ? options?.query.getAll(query) : {}),
+    });
+  }
 
-  const getById = (id: string) => useQuery<Result<T>, unknown>({
-    queryKey: [apiBaseUrl, id],
-    queryFn: () => api.getById(id),
-    enabled: !!id,
-    ...defaultQueryOptions,
-    ...(options?.query?.getById ? options?.query.getById(id) : {}),
-  });
+  const getById = (id: string) => {
+    const customOptions = options?.query?.getById?.(id) ?? { onSuccess: (data: Result<T>) => { } };
+    return useQuery<Result<T>, unknown>({
+      queryKey: [apiBaseUrl, id],
+      queryFn: async () => {
+        const result = await api.getById(id);
+        if (customOptions.onSuccess) {
+          customOptions.onSuccess(result);
+        }
+        return result;
+      },
+      enabled: !!id,
+      ...defaultQueryOptions,
+      ...(options?.query?.getById ? options?.query.getById(id) : {}),
+    })
+  };
 
   const create = useMutation<Result<T>, unknown, TCreate>({
     mutationFn: (data) => api.create(data),

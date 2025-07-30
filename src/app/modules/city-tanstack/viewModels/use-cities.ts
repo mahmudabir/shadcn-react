@@ -16,7 +16,7 @@ export function useCities(options?: TanstackViewModelOptions<City, any>) {
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data) => {
-          console.log("getAll->onSuccess: ", data);
+          // console.log("getAll->onSuccess: ", data);
         }
       }),
       getById: (id) => ({
@@ -24,7 +24,7 @@ export function useCities(options?: TanstackViewModelOptions<City, any>) {
         queryKey: [apiBaseUrl, id],
         enabled: !!id,
         onSuccess: (data) => {
-          console.log("getById->onSuccess: ", data);
+          // console.log("getById->onSuccess: ", data);
         }
       }),
     },
