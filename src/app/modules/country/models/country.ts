@@ -1,5 +1,5 @@
 import z from "zod";
-import { City } from "../../city/models/city";
+import { City } from "../../city-tanstack/models/city";
 
 export class Country {
   public id?: number;

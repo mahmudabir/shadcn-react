@@ -3,19 +3,21 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { useCities } from "../viewModels/use-cities";
 import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes";
+import { useCities } from "../viewModels/use-cities";
 
 const CityList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove } = useCities();
+  
+  const result = getAll();
 
   const handleDelete = async (id: string) => {
     confirmPopup({
-      title: `Delete?`,
+      title: `Delete`,
       description: `Are you sure you want to delete this city?`,
       cancelText: "Cancel",
       confirmText: `Delete`,
@@ -28,7 +30,7 @@ const CityList = () => {
           } else {
             toastError(remove.data?.message || "Failed to delete city");
           }
-          await getAll.refetch();
+          await result.refetch({});
         } catch (err: any) {
           toastError(err?.message || "Failed to delete city");
         }
@@ -49,9 +51,19 @@ const CityList = () => {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Cities (Tanstack)</h1>
-        <Button asChild>
-          <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>
-        </Button>
+
+        <div className="flex gap-2">
+          <Button onClick={() => {
+            if (result.isStale) {
+              result.refetch();
+            }
+          }}>
+            Refresh
+          </Button>
+          <Button asChild>
+            <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>
+          </Button>
+        </div>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
         <Input
@@ -73,16 +85,16 @@ const CityList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {getAll.isLoading ? (
+          {result.isLoading ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !getAll.data?.payload?.content?.length ? (
+          ) : !result.data?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            getAll.data?.payload?.content?.map((city: any) => (
+            result.data?.payload?.content?.map((city: any) => (
               <TableRow key={city.id}>
                 <TableCell>{city.nameEn}</TableCell>
                 <TableCell>{city.nameBn}</TableCell>

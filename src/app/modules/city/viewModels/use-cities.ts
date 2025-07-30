@@ -1,5 +1,5 @@
 import { useViewModel } from "../../../core/hooks/use-view-model";
-import { City } from "../models/city";
+import { City } from "../../city-tanstack/models/city";
 
 // MVVM ViewModel for Country
 export function useCities() {
@@ -13,5 +13,5 @@ export function useCities() {
   //   setCustomState,
   // };
 
-  return useViewModel<City>("/cities");
+  return useViewModel<City, any>("/cities");
 }

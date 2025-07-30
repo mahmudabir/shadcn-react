@@ -9,8 +9,8 @@ import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { SelectOption } from "../../../core/models/select-option"
-import { City } from "../../city/models/city"
 import { useCountries } from "../../country/viewModels/use-countries"
+import { City } from "../models/city"
 
 
 // Main CountryForm component

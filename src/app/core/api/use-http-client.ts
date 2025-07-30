@@ -1,17 +1,21 @@
-import { PagedData } from "../models/pagination";
+import { PagedData, Pagination } from "../models/pagination";
 import { Result } from "../models/result";
 import baseApi from "./base-api";
 
-export function useHttpClient<T, TCreate = T, TUpdate = T>(apiBaseUrl: string) {
+export function useHttpClient<
+    T,
+    TQuery extends Pagination & { skipPreloader?: boolean },
+    TCreate = T,
+    TUpdate = T
+>(
+    apiBaseUrl: string
+) {
 
 
-    async function getAll(props?: { skipPreloader?: boolean; asPage?: boolean; asDropdown?: boolean; }): Promise<Result<PagedData<T>>> {
 
-        // const { skipPreloader = false, asPage = false, asDropdown = false } = props;
+    async function getAll(props?: TQuery): Promise<Result<PagedData<T>>> {
 
         const query: Record<string, any> = { asPage: props?.asPage, asDropdown: props?.asDropdown };
-        // if (typeof asPage !== 'undefined') query.asPage = asPage;
-        // if (typeof asDropdown !== 'undefined') query.asDropdown = asDropdown;
 
         const res = await baseApi.get(apiBaseUrl, {
             skipPreloader: props?.skipPreloader || false,

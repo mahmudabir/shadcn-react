@@ -1,10 +1,10 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import CityForm from '../components/CityForm.tsx';
-import type { City } from '../models/city.ts';
-import { useCities } from '../viewModels/use-cities.ts';
 import { Card } from "../../../../components/ui/card.tsx";
+import { City } from "../../city-tanstack/models/city.ts";
+import CityForm from '../components/CityForm.tsx';
+import { useCities } from '../viewModels/use-cities.ts';
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();

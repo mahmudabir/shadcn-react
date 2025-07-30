@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface PreloaderContextType {
   visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>,
   increment: () => void;
   decrement: () => void;
   setManual: (manual: boolean) => void;
@@ -59,7 +60,7 @@ export const PreloaderProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <PreloaderContext.Provider value={{ visible, increment, decrement, setManual, show, hide, isManual }}>
+    <PreloaderContext.Provider value={{ visible, setVisible, increment, decrement, setManual, show, hide, isManual }}>
       {children}
     </PreloaderContext.Provider>
   );

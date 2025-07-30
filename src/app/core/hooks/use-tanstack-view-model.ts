@@ -1,11 +1,17 @@
-import { useMutation, UseMutationOptions, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { QueryClient, useMutation, UseMutationOptions, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { useHttpClient } from '../api/use-http-client';
-import { PagedData } from '../models/pagination';
+import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
 
-export interface TanstackViewModelOptions<T, TCreate = T, TUpdate = T> {
+export interface TanstackViewModelOptions<
+  T,
+  TQuery extends Pagination & { skipPreloader?: boolean },
+  TCreate = T,
+  TUpdate = T
+> {
+  queryClient: QueryClient,
   query?: {
-    getAll?: UseQueryOptions<Result<PagedData<T>>, unknown, Result<PagedData<T>>, any[]>;
+    getAll?: (query?: TQuery) => UseQueryOptions<Result<PagedData<T>>, unknown, Result<PagedData<T>>, any[]>;
     getById?: (id?: any) => UseQueryOptions<Result<T>, unknown, Result<T>, any[]>;
   };
   mutation?: {
@@ -15,49 +21,55 @@ export interface TanstackViewModelOptions<T, TCreate = T, TUpdate = T> {
   };
 }
 
-export function useTanstackViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(
+export function useTanstackViewModel<
+  T extends { id?: any },
+  TQuery extends Pagination & { skipPreloader?: boolean },
+  TCreate = T,
+  TUpdate = T
+>(
   apiBaseUrl: string,
-  options: TanstackViewModelOptions<T, TCreate, TUpdate> = {}
+  options?: TanstackViewModelOptions<T, TQuery, TCreate, TUpdate>
 ) {
-  const queryClient = useQueryClient();
-  const api = useHttpClient<T, TCreate, TUpdate>(apiBaseUrl);
 
-  const getAll = useQuery<Result<PagedData<T>>, unknown>({
+  const queryClient = options.queryClient ?? useQueryClient();
+  const api = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
+
+  const defaultQueryOptions: Partial<UseQueryOptions<any, unknown, any, any[]>> = {
+    refetchOnWindowFocus: false,
+    retry: 3,
+  };
+
+  const getAll = (query?: TQuery) => useQuery<Result<PagedData<T>>, unknown>({
     queryKey: [apiBaseUrl],
-    queryFn: () => api.getAll(),
-    ...options.query?.getAll,
+    queryFn: () => api.getAll(query),
+    ...defaultQueryOptions,
+    ...(options?.query?.getAll ? options?.query.getAll(query) : {}),
+    // onSuccess: () => {
+    //   console.log("getAll success:");
+    // }
   });
 
-  const getById = (id: string) =>
-    useQuery<Result<T>, unknown>({
-      queryKey: [apiBaseUrl, id],
-      queryFn: () => api.getById(id),
-      enabled: !!id,
-      ...(options.query?.getById ? options.query.getById(id) : {}),
-    });
+  const getById = (id: string) => useQuery<Result<T>, unknown>({
+    queryKey: [apiBaseUrl, id],
+    queryFn: () => api.getById(id),
+    enabled: !!id,
+    ...defaultQueryOptions,
+    ...(options?.query?.getById ? options?.query.getById(id) : {}),
+  });
 
   const create = useMutation<Result<T>, unknown, TCreate>({
     mutationFn: (data) => api.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [apiBaseUrl] }),
-    ...options.mutation?.create,
+    ...options?.mutation?.create,
   });
 
   const update = useMutation<Result<T>, unknown, TUpdate & { id?: any }>({
     mutationFn: (data) => api.update(data.id, data),
-    onSuccess: (res) => {
-      const id = res.payload?.id;
-      if (id) {
-        queryClient.invalidateQueries({ queryKey: [apiBaseUrl] });
-        queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id] });
-      }
-    },
-    ...options.mutation?.update,
+    ...options?.mutation?.update,
   });
 
   const remove = useMutation<Result<boolean>, unknown, string>({
     mutationFn: (id: any) => api.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [apiBaseUrl] }),
-    ...options.mutation?.remove,
+    ...options?.mutation?.remove,
   });
 
   return {

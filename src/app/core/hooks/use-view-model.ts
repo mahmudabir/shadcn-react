@@ -1,7 +1,7 @@
 import { useReducer, useRef, useCallback } from 'react';
 import { useHttpClient } from '../api/use-http-client';
 import { Result } from '../models/result';
-import { PagedData } from '../models/pagination';
+import { PagedData, Pagination } from '../models/pagination';
 import { SelectOption } from '../models/select-option';
 
 /* Enums */
@@ -63,7 +63,13 @@ const generateSelectOptions = <T>(items: T[], labelKey: keyof T, valueKey: keyof
 };
 
 /* Hook */
-export function useViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(apiBaseUrl: string) {
+export function useViewModel<
+  T extends { id?: any },
+  TQuery extends Pagination & { skipPreloader?: boolean },
+  TCreate = T, TUpdate = T
+>(
+  apiBaseUrl: string
+) {
 
   const [state, dispatch] = useReducer(viewModelReducer<T>, {
     items: null,
@@ -73,7 +79,7 @@ export function useViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(a
     message: null,
   });
 
-  const http = useHttpClient<T, TCreate, TUpdate>(apiBaseUrl);
+  const http = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
   /* Generic executor wrapper */
   const executeAsync = async <R>(
@@ -105,8 +111,8 @@ export function useViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(a
     }
   };
 
-  const getAll = useCallback(async () => {
-    const result = await executeAsync(() => http.getAll(), res => {
+  const getAll = useCallback(async (query?: TQuery) => {
+    const result = await executeAsync(() => http.getAll(query), res => {
       dispatch({ type: ViewModelActionType.SetItems, payload: res });
     });
     return result;
@@ -120,9 +126,9 @@ export function useViewModel<T extends { id?: any }, TCreate = T, TUpdate = T>(a
   }, [http]);
 
   const getSelectItems = useCallback(
-    async (label: keyof T, value: keyof T, placeholder?: string) => {
+    async (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
       const result = await executeAsync(
-        () => http.getAll({ skipPreloader: true, asDropdown: true }),
+        () => http.getAll(query),
         res => {
           dispatch({ type: ViewModelActionType.SetItems, payload: res });
           dispatch({

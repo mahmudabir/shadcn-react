@@ -1,9 +1,9 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import CityForm from '../components/CityForm.tsx';
 import { Card } from "../../../../components/ui/card.tsx";
-import { City } from "../../city/models/city.ts";
+import CityForm from '../components/CityForm.tsx';
+import { City } from "../models/city.ts";
+import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
 import { useCities } from "../viewModels/use-cities.ts";
 
 const CityEdit = () => {
@@ -19,7 +19,7 @@ const CityEdit = () => {
             const result = await update.mutateAsync({id, ...data});
             if (update?.isSuccess || result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
-                // navigate(city_PATHS.index());
+                navigate(CITY_TANSTACK_PATHS.index());
             } else {
                 toastError(result?.message || 'Failed to update city');
             }

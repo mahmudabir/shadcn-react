@@ -19,7 +19,7 @@ const CountryList = () => {
 
   const handleDelete = async (id: string) => {
     confirmPopup({
-      title: `Delete?`,
+      title: `Delete`,
       description: `Are you sure you want to delete this country?`,
       cancelText: "Cancel",
       confirmText: `Delete`,

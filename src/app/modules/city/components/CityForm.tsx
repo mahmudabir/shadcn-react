@@ -10,7 +10,7 @@ import { logFormErrors } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { SelectOption } from "../../../core/models/select-option"
 import { useCountries } from "../../country/viewModels/use-countries"
-import { City } from "../models/city"
+import { City } from "../../city-tanstack/models/city"
 
 
 // Main CountryForm component
