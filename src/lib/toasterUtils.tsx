@@ -58,4 +58,3 @@ export function toastError(message: titleT, header: titleT = 'Error') {
         ...defaultOptions,
     })
 }
-

@@ -17,9 +17,9 @@ export const baseApi = axios.create({
     }
 });
 
-export let navigateToLogin: NavigateFunction | null = null;
-export const setNavigateFunction = (navigateFn: NavigateFunction) => {
-    navigateToLogin = navigateFn;
+export let navigateFn: NavigateFunction | null = null;
+export const setNavigateFunction = (navigateFunction: NavigateFunction) => {
+    navigateFn = navigateFunction;
 };
 
 // Preloader handler for API calls
@@ -81,8 +81,8 @@ baseApi.interceptors.response.use(
                 return baseApi(originalRequest);
             } catch (refreshError) {
                 logout();
-                if (navigateToLogin) {
-                    navigateToLogin(AUTH_PATHS.login());
+                if (navigateFn) {
+                    navigateFn(AUTH_PATHS.login());
                 } else {
                     window.location.href = AUTH_PATHS.login(); // Fallback
                 }

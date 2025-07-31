@@ -1,4 +1,4 @@
-import { navigateToLogin } from "@/app/core/api/base-api.ts";
+import { navigateFn } from "@/app/core/api/base-api.ts";
 
 
 export const ACCESS_TOKEN_KEY = "access_token";
@@ -40,8 +40,8 @@ export function logout() {
   removeRefreshToken();
   localStorage.removeItem(USERNAME_KEY);
 
-  if (navigateToLogin) {
-    navigateToLogin("/login");
+  if (navigateFn) {
+    navigateFn("/login");
   } else {
     window.location.href = "/login"; // Fallback
   }
