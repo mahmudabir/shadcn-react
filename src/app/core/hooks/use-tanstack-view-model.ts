@@ -3,10 +3,11 @@ import { useHttpClient } from '../api/use-http-client';
 import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
+import { HttpOptions } from '../api/axios-request-config';
 
 export interface TanstackViewModelOptions<
   T,
-  TQuery extends Pagination & { skipPreloader?: boolean },
+  TQuery extends HttpOptions,
   TCreate = T,
   TUpdate = T
 > {
@@ -40,7 +41,7 @@ export interface TanstackViewModelOptions<
 
 export function useTanstackViewModel<
   T extends { id?: any },
-  TQuery extends Pagination & { skipPreloader?: boolean },
+  TQuery extends HttpOptions,
   TCreate = T,
   TUpdate = T
 >(
@@ -55,7 +56,8 @@ export function useTanstackViewModel<
     const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };
     return useQuery<Result<PagedData<T>>, unknown>({
       queryKey: [apiBaseUrl],
-      queryFn: async () => {
+      queryFn: async ({ signal }) => {
+        query.signal = signal ?? query.signal;
         const result = await api.getAll(query);
         if (customOptions.onSuccess) {
           customOptions.onSuccess(result);
@@ -67,12 +69,13 @@ export function useTanstackViewModel<
     });
   }
 
-  const getById = (id: string) => {
+  const getById = (id: string, query?: TQuery) => {
     const customOptions = options?.query?.getById?.(id) ?? { onSuccess: (data: Result<T>) => { } };
     return useQuery<Result<T>, unknown>({
       queryKey: [apiBaseUrl, id],
-      queryFn: async () => {
-        const result = await api.getById(id);
+      queryFn: async ({ signal }) => {
+        query.signal = signal ?? query.signal;
+        const result = await api.getById(id, query);
         if (customOptions.onSuccess) {
           customOptions.onSuccess(result);
         }
@@ -87,7 +90,8 @@ export function useTanstackViewModel<
     const customOptions = options?.query?.getSelectItems?.(label, value, placeholder, query) ?? { onSuccess: (data: SelectOption[], placeholder?: string) => { } };
     return useQuery<SelectOption[], unknown>({
       queryKey: [apiBaseUrl],
-      queryFn: async () => {
+      queryFn: async ({ signal }) => {
+        query.signal = signal ?? query.signal;
         // Below is equivalent to => // const result = await api.getAll(query); //result.payload.content;
         const { payload: { content: data = [] = [] } = {} } = await api.getAll({ ...query, asDropdown: true });
 
@@ -103,30 +107,29 @@ export function useTanstackViewModel<
     });
   }
 
-  const create = useMutation<Result<T>, unknown, TCreate>({
-    mutationFn: (data) => api.create(data),
+  const create = (query?: TQuery) => useMutation<Result<T>, unknown, TCreate>({
+    mutationFn: (data) => api.create(data, query),
     ...options?.mutation?.create,
   });
 
-  const update = useMutation<Result<T>, unknown, TUpdate & { id?: any }>({
-    mutationFn: (data) => api.update(data.id, data),
+  const update = (query?: TQuery) => useMutation<Result<T>, unknown, TUpdate & { id?: any }>({
+    mutationFn: (data) => api.update(data.id, data, query),
     ...options?.mutation?.update,
   });
 
-  const remove = useMutation<Result<boolean>, unknown, string>({
-    mutationFn: (id: any) => api.remove(id),
+  const remove = (query?: TQuery) => useMutation<Result<boolean>, unknown, string>({
+    mutationFn: (id: any) => api.remove(id, query),
     ...options?.mutation?.remove,
   });
 
   return {
+    queryClient,
     getAll,
     getById,
     getSelectItems,
     create,
     update,
     remove,
-    abortRequest: api.abortRequest,
-    isAbortError: api.isAbortError,
   };
 }
 

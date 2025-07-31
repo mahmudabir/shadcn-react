@@ -13,6 +13,7 @@ const CityList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove } = useCities();
 
+  const removeMutation = remove();
   const result = getAll();
 
   const handleDelete = async (id: string) => {
@@ -23,12 +24,12 @@ const CityList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await remove.mutateAsync(id);
-          if (remove.isSuccess) {
-            toastSuccess(remove.data?.message || "Deleted successfully");
+          await removeMutation.mutateAsync(id);
+          if (removeMutation.isSuccess) {
+            toastSuccess(removeMutation.data?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(remove.data?.message || "Failed to delete city");
+            toastError(removeMutation.data?.message || "Failed to delete city");
           }
           await result.refetch({});
         } catch (err: any) {

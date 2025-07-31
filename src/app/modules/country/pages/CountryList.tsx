@@ -3,19 +3,36 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCountries } from '../viewModels/use-countries';
 import { confirmPopup } from "../../../../components/custom/confirmation-popup";
 import { COUNTRY_PATHS } from "../routes/CountryRoutes";
+import { useCountries } from '../viewModels/use-countries';
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
   const countryViewModel = useCountries();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    countryViewModel.getAll({ skipPreloader: true });
+    abortControllerRef.current?.abort(); // abort previous request
+    getAllData();
+    return () => {
+      abortControllerRef.current?.abort(); // cleanup on unmount
+    };
   }, []);
+
+  const getAllData = () => {
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    countryViewModel.getAll({ skipPreloader: true, signal: controller.signal });
+  };
+
+  const abortRequest = () => {
+    abortControllerRef.current?.abort();
+    countryViewModel.reset();
+    abortControllerRef.current = new AbortController();
+  };
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -53,12 +70,19 @@ const CountryList = () => {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Countries</h1>
-        <Button onClick={countryViewModel.abortRequest}>
-          Abort
-        </Button>
-        <Button asChild>
-          <Link to={COUNTRY_PATHS.create()}>Create New Country</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={abortRequest}
+            disabled={!countryViewModel.isLoading}>
+            Abort
+          </Button>
+          <Button onClick={getAllData}
+            disabled={countryViewModel.isLoading}>
+            Refresh
+          </Button>
+          <Button asChild>
+            <Link to={COUNTRY_PATHS.create()}>Create New Country</Link>
+          </Button>
+        </div>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
         <Input

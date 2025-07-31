@@ -11,25 +11,14 @@ import { useCountries } from "../viewModels/use-countries.ts";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
-  const { getAll, remove, abortRequest } = useCountries();
+  const { getAll, remove, queryClient } = useCountries();
 
   const result = getAll({ skipPreloader: true });
+  var removeMutation = remove();
 
-  // useEffect(() => {
-  //   window.addEventListener("focusout", abortRequest);
-  //   return () => window.removeEventListener("focusout", abortRequest);
-  // }, []);
-
-  // useEffect(() => {
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === 'hidden') {
-  //       abortRequest();
-  //     }
-  //   };
-
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  // }, []);
+  const abortRequest = () => {
+    queryClient.cancelQueries({ queryKey: ['/countries'] });
+  }
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -39,12 +28,12 @@ const CountryList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await remove.mutateAsync(id);
-          if (remove.isSuccess) {
-            toastSuccess(remove.data?.message || "Deleted successfully");
+          await removeMutation.mutateAsync(id);
+          if (removeMutation.isSuccess) {
+            toastSuccess(removeMutation.data?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(remove.data?.message || "Failed to delete country");
+            toastError(removeMutation.data?.message || "Failed to delete country");
           }
           await result.refetch({});
         } catch (err: any) {
@@ -69,14 +58,11 @@ const CountryList = () => {
         <h1 className="text-2xl font-bold">Countries (Tanstack)</h1>
 
         <div className="flex gap-2">
-          <Button onClick={abortRequest}>Abort</Button>
-          {result.isStale && <Button onClick={() => {
-            if (result.isStale) {
-              result.refetch();
-            }
-          }}>
+          <Button onClick={abortRequest} disabled={!result.isFetching}>Abort</Button>
+          <Button onClick={() => {result.refetch()}}
+            disabled={result.isFetching}>
             Refresh
-          </Button>}
+          </Button>
           <Button asChild>
             <Link to={COUNTRY_TANSTACK_PATHS.create()}>Create New country</Link>
           </Button>

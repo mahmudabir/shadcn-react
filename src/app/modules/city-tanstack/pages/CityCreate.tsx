@@ -8,11 +8,12 @@ import { useCities } from "../viewModels/use-cities.ts";
 const CityCreate = () => {
   const navigate = useNavigate();
   const { create } = useCities();
+  const createMutation = create();
 
   const handleCreate = async (data: City) => {
     try {
-      const result = await create.mutateAsync(data);
-      if (create?.isSuccess || result?.isSuccess) {
+      const result = await createMutation.mutateAsync(data);
+      if (createMutation?.isSuccess || result?.isSuccess) {
         toastSuccess(result?.message || 'Added successfully');
         navigate(CITY_TANSTACK_PATHS.index());
       } else {

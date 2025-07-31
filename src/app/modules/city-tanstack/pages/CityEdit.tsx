@@ -10,14 +10,15 @@ const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { update, getById } = useCities();
+    const updateMutation = update();
 
     const { data, isLoading, error, isSuccess } = getById(id);
 
     const handleEdit = async (data: City) => {
         if (!id || !data.id) return;
         try {
-            const result = await update.mutateAsync({id, ...data});
-            if (update?.isSuccess || result?.isSuccess) {
+            const result = await updateMutation.mutateAsync({id, ...data});
+            if (updateMutation?.isSuccess || result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
                 navigate(CITY_TANSTACK_PATHS.index());
             } else {

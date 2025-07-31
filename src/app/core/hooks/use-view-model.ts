@@ -4,6 +4,7 @@ import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
 import { generateSelectOptions } from './use-tanstack-view-model';
+import { HttpOptions } from '../api/axios-request-config';
 
 /* Enums */
 enum ViewModelActionType {
@@ -46,7 +47,7 @@ function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T
     case ViewModelActionType.SetMessage:
       return { ...state, message: action.payload };
     case ViewModelActionType.Reset:
-      return { ...state, item: null, message: null };
+      return { ...state, items: null, item: null, message: null };
     default:
       return state;
   }
@@ -55,7 +56,7 @@ function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T
 /* Hook */
 export function useViewModel<
   T extends { id?: any },
-  TQuery extends Pagination & { skipPreloader?: boolean },
+  TQuery extends HttpOptions,
   TCreate = T, TUpdate = T
 >(
   apiBaseUrl: string
@@ -167,7 +168,5 @@ export function useViewModel<
     setItem: (item: Result<T> | null) => dispatch({ type: ViewModelActionType.SetItem, payload: item }),
     setItems: (items: Result<PagedData<T>> | null) => dispatch({ type: ViewModelActionType.SetItems, payload: items }),
     reset: () => dispatch({ type: ViewModelActionType.Reset }),
-    abortRequest: http.abortRequest,
-    isAbortError: http.isAbortError,
   };
 }

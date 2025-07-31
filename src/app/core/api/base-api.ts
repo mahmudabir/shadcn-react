@@ -10,7 +10,6 @@ import { NavigateFunction } from "react-router-dom";
 const API_BASE = "http://localhost:5000/api";
 
 export const baseApi = axios.create({
-
     baseURL: API_BASE,
     headers: {
         "Content-Type": "application/json"
@@ -68,6 +67,12 @@ baseApi.interceptors.response.use(
     async (error) => {
         if (preloaderHandler && !preloaderHandler.isManual) {
             preloaderHandler.decrement();
+        }
+
+        // Don't display errors for aborted requests
+        if (axios.isCancel(error)) {
+            console.log('Request canceled:', error.message);
+            return Promise.reject(error);
         }
         const originalRequest = error.config;
         if (error.response && error.response.status === 401 && !originalRequest._retry) {

@@ -1,9 +1,10 @@
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/hooks/use-tanstack-view-model";
 import { Country } from "../models/country.ts";
+import { HttpOptions } from "../../../core/api/axios-request-config.ts";
 
 // MVVM ViewModel for Country using Tanstack Query
-export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
+export function useCountries(options?: TanstackViewModelOptions<Country, HttpOptions>) {
 
   const apiBaseUrl = '/countries';
   const queryClient: QueryClient = useQueryClient();
@@ -12,7 +13,7 @@ export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
     queryClient: queryClient,
     query: {
       getAll: (query?: any) => ({
-        staleTime: 10_000,
+        staleTime: 0,
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data) => {
@@ -20,7 +21,7 @@ export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
         }
       }),
       getById: (id) => ({
-        staleTime: 10_000,
+        staleTime: 0,
         queryKey: [apiBaseUrl, id],
         enabled: !!id,
         onSuccess: (data) => {
@@ -28,7 +29,7 @@ export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
         }
       }),
       getSelectItems: (label: keyof Country, value: keyof Country, placeholder?: string, query?: any) => ({
-        staleTime: 10_000,
+        staleTime: 0,
         queryKey: [apiBaseUrl, 'selectItems'],
         enabled: true,
         onSuccess: (data, placeholder?: string) => {

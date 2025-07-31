@@ -8,11 +8,12 @@ import { useCountries } from "../viewModels/use-countries.ts";
 const CountryCreate = () => {
   const navigate = useNavigate();
   const { create } = useCountries();
+  const createMutation = create();
 
   const handleCreate = async (data: Country) => {
     try {
-      const result = await create.mutateAsync(data);
-      if (create?.isSuccess || result?.isSuccess) {
+      const result = await createMutation.mutateAsync(data);
+      if (createMutation?.isSuccess || result?.isSuccess) {
         toastSuccess(result?.message || 'Added successfully');
         navigate(COUNTRY_TANSTACK_PATHS.index());
       } else {
