@@ -11,12 +11,12 @@ export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
   options ??= {
     queryClient: queryClient,
     query: {
-      getAll: (query: any) => ({
+      getAll: (query?: any) => ({
         staleTime: 10_000,
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data) => {
-          // console.log("getAll->onSuccess: ", data);
+          console.log("getAll->onSuccess: ", data);
         }
       }),
       getById: (id) => ({
@@ -24,28 +24,36 @@ export function useCountries(options?: TanstackViewModelOptions<Country, any>) {
         queryKey: [apiBaseUrl, id],
         enabled: !!id,
         onSuccess: (data) => {
-          // console.log("getById->onSuccess: ", data);
+          console.log("getById->onSuccess: ", data);
+        }
+      }),
+      getSelectItems: (label: keyof Country, value: keyof Country, placeholder?: string, query?: any) => ({
+        staleTime: 10_000,
+        queryKey: [apiBaseUrl, 'selectItems'],
+        enabled: true,
+        onSuccess: (data, placeholder?: string) => {
+          console.log("getSelectItems->onSuccess: ", placeholder, data);
         }
       }),
     },
     mutation: {
       create: {
         onSuccess: (res, values, context) => {
-          queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ })
+          queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" })
         },
       },
       update: {
         onSuccess: (res, values, context) => {
           const id = res.payload?.id;
           if (id) {
-            queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ });
-            queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id]/*, refetchType: "none"*/ });
+            queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" });
+            queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id], refetchType: "none" });
           }
         },
       },
       remove: {
         onSuccess: (res, values, context) => {
-          queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ });
+          queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" });
         },
       },
     }

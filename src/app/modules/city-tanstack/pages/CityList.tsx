@@ -12,7 +12,7 @@ import { useCities } from "../viewModels/use-cities";
 const CityList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove } = useCities();
-  
+
   const result = getAll();
 
   const handleDelete = async (id: string) => {
@@ -53,13 +53,13 @@ const CityList = () => {
         <h1 className="text-2xl font-bold">Cities (Tanstack)</h1>
 
         <div className="flex gap-2">
-          <Button onClick={() => {
+          {result.isStale && <Button onClick={() => {
             if (result.isStale) {
               result.refetch();
             }
           }}>
             Refresh
-          </Button>
+          </Button>}
           <Button asChild>
             <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>
           </Button>

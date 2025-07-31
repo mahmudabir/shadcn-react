@@ -2,6 +2,7 @@ import { QueryClient, useMutation, UseMutationOptions, useQuery, useQueryClient,
 import { useHttpClient } from '../api/use-http-client';
 import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
+import { SelectOption } from '../models/select-option';
 
 export interface TanstackViewModelOptions<
   T,
@@ -23,6 +24,12 @@ export interface TanstackViewModelOptions<
       Result<T>,
       any[]
     > & { onSuccess?: (data: Result<T>) => void; };
+    getSelectItems?: (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => UseQueryOptions<
+      SelectOption[],
+      unknown,
+      SelectOption[],
+      any[]
+    > & { onSuccess?: (data: SelectOption[], placeholder?: string) => void; };
   };
   mutation?: {
     create?: UseMutationOptions<Result<T>, unknown, TCreate>;
@@ -83,6 +90,27 @@ export function useTanstackViewModel<
     })
   };
 
+  const getSelectItems = (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
+    const customOptions = options?.query?.getSelectItems?.(label, value, placeholder, query) ?? { onSuccess: (data: SelectOption[], placeholder?: string) => { } };
+    return useQuery<SelectOption[], unknown>({
+      queryKey: [apiBaseUrl],
+      queryFn: async () => {
+        // Below is equivalent to => // const result = await api.getAll(query); //result.payload.content;
+        const { payload: { content: data = [] = [] } = {} } = await api.getAll({ ...query, asDropdown: true });
+
+        const selectItems = generateSelectOptions(data, label, value, placeholder);
+
+        if (customOptions.onSuccess) {
+          customOptions.onSuccess(selectItems, placeholder);
+        }
+        return selectItems;
+      },
+      enabled: true,
+      ...defaultQueryOptions,
+      ...(options?.query?.getSelectItems ? options?.query.getSelectItems(label, value, placeholder, query) : {}),
+    });
+  }
+
   const create = useMutation<Result<T>, unknown, TCreate>({
     mutationFn: (data) => api.create(data),
     ...options?.mutation?.create,
@@ -101,8 +129,20 @@ export function useTanstackViewModel<
   return {
     getAll,
     getById,
+    getSelectItems,
     create,
     update,
     remove,
   };
 }
+
+/* Reusable Select Generator */
+export const generateSelectOptions = <T>(items: T[], labelKey: keyof T, valueKey: keyof T, placeholder?: string): SelectOption[] => {
+  return [
+    { label: placeholder ?? 'Select an option', value: undefined },
+    ...items.map(item => ({
+      label: String(item[labelKey]),
+      value: String(item[valueKey]),
+    })),
+  ];
+};

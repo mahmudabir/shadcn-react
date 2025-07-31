@@ -5,6 +5,7 @@ import CountryForm from '../components/CountryForm.tsx';
 import { useCountries } from '../viewModels/use-countries.ts';
 import { Card } from "../../../../components/ui/card.tsx";
 import { Country } from "@/app/modules/country-tanstack/models/country.ts";
+import { COUNTRY_PATHS } from "../routes/CountryRoutes.tsx";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,7 +23,7 @@ const CountryEdit = () => {
             const result = await countryViewModel.update(id, data);
             if (result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
-                // navigate(COUNTRY_PATHS.index());
+                navigate(COUNTRY_PATHS.index());
             } else {
                 toastError(result?.message || 'Failed to update country');
             }

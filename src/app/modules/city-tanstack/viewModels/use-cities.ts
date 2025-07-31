@@ -16,7 +16,7 @@ export function useCities(options?: TanstackViewModelOptions<City, any>) {
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data) => {
-          // console.log("getAll->onSuccess: ", data);
+          console.log("getAll->onSuccess: ", data);
         }
       }),
       getById: (id) => ({
@@ -24,7 +24,15 @@ export function useCities(options?: TanstackViewModelOptions<City, any>) {
         queryKey: [apiBaseUrl, id],
         enabled: !!id,
         onSuccess: (data) => {
-          // console.log("getById->onSuccess: ", data);
+          console.log("getById->onSuccess: ", data);
+        }
+      }),
+      getSelectItems: (label: keyof City, value: keyof City, placeholder?: string, query?: any) => ({
+        staleTime: 10_000,
+        queryKey: [apiBaseUrl],
+        enabled: true,
+        onSuccess: (data, placeholder?: string) => {
+          console.log("getSelectItems->onSuccess: ", data);
         }
       }),
     },

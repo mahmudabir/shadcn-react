@@ -6,18 +6,20 @@ import { useForm } from "react-hook-form"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors } from "../../../../lib/formUtils"
+import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { SelectOption } from "../../../core/models/select-option"
-import { useCountries } from "../../country/viewModels/use-countries"
+import { useCountries } from "../../country-tanstack/viewModels/use-countries"
 import { City } from "../models/city"
 
 
 // Main CountryForm component
-
 const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }) => {
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
-    const countryViewModel = useCountries();
+    // const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
+
+    const { getSelectItems } = useCountries();
+
+    const countrySelectItems = getSelectItems("nameEn", "id", "Select a country");
 
     // Initialize form with Zod schema validation
     const form = useForm({
@@ -30,16 +32,8 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
 
     useEffect(() => {
         logFormErrors(form.formState.errors);
-        console.log(formValues);
+        logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
-
-    const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
-
-    useEffect(() => {
-        countryViewModel.getSelectItems("nameEn", "id", "Select a country").then(() => {
-            setCountryOptions(countryViewModel.selectItems);
-        });
-    }, []);
 
     const confirmationOptions = {
         title: `${submitLabel}?`,
@@ -99,9 +93,6 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
         }
     ];
 
-    console.log(countryOptions);
-
-
     return (
         <Form {...form}>
             <form className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8"
@@ -122,7 +113,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                 {/* Countries Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {renderFormFieldsUsingFormFieldItemConfig
-                        ? <FormFieldItems items={cityFieldsConfig} options={countryViewModel.selectItems} />
+                        ? <FormFieldItems items={cityFieldsConfig} options={countrySelectItems.data} />
                         : (
                             <>
                                 <SelectFieldItem
@@ -131,7 +122,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                                     label="Country"
                                     description="Select the country for this city"
                                     placeholder="Select a country"
-                                    options={countryViewModel.selectItems}
+                                    options={countrySelectItems.data}
                                 />
                                 <FormFieldItem
                                     type="text"

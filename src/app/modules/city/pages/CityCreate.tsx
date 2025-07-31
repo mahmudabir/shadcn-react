@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCities } from '../viewModels/use-cities.ts';
 import CountryForm from '../components/CityForm.tsx';
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { CITY_PATHS } from "../routes/CityRoutes.tsx";
 
 const CityCreate = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const CityCreate = () => {
       const result = await cityViewModel.create(data);
       if (result?.isSuccess) {
         toastSuccess(result?.message || 'Added successfully');
-        // navigate(COUNTRY_PATHS.index());
+        navigate(CITY_PATHS.index());
       } else {
         toastError(result?.message || 'Failed to create city');
       }

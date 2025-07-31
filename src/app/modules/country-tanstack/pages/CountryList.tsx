@@ -12,7 +12,7 @@ import { useCountries } from "../viewModels/use-countries.ts";
 const CountryList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove } = useCountries();
-  
+
   const result = getAll();
 
   const handleDelete = async (id: string) => {
@@ -53,13 +53,13 @@ const CountryList = () => {
         <h1 className="text-2xl font-bold">Countries (Tanstack)</h1>
 
         <div className="flex gap-2">
-          <Button onClick={() => {
+          {result.isStale && <Button onClick={() => {
             if (result.isStale) {
               result.refetch();
             }
           }}>
             Refresh
-          </Button>
+          </Button>}
           <Button asChild>
             <Link to={COUNTRY_TANSTACK_PATHS.create()}>Create New country</Link>
           </Button>

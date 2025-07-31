@@ -11,6 +11,10 @@ export function logFormErrors(errors: FieldErrors): void {
     });
 }
 
+export function logFormValues(formValues?: any): void {
+    console.log("Form values: ", formValues);
+}
+
 export function getErrorMessages(result: Result<any>) {
     return Object.entries(result.errors)
         .map(([property, messages], index) => `• ${messages.join(' • ')}`)

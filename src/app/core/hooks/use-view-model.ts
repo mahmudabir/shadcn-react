@@ -1,8 +1,9 @@
-import { useReducer, useRef, useCallback } from 'react';
+import { useCallback, useReducer } from 'react';
 import { useHttpClient } from '../api/use-http-client';
-import { Result } from '../models/result';
 import { PagedData, Pagination } from '../models/pagination';
+import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
+import { generateSelectOptions } from './use-tanstack-view-model';
 
 /* Enums */
 enum ViewModelActionType {
@@ -50,17 +51,6 @@ function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T
       return state;
   }
 }
-
-/* Reusable Select Generator */
-const generateSelectOptions = <T>(items: T[], labelKey: keyof T, valueKey: keyof T, placeholder?: string): SelectOption[] => {
-  return [
-    { label: placeholder ?? 'Select an option', value: undefined },
-    ...items.map(item => ({
-      label: String(item[labelKey]),
-      value: String(item[valueKey]),
-    })),
-  ];
-};
 
 /* Hook */
 export function useViewModel<
@@ -128,7 +118,7 @@ export function useViewModel<
   const getSelectItems = useCallback(
     async (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
       const result = await executeAsync(
-        () => http.getAll(query),
+        () => http.getAll({ ...query, asDropdown: true }),
         res => {
           dispatch({ type: ViewModelActionType.SetItems, payload: res });
           dispatch({

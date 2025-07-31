@@ -5,6 +5,7 @@ import { Card } from "../../../../components/ui/card.tsx";
 import { City } from "../../city-tanstack/models/city.ts";
 import CityForm from '../components/CityForm.tsx';
 import { useCities } from '../viewModels/use-cities.ts';
+import { CITY_PATHS } from "../routes/CityRoutes.tsx";
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,7 +23,7 @@ const CityEdit = () => {
             const result = await cityViewModel.update(id, data);
             if (result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
-                // navigate(city_PATHS.index());
+                navigate(CITY_PATHS.index());
             } else {
                 toastError(result?.message || 'Failed to update city');
             }

@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
-import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../components/custom/form-field-item"
+import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors } from "../../../../lib/formUtils"
+import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { SelectOption } from "../../../core/models/select-option"
+import { City } from "../../city-tanstack/models/city.ts"
 import { useCountries } from "../../country/viewModels/use-countries"
 import { Country } from "../models/country.ts"
-import { City } from "../../city-tanstack/models/city.ts"
-import { Trash2 } from "lucide-react"
 
 
 // Main CountryForm component
@@ -38,7 +37,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
     useEffect(() => {
         logFormErrors(form.formState.errors);
-        console.log(formValues);
+        logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
 
     const confirmationOptions = {
@@ -205,35 +204,35 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                                     {renderFormFieldsUsingFormFieldItemConfig
                                         ? <FormFieldItems items={cityFieldsConfig.map(config => ({
                                             ...config,
-                                            name: `countries.${idx}.${config.name}`
+                                            name: `cities.${idx}.${config.name}`
                                         }))} />
                                         : (
                                             <>
                                                 <FormFieldItem
                                                     type="text"
                                                     control={form.control}
-                                                    name={`countries.${idx}.nameEn`}
+                                                    name={`cities.${idx}.nameEn`}
                                                     label="English Name"
                                                     description="This is the city's English display name"
                                                 />
                                                 <FormFieldItem
                                                     type="text"
                                                     control={form.control}
-                                                    name={`countries.${idx}.nameBn`}
+                                                    name={`cities.${idx}.nameBn`}
                                                     label="Bangla Name"
                                                     description="This is the city's Bangla display name"
                                                 />
                                                 <FormFieldItem
                                                     type="text"
                                                     control={form.control}
-                                                    name={`countries.${idx}.nameAr`}
+                                                    name={`cities.${idx}.nameAr`}
                                                     label="Arabic Name"
                                                     description="This is the city's Arabic display name"
                                                 />
                                                 <FormFieldItem
                                                     type="text"
                                                     control={form.control}
-                                                    name={`countries.${idx}.nameHi`}
+                                                    name={`cities.${idx}.nameHi`}
                                                     label="Hindi Name"
                                                     description="This is the city's Hindi display name"
                                                 />

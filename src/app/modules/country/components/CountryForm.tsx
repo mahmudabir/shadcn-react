@@ -1,17 +1,16 @@
+import { City } from "@/app/modules/city-tanstack/models/city.ts"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
-import z from "zod"
+import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
 import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors, onSubmitTest } from "../../../../lib/formUtils"
+import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { Country } from "../../country-tanstack/models/country"
-import { City } from "@/app/modules/city-tanstack/models/city.ts";
 
 
 // Main CountryForm component
@@ -36,7 +35,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
     useEffect(() => {
         logFormErrors(form.formState.errors);
-        console.log(formValues);
+        logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
 
     const confirmationOptions = {
