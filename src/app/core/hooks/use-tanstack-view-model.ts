@@ -51,11 +51,6 @@ export function useTanstackViewModel<
   const queryClient = options.queryClient ?? useQueryClient();
   const api = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
-  const defaultQueryOptions: Partial<UseQueryOptions<any, unknown, any, any[]>> = {
-    refetchOnWindowFocus: false,
-    retry: 3,
-  };
-
   const getAll = (query?: TQuery) => {
     const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };
     return useQuery<Result<PagedData<T>>, unknown>({
@@ -68,7 +63,6 @@ export function useTanstackViewModel<
         return result;
       },
       enabled: true,
-      ...defaultQueryOptions,
       ...(options?.query?.getAll ? options?.query.getAll(query) : {}),
     });
   }
@@ -85,7 +79,6 @@ export function useTanstackViewModel<
         return result;
       },
       enabled: !!id,
-      ...defaultQueryOptions,
       ...(options?.query?.getById ? options?.query.getById(id) : {}),
     })
   };
@@ -106,7 +99,6 @@ export function useTanstackViewModel<
         return selectItems;
       },
       enabled: true,
-      ...defaultQueryOptions,
       ...(options?.query?.getSelectItems ? options?.query.getSelectItems(label, value, placeholder, query) : {}),
     });
   }
@@ -133,6 +125,8 @@ export function useTanstackViewModel<
     create,
     update,
     remove,
+    abortRequest: api.abortRequest,
+    isAbortError: api.isAbortError,
   };
 }
 

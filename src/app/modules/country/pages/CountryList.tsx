@@ -14,7 +14,7 @@ const CountryList = () => {
   const countryViewModel = useCountries();
 
   useEffect(() => {
-    countryViewModel.getAll();
+    countryViewModel.getAll({ skipPreloader: true });
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -53,6 +53,9 @@ const CountryList = () => {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Countries</h1>
+        <Button onClick={countryViewModel.abortRequest}>
+          Abort
+        </Button>
         <Button asChild>
           <Link to={COUNTRY_PATHS.create()}>Create New Country</Link>
         </Button>

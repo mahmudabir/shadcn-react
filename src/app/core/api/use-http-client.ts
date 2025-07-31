@@ -11,36 +11,80 @@ export function useHttpClient<
     apiBaseUrl: string
 ) {
 
+    let abortController: AbortController | null = new AbortController();
 
+    function getSignal(): AbortSignal {
+        if (!abortController) abortController = new AbortController();
+        return abortController.signal;
+    }
 
-    async function getAll(props?: TQuery): Promise<Result<PagedData<T>>> {
+    function abortRequest() {
+        abortController.abort();         // cancel current
+        abortController = new AbortController(); // Reset
+    }
+
+    function isAbortError(error: any) {
+    return error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED';
+}
+
+    async function getAll(props?: TQuery, signalOverride?: AbortSignal): Promise<Result<PagedData<T>>> {
+
 
         const query: Record<string, any> = { asPage: props?.asPage, asDropdown: props?.asDropdown };
 
         const res = await baseApi.get(apiBaseUrl, {
+            signal: signalOverride ?? getSignal(),
             skipPreloader: props?.skipPreloader || false,
             params: query
         });
         return res.data;
     }
 
-    async function getById(id: any): Promise<Result<T>> {
-        const res = await baseApi.get(`${apiBaseUrl}/${id}`);
+    async function getById(id: any, props?: TQuery, signalOverride?: AbortSignal): Promise<Result<T>> {
+
+        const query: Record<string, any> = { ...props };
+
+        const res = await baseApi.get(`${apiBaseUrl}/${id}`, {
+            signal: signalOverride ?? getSignal(),
+            skipPreloader: props?.skipPreloader || false,
+            params: query
+        });
         return res.data;
     }
 
-    async function create(data: Omit<TCreate, 'id'>): Promise<Result<T>> {
-        const res = await baseApi.post(apiBaseUrl, data);
+    async function create(data: Omit<TCreate, 'id'>, props?: TQuery, signalOverride?: AbortSignal): Promise<Result<T>> {
+
+        const query: Record<string, any> = { ...props };
+
+        const res = await baseApi.post(apiBaseUrl, data, {
+            signal: signalOverride ?? getSignal(),
+            skipPreloader: props?.skipPreloader || false,
+            params: query
+        });
         return res.data;
     }
 
-    async function update(id: any, data: TUpdate): Promise<Result<T>> {
-        const res = await baseApi.put(`${apiBaseUrl}/${id}`, data);
+    async function update(id: any, data: TUpdate, props?: TQuery, signalOverride?: AbortSignal): Promise<Result<T>> {
+
+        const query: Record<string, any> = { ...props };
+
+        const res = await baseApi.put(`${apiBaseUrl}/${id}`, data, {
+            signal: signalOverride ?? getSignal(),
+            skipPreloader: props?.skipPreloader || false,
+            params: query
+        });
         return res.data;
     }
 
-    async function remove(id: any): Promise<Result<boolean>> {
-        const res = await baseApi.delete(`${apiBaseUrl}/${id}`);
+    async function remove(id: any, props?: TQuery, signalOverride?: AbortSignal): Promise<Result<boolean>> {
+
+        const query: Record<string, any> = { ...props };
+
+        const res = await baseApi.delete(`${apiBaseUrl}/${id}`, {
+            signal: signalOverride ?? getSignal(),
+            skipPreloader: props?.skipPreloader || false,
+            params: query
+        });
         return res.data;
     }
 
@@ -49,6 +93,8 @@ export function useHttpClient<
         getById,
         create,
         update,
-        remove
+        remove,
+        abortRequest,
+        isAbortError
     }
 }

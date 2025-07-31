@@ -167,5 +167,7 @@ export function useViewModel<
     setItem: (item: Result<T> | null) => dispatch({ type: ViewModelActionType.SetItem, payload: item }),
     setItems: (items: Result<PagedData<T>> | null) => dispatch({ type: ViewModelActionType.SetItems, payload: items }),
     reset: () => dispatch({ type: ViewModelActionType.Reset }),
+    abortRequest: http.abortRequest,
+    isAbortError: http.isAbortError,
   };
 }

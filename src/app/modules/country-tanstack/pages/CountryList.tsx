@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "../../../../components/custom/confirmation-popup";
 import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
@@ -11,9 +11,25 @@ import { useCountries } from "../viewModels/use-countries.ts";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
-  const { getAll, remove } = useCountries();
+  const { getAll, remove, abortRequest } = useCountries();
 
-  const result = getAll();
+  const result = getAll({ skipPreloader: true });
+
+  // useEffect(() => {
+  //   window.addEventListener("focusout", abortRequest);
+  //   return () => window.removeEventListener("focusout", abortRequest);
+  // }, []);
+
+  // useEffect(() => {
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === 'hidden') {
+  //       abortRequest();
+  //     }
+  //   };
+
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  // }, []);
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -53,6 +69,7 @@ const CountryList = () => {
         <h1 className="text-2xl font-bold">Countries (Tanstack)</h1>
 
         <div className="flex gap-2">
+          <Button onClick={abortRequest}>Abort</Button>
           {result.isStale && <Button onClick={() => {
             if (result.isStale) {
               result.refetch();
