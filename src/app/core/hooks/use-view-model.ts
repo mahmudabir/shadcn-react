@@ -56,8 +56,9 @@ function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T
 /* Hook */
 export function useViewModel<
   T extends { id?: any },
-  TQuery extends HttpOptions,
-  TCreate = T, TUpdate = T
+  TQuery extends HttpOptions = HttpOptions,
+  TCreate = T,
+  TUpdate = T
 >(
   apiBaseUrl: string
 ) {

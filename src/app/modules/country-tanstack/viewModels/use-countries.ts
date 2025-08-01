@@ -4,7 +4,7 @@ import { Country } from "../models/country.ts";
 import { HttpOptions } from "../../../core/api/axios-request-config.ts";
 
 // MVVM ViewModel for Country using Tanstack Query
-export function useCountries(options?: TanstackViewModelOptions<Country, HttpOptions>) {
+export function useCountries(options?: TanstackViewModelOptions<Country>) {
 
   const apiBaseUrl = '/countries';
   const queryClient: QueryClient = useQueryClient();

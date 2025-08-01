@@ -3,7 +3,7 @@ import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/ho
 import { City } from "../models/city";
 
 // MVVM ViewModel for City using Tanstack Query
-export function useCities(options?: TanstackViewModelOptions<City, any>) {
+export function useCities(options?: TanstackViewModelOptions<City>) {
 
   const apiBaseUrl = '/cities';
   const queryClient: QueryClient = useQueryClient();

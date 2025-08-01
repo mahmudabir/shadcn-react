@@ -5,29 +5,12 @@ import { HttpOptions } from "@/app/core/api/axios-request-config.ts";
 
 export function useHttpClient<
     T,
-    TQuery extends HttpOptions,
+    TQuery extends HttpOptions = HttpOptions,
     TCreate = T,
     TUpdate = T
 >(
     apiBaseUrl: string
 ) {
-
-    // let abortController: AbortController | null = new AbortController();
-
-    // function getSignal(): AbortSignal {
-    //     if (!abortController) abortController = new AbortController();
-    //     return abortController.signal;
-    // }
-
-    // function abortRequest() {
-    //     if (abortController) abortController.abort();         // cancel current
-    //     else throw new Error("abortController is null");
-    //     abortController = new AbortController(); // Reset
-    // }
-
-    // function isAbortError(error: any) {
-    //     return error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED';
-    // }
 
     async function getAll(props?: TQuery): Promise<Result<PagedData<T>>> {
 

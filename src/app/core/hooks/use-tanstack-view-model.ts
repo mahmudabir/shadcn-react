@@ -7,7 +7,7 @@ import { HttpOptions } from '../api/axios-request-config';
 
 export interface TanstackViewModelOptions<
   T,
-  TQuery extends HttpOptions,
+  TQuery extends HttpOptions = HttpOptions,
   TCreate = T,
   TUpdate = T
 > {

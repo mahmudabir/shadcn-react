@@ -4,5 +4,5 @@ import { Country } from "@/app/modules/country-tanstack/models/country.ts";
 
 // MVVM ViewModel for Country
 export function useCountries() {
-  return useViewModel<Country, HttpOptions>("/countries");
+  return useViewModel<Country>("/countries");
 }
