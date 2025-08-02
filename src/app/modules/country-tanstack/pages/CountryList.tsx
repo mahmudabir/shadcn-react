@@ -35,7 +35,7 @@ const CountryList = () => {
           } else {
             toastError(removeMutation.data?.message || "Failed to delete country");
           }
-          await result.refetch({});
+          await result.refetch();
         } catch (err: any) {
           toastError(err?.message || "Failed to delete country");
         }
@@ -59,7 +59,7 @@ const CountryList = () => {
 
         <div className="flex gap-2">
           <Button onClick={abortRequest} disabled={!result.isFetching}>Abort</Button>
-          <Button onClick={() => {result.refetch()}}
+          <Button onClick={() => { result.refetch() }}
             disabled={result.isFetching}>
             Refresh
           </Button>

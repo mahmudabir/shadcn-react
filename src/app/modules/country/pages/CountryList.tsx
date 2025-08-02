@@ -11,28 +11,47 @@ import { useCountries } from '../viewModels/use-countries';
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
-  const countryViewModel = useCountries();
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const { getAll, cancelRequest, remove, reset, isLoading, items } = useCountries();
 
   useEffect(() => {
-    abortControllerRef.current?.abort(); // abort previous request
     getAllData();
     return () => {
-      abortControllerRef.current?.abort(); // cleanup on unmount
+      abortRequest();
     };
   }, []);
 
-  const getAllData = () => {
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-    countryViewModel.getAll({ skipPreloader: true, signal: controller.signal });
+  const getAllData = async () => {
+    await getAll({ skipPreloader: true, queryKey: "countries_list" });
   };
 
   const abortRequest = () => {
-    abortControllerRef.current?.abort();
-    countryViewModel.reset();
-    abortControllerRef.current = new AbortController();
+    cancelRequest("countries_list");
+    reset();
   };
+
+  /* Manual Signal  
+    const abortControllerRef = useRef<AbortController | null>(null);
+  
+    useEffect(() => {
+      abortController?.abort(); // abort previous request
+      getAllData();
+      return () => {
+        abortController?.abort(); // cleanup on unmount
+      };
+    }, []);
+  
+    const getAllData = () => {
+      const controller = new AbortController();
+      abortController = controller;
+      getAll({ skipPreloader: true, signal: controller.signal });
+    };
+  
+    const abortRequest = () => {
+      abortController?.abort();
+      reset();
+      abortController = new AbortController();
+    };
+    */
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -42,14 +61,14 @@ const CountryList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          const result = await countryViewModel.remove(id);
+          const result = await remove(id);
           if (result?.isSuccess) {
             toastSuccess(result?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
             toastError(result?.message || "Failed to delete country");
           }
-          await countryViewModel.getAll();
+          await getAll();
         } catch (err: any) {
           toastError(err?.message || "Failed to delete country");
         }
@@ -66,17 +85,21 @@ const CountryList = () => {
     // Optionally implement pagination with fetchCountries if supported
   };
 
+  // return <div>
+  //   {isLoading ? "isLoading: Loading..." : "isLoading: Loaded!"}
+  // </div>
+
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Countries</h1>
         <div className="flex gap-2">
           <Button onClick={abortRequest}
-            disabled={!countryViewModel.isLoading}>
+            disabled={!isLoading}>
             Abort
           </Button>
           <Button onClick={getAllData}
-            disabled={countryViewModel.isLoading}>
+            disabled={isLoading}>
             Refresh
           </Button>
           <Button asChild>
@@ -104,37 +127,40 @@ const CountryList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {countryViewModel.isLoading ? (
-            <TableRow>
-              <TableCell colSpan={5}>Loading...</TableCell>
-            </TableRow>
-          ) : !countryViewModel.items?.payload?.content?.length ? (
-            <TableRow>
-              <TableCell colSpan={5}>No countries found</TableCell>
-            </TableRow>
-          ) : (
-            countryViewModel.items?.payload?.content?.map((country: any) => (
-              <TableRow key={country.id}>
-                <TableCell>{country.nameEn}</TableCell>
-                <TableCell>{country.nameBn}</TableCell>
-                <TableCell>{country.nameAr}</TableCell>
-                <TableCell>{country.nameHi}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2 justify-end">
-                    <Button size="sm" variant="outline" asChild>
-                      <Link to={COUNTRY_PATHS.details(country.id.toString())}>Details</Link>
-                    </Button>
-                    <Button size="sm" variant="secondary" asChild>
-                      <Link to={COUNTRY_PATHS.edit(country.id.toString())}>Edit</Link>
-                    </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(country.id.toString())}>
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
+          {isLoading
+            ? (
+              <TableRow>
+                <TableCell colSpan={5}>Loading...</TableCell>
               </TableRow>
-            ))
-          )}
+            )
+            : !items?.payload?.content?.length ? (
+              <TableRow>
+                <TableCell colSpan={5}>No countries found</TableCell>
+              </TableRow>
+            )
+              : (
+                items?.payload?.content?.map((country: any) => (
+                  <TableRow key={country.id}>
+                    <TableCell>{country.nameEn}</TableCell>
+                    <TableCell>{country.nameBn}</TableCell>
+                    <TableCell>{country.nameAr}</TableCell>
+                    <TableCell>{country.nameHi}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2 justify-end">
+                        <Button size="sm" variant="outline" asChild>
+                          <Link to={COUNTRY_PATHS.details(country.id.toString())}>Details</Link>
+                        </Button>
+                        <Button size="sm" variant="secondary" asChild>
+                          <Link to={COUNTRY_PATHS.edit(country.id.toString())}>Edit</Link>
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleDelete(country.id.toString())}>
+                          Delete
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
         </TableBody>
       </Table>
       <div className="mt-4 flex justify-end">

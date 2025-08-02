@@ -54,10 +54,12 @@ export function useTanstackViewModel<
 
   const getAll = (query?: TQuery) => {
     const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };
+    const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl];
     return useQuery<Result<PagedData<T>>, unknown>({
-      queryKey: [apiBaseUrl],
+      queryKey: customQueryKey,
       queryFn: async ({ signal }) => {
-        query.signal = signal ?? query.signal;
+        if (query) query.signal = signal ?? query?.signal;
+        else query = { signal: signal } as TQuery;
         const result = await api.getAll(query);
         if (customOptions.onSuccess) {
           customOptions.onSuccess(result);
@@ -69,12 +71,14 @@ export function useTanstackViewModel<
     });
   }
 
-  const getById = (id: string, query?: TQuery) => {
+  const getById = (id?: any, query?: TQuery) => {
     const customOptions = options?.query?.getById?.(id) ?? { onSuccess: (data: Result<T>) => { } };
+    const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl, id];
     return useQuery<Result<T>, unknown>({
-      queryKey: [apiBaseUrl, id],
+      queryKey: customQueryKey,
       queryFn: async ({ signal }) => {
-        query.signal = signal ?? query.signal;
+        if (query) query.signal = signal ?? query?.signal;
+        else query = { signal: signal } as TQuery;
         const result = await api.getById(id, query);
         if (customOptions.onSuccess) {
           customOptions.onSuccess(result);
@@ -87,11 +91,13 @@ export function useTanstackViewModel<
   };
 
   const getSelectItems = (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
-    const customOptions = options?.query?.getSelectItems?.(label, value, placeholder, query) ?? { onSuccess: (data: SelectOption[], placeholder?: string) => { } };
+    const customOptions = options?.query?.getSelectItems(label, value, placeholder, query) ?? { onSuccess: (data: SelectOption[], placeholder?: string) => { } };
+    const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl, 'selectItems'];
     return useQuery<SelectOption[], unknown>({
-      queryKey: [apiBaseUrl],
+      queryKey: customQueryKey,
       queryFn: async ({ signal }) => {
-        query.signal = signal ?? query.signal;
+        if (query) query.signal = signal ?? query?.signal;
+        else query = { ...query, signal: signal };
         // Below is equivalent to => // const result = await api.getAll(query); //result.payload.content;
         const { payload: { content: data = [] = [] } = {} } = await api.getAll({ ...query, asDropdown: true });
 

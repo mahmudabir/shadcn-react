@@ -10,5 +10,7 @@ declare module 'axios' {
 export interface HttpOptions {
     skipPreloader?: boolean,
     pagination?: Pagination,
+    queryKey?: string,
     signal?: AbortSignal,
+    queryParams?: Record<string, any>
 }

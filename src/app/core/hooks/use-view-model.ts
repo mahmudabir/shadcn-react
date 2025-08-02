@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from 'react';
+import { RefObject, useCallback, useReducer, useRef, useState } from 'react';
 import { useHttpClient } from '../api/use-http-client';
 import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
@@ -33,26 +33,6 @@ type ViewModelAction<T> =
   | { type: ViewModelActionType.SetMessage; payload: string | null }
   | { type: ViewModelActionType.Reset };
 
-/* Reducer */
-function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T>): ViewModelState<T> {
-  switch (action.type) {
-    case ViewModelActionType.SetItems:
-      return { ...state, items: action.payload };
-    case ViewModelActionType.SetItem:
-      return { ...state, item: action.payload };
-    case ViewModelActionType.SetSelectItems:
-      return { ...state, selectItems: action.payload };
-    case ViewModelActionType.SetLoading:
-      return { ...state, isLoading: action.payload };
-    case ViewModelActionType.SetMessage:
-      return { ...state, message: action.payload };
-    case ViewModelActionType.Reset:
-      return { ...state, items: null, item: null, message: null };
-    default:
-      return state;
-  }
-}
-
 /* Hook */
 export function useViewModel<
   T extends { id?: any },
@@ -62,7 +42,6 @@ export function useViewModel<
 >(
   apiBaseUrl: string
 ) {
-
   const [state, dispatch] = useReducer(viewModelReducer<T>, {
     items: null,
     item: null,
@@ -71,7 +50,53 @@ export function useViewModel<
     message: null,
   });
 
+  /* Reducer */
+  function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T>): ViewModelState<T> {
+    switch (action.type) {
+      case ViewModelActionType.SetItems:
+        return { ...state, items: action.payload };
+      case ViewModelActionType.SetItem:
+        return { ...state, item: action.payload };
+      case ViewModelActionType.SetSelectItems:
+        return { ...state, selectItems: action.payload };
+      case ViewModelActionType.SetLoading:
+        return { ...state, isLoading: action.payload };
+      case ViewModelActionType.SetMessage:
+        return { ...state, message: action.payload };
+      case ViewModelActionType.Reset:
+        return { ...state, items: null, item: null, message: null };
+      default:
+        return state;
+    }
+  }
+
   const http = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
+
+  const controllerMapRef = useRef<Map<string, AbortController>>(new Map());
+
+  function getSignalFor(key: string): AbortSignal {
+    controllerMapRef.current.get(key)?.abort();
+    const controller = new AbortController();
+
+    // console.log('cancelRequest: ', key);
+    // console.log('controllerMap: ', controllerMapRef.current);
+
+    controllerMapRef.current.set(key, controller);
+    return controller.signal;
+  }
+
+  function cancelRequest(key?: string) {
+    if (key) {
+      // console.log('cancelRequest: ', key);
+      // console.log('controllerMap: ', controllerMapRef.current);
+
+      controllerMapRef.current.get(key).abort();
+      controllerMapRef.current.delete(key);
+    } else {
+      controllerMapRef.current.forEach((c) => c.abort());
+      controllerMapRef.current.clear();
+    }
+  }
 
   /* Generic executor wrapper */
   const executeAsync = async <R>(
@@ -82,6 +107,7 @@ export function useViewModel<
     dispatch({ type: ViewModelActionType.SetMessage, payload: null });
     try {
       const res = await operation();
+
       if (res.isSuccess && res.payload !== undefined) {
         onSuccess?.(res);
         return res;
@@ -93,10 +119,19 @@ export function useViewModel<
         return res;
       }
     } catch (err: any) {
+
+      // Axios abort error handling
+      if (err.name === 'CanceledError' || err.message === 'canceled') {
+        // Optional: you can log it or ignore silently
+        console.warn('⛔ Request was cancelled. This should not be seen in the production.');
+        return null;
+      }
+
       dispatch({
         type: ViewModelActionType.SetMessage,
         payload: err?.message ?? 'Unexpected error occurred',
       });
+
       return null;
     } finally {
       dispatch({ type: ViewModelActionType.SetLoading, payload: false });
@@ -104,14 +139,18 @@ export function useViewModel<
   };
 
   const getAll = useCallback(async (query?: TQuery) => {
+    const signal = getSignalFor(query?.queryKey);
+    query.signal ??= signal;
     const result = await executeAsync(() => http.getAll(query), res => {
       dispatch({ type: ViewModelActionType.SetItems, payload: res });
     });
     return result;
   }, [http]);
 
-  const getById = useCallback(async (id: string) => {
-    const result = await executeAsync(() => http.getById(id), res => {
+  const getById = useCallback(async (id: string, query?: TQuery) => {
+    const signal = getSignalFor(query?.queryKey);
+    query.signal ??= signal;
+    const result = await executeAsync(() => http.getById(id, query), res => {
       dispatch({ type: ViewModelActionType.SetItem, payload: res });
     });
     return result;
@@ -119,9 +158,12 @@ export function useViewModel<
 
   const getSelectItems = useCallback(
     async (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
-      const result = await executeAsync(
-        () => http.getAll({ ...query, asDropdown: true }),
-        res => {
+      const signal = getSignalFor(query?.queryKey);
+      query.signal ??= signal;
+      const result = await executeAsync(() => {
+        return http.getAll({ ...query, asDropdown: true })
+      },
+        (res) => {
           dispatch({ type: ViewModelActionType.SetItems, payload: res });
           dispatch({
             type: ViewModelActionType.SetSelectItems,
@@ -134,24 +176,37 @@ export function useViewModel<
     [http]
   );
 
-  const create = useCallback(async (data: TCreate) => {
-    const result = await executeAsync(() => http.create(data), res => {
-      dispatch({ type: ViewModelActionType.SetItem, payload: res });
-    });
+  const create = useCallback(async (data: TCreate, query?: TQuery) => {
+    const signal = getSignalFor(query?.queryKey);
+    query.signal ??= signal;
+    const result = await executeAsync(() => {
+      return http.create(data, query)
+    },
+      (res) => {
+        dispatch({ type: ViewModelActionType.SetItem, payload: res });
+      });
     return result;
   }, [http]);
 
-  const update = useCallback(async (id: string, data: TUpdate) => {
+  const update = useCallback(async (id: string, data: TUpdate, query?: TQuery) => {
+    const signal = getSignalFor(query?.queryKey);
+    query.signal ??= signal;
     const result = await executeAsync(
-      () => http.update(id, data),
-      res => dispatch({ type: ViewModelActionType.SetItem, payload: res })
+      () => {
+        return http.update(id, data, query)
+      },
+      (res) => dispatch({ type: ViewModelActionType.SetItem, payload: res })
     );
     return result;
   }, [http]);
 
-  const remove = useCallback(async (id: string) => {
+  const remove = useCallback(async (id: string, query?: TQuery) => {
+    const signal = getSignalFor(query?.queryKey);
+    query.signal ??= signal;
     const result = await executeAsync(
-      () => http.remove(id),
+      () => {
+        return http.remove(id, query)
+      },
       () => dispatch({ type: ViewModelActionType.SetItem, payload: null })
     );
     return result;
@@ -166,6 +221,7 @@ export function useViewModel<
     create,
     update,
     remove,
+    cancelRequest,
     setItem: (item: Result<T> | null) => dispatch({ type: ViewModelActionType.SetItem, payload: item }),
     setItems: (items: Result<PagedData<T>> | null) => dispatch({ type: ViewModelActionType.SetItems, payload: items }),
     reset: () => dispatch({ type: ViewModelActionType.Reset }),

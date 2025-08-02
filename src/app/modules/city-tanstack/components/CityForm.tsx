@@ -21,6 +21,10 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
 
     const countrySelectItems = getSelectItems("nameEn", "id", "Select a country");
 
+    useEffect(() => {
+        countrySelectItems.refetch();
+    }, []);
+
     // Initialize form with Zod schema validation
     const form = useForm({
         resolver: zodResolver(City.schema),
