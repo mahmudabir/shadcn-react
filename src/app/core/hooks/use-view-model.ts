@@ -90,7 +90,7 @@ export function useViewModel<
       // console.log('cancelRequest: ', key);
       // console.log('controllerMap: ', controllerMapRef.current);
 
-      controllerMapRef.current.get(key).abort();
+      controllerMapRef.current.get(key)?.abort();
       controllerMapRef.current.delete(key);
     } else {
       controllerMapRef.current.forEach((c) => c.abort());
