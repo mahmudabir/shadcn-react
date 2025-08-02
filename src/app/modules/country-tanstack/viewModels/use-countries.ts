@@ -41,21 +41,21 @@ export function useCountries(options?: TanstackViewModelOptions<Country>) {
     mutation: {
       create: {
         onSuccess: (res, values, context) => {
-          queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" })
+          queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ })
         },
       },
       update: {
         onSuccess: (res, values, context) => {
           const id = res.payload?.id;
           if (id) {
-            queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" });
-            queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id], refetchType: "none" });
+            queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ });
+            queryClient.invalidateQueries({ queryKey: [apiBaseUrl, id]/*, refetchType: "none"*/ });
           }
         },
       },
       remove: {
         onSuccess: (res, values, context) => {
-          queryClient.invalidateQueries({ queryKey: [apiBaseUrl], refetchType: "none" });
+          queryClient.invalidateQueries({ queryKey: [apiBaseUrl]/*, refetchType: "none"*/ });
         },
       },
     }
