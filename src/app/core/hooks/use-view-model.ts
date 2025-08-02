@@ -33,6 +33,26 @@ type ViewModelAction<T> =
   | { type: ViewModelActionType.SetMessage; payload: string | null }
   | { type: ViewModelActionType.Reset };
 
+/* Reducer */
+function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T>): ViewModelState<T> {
+  switch (action.type) {
+    case ViewModelActionType.SetItems:
+      return { ...state, items: action.payload };
+    case ViewModelActionType.SetItem:
+      return { ...state, item: action.payload };
+    case ViewModelActionType.SetSelectItems:
+      return { ...state, selectItems: action.payload };
+    case ViewModelActionType.SetLoading:
+      return { ...state, isLoading: action.payload };
+    case ViewModelActionType.SetMessage:
+      return { ...state, message: action.payload };
+    case ViewModelActionType.Reset:
+      return { ...state, items: null, item: null, message: null };
+    default:
+      return state;
+  }
+}
+
 /* Hook */
 export function useViewModel<
   T extends { id?: any },
@@ -49,26 +69,6 @@ export function useViewModel<
     isLoading: false,
     message: null,
   });
-
-  /* Reducer */
-  function viewModelReducer<T>(state: ViewModelState<T>, action: ViewModelAction<T>): ViewModelState<T> {
-    switch (action.type) {
-      case ViewModelActionType.SetItems:
-        return { ...state, items: action.payload };
-      case ViewModelActionType.SetItem:
-        return { ...state, item: action.payload };
-      case ViewModelActionType.SetSelectItems:
-        return { ...state, selectItems: action.payload };
-      case ViewModelActionType.SetLoading:
-        return { ...state, isLoading: action.payload };
-      case ViewModelActionType.SetMessage:
-        return { ...state, message: action.payload };
-      case ViewModelActionType.Reset:
-        return { ...state, items: null, item: null, message: null };
-      default:
-        return state;
-    }
-  }
 
   const http = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
