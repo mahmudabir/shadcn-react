@@ -1,10 +1,10 @@
-import { RefObject, useCallback, useReducer, useRef, useState } from 'react';
+import { useCallback, useReducer, useRef } from 'react';
+import { HttpOptions } from '../api/axios-request-config';
 import { useHttpClient } from '../api/use-http-client';
-import { PagedData, Pagination } from '../models/pagination';
+import { PagedData } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
 import { generateSelectOptions } from './use-tanstack-view-model';
-import { HttpOptions } from '../api/axios-request-config';
 
 /* Enums */
 enum ViewModelActionType {
@@ -72,16 +72,21 @@ export function useViewModel<
 
   const http = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
-  const controllerMapRef = useRef<Map<string, AbortController>>(new Map());
+  const controllerMapRef = useRef<Map<string, AbortController[]>>(new Map());
 
   function getSignalFor(key: string): AbortSignal {
-    controllerMapRef.current.get(key)?.abort();
+    controllerMapRef.current.get(key)?.forEach((c) => c.abort());
     const controller = new AbortController();
 
     // console.log('cancelRequest: ', key);
     // console.log('controllerMap: ', controllerMapRef.current);
 
-    controllerMapRef.current.set(key, controller);
+    if (controllerMapRef.current.get(key)) {
+      controllerMapRef.current.get(key)?.push(controller);
+    } else {
+      controllerMapRef.current.set(key, [controller]);
+    }
+
     return controller.signal;
   }
 
@@ -90,10 +95,10 @@ export function useViewModel<
       // console.log('cancelRequest: ', key);
       // console.log('controllerMap: ', controllerMapRef.current);
 
-      controllerMapRef.current.get(key)?.abort();
+      controllerMapRef.current.get(key)?.forEach((c) => c.abort());
       controllerMapRef.current.delete(key);
     } else {
-      controllerMapRef.current.forEach((c) => c.abort());
+      controllerMapRef.current.forEach((c) => c.forEach((c) => c.abort()));
       controllerMapRef.current.clear();
     }
   }
@@ -140,7 +145,8 @@ export function useViewModel<
 
   const getAll = useCallback(async (query?: TQuery) => {
     const signal = getSignalFor(query?.queryKey);
-    query.signal ??= signal;
+    if (query) query.signal ??= signal;
+    else query = { signal: signal } as TQuery;
     const result = await executeAsync(() => http.getAll(query), res => {
       dispatch({ type: ViewModelActionType.SetItems, payload: res });
     });
@@ -149,7 +155,8 @@ export function useViewModel<
 
   const getById = useCallback(async (id: string, query?: TQuery) => {
     const signal = getSignalFor(query?.queryKey);
-    query.signal ??= signal;
+    if (query) query.signal ??= signal;
+    else query = { signal: signal } as TQuery;
     const result = await executeAsync(() => http.getById(id, query), res => {
       dispatch({ type: ViewModelActionType.SetItem, payload: res });
     });
@@ -178,7 +185,8 @@ export function useViewModel<
 
   const create = useCallback(async (data: TCreate, query?: TQuery) => {
     const signal = getSignalFor(query?.queryKey);
-    query.signal ??= signal;
+    if (query) query.signal ??= signal;
+    else query = { signal: signal } as TQuery;
     const result = await executeAsync(() => {
       return http.create(data, query)
     },
@@ -190,7 +198,8 @@ export function useViewModel<
 
   const update = useCallback(async (id: string, data: TUpdate, query?: TQuery) => {
     const signal = getSignalFor(query?.queryKey);
-    query.signal ??= signal;
+    if (query) query.signal ??= signal;
+    else query = { signal: signal } as TQuery;
     const result = await executeAsync(
       () => {
         return http.update(id, data, query)
@@ -202,7 +211,8 @@ export function useViewModel<
 
   const remove = useCallback(async (id: string, query?: TQuery) => {
     const signal = getSignalFor(query?.queryKey);
-    query.signal ??= signal;
+    if (query) query.signal ??= signal;
+    else query = { signal: signal } as TQuery;
     const result = await executeAsync(
       () => {
         return http.remove(id, query)
