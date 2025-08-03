@@ -7,10 +7,8 @@ import axios, { AxiosResponse } from "axios";
 
 import { NavigateFunction } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000/api";
-
 export const baseApi = axios.create({
-    baseURL: API_BASE,
+    baseURL: "/api",
     headers: {
         "Content-Type": "application/json"
     }
@@ -79,7 +77,7 @@ baseApi.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-                const res = await axios.post(`${API_BASE}/auth/token`, getRefreshTokenFormData(refreshToken));
+                const res = await axios.post(`/auth/token`, getRefreshTokenFormData(refreshToken));
                 const { access_token, refresh_token } = res.data;
                 setLoginData(access_token, refresh_token);
                 originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
