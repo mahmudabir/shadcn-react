@@ -164,7 +164,7 @@ export function useViewModel<
         return http.getAll({ ...query, asDropdown: true })
       },
         (res) => {
-          dispatch({ type: ViewModelActionType.SetItems, payload: res });
+          // dispatch({ type: ViewModelActionType.SetItems, payload: res });
           dispatch({
             type: ViewModelActionType.SetSelectItems,
             payload: generateSelectOptions(res.payload!.content, label, value, placeholder),
