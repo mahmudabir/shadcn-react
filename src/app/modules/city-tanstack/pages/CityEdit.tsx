@@ -5,6 +5,7 @@ import CityForm from '../components/CityForm.tsx';
 import { City } from "../models/city.ts";
 import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
 import { useCities } from "../viewModels/use-cities.ts";
+import { useCallback } from "react";
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -14,7 +15,7 @@ const CityEdit = () => {
 
     const { data, isLoading, error, isSuccess } = getById(id);
 
-    const handleEdit = async (data: City) => {
+    const handleEdit = useCallback(async (data: City) => {
         if (!id || !data.id) return;
         try {
             const result = await updateMutation.mutateAsync({id, ...data});
@@ -27,7 +28,7 @@ const CityEdit = () => {
         } catch (err: any) {
             toastError(err?.message || 'Failed to update city');
         }
-    };
+    }, [id, updateMutation, navigate]); // Using useCallback to memoize the method with dependencies => [id, updateMutation, navigate]
 
     if (isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>

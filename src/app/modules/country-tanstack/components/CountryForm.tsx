@@ -268,3 +268,4 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 };
 
 export default CountryForm;
+// export default React.memo(CountryEdit); // to memoize the whole component

@@ -1,5 +1,5 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from "../../../../components/ui/card.tsx";
 import { City } from "../../city-tanstack/models/city.ts";
@@ -17,7 +17,7 @@ const CityEdit = () => {
         cityViewModel.getById(id);
     }, [id]);
 
-    const handleEdit = async (data: City) => {
+    const handleEdit = useCallback(async (data: City) => {
         if (!id || !data.id) return;
         try {
             const result = await cityViewModel.update(id, data);
@@ -30,7 +30,7 @@ const CityEdit = () => {
         } catch (err: any) {
             toastError(err.message || 'Failed to update city');
         }
-    };
+    }, [id, cityViewModel, navigate]); // Using useCallback to memoize the method with dependencies => [id, cityViewModel, navigate]
 
     if (cityViewModel.isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>

@@ -1,11 +1,11 @@
-import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import CountryForm from '../components/CountryForm.tsx';
-import { useCountries } from '../viewModels/use-countries.ts';
-import { Card } from "../../../../components/ui/card.tsx";
 import { Country } from "@/app/modules/country-tanstack/models/country.ts";
+import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
+import { useCallback, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Card } from "../../../../components/ui/card.tsx";
+import CountryForm from '../components/CountryForm.tsx';
 import { COUNTRY_PATHS } from "../routes/CountryRoutes.tsx";
+import { useCountries } from '../viewModels/use-countries.ts';
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,7 +17,7 @@ const CountryEdit = () => {
         countryViewModel.getById(id);
     }, [id]);
 
-    const handleEdit = async (data: Country) => {
+    const handleEdit = useCallback(async (data: Country) => {
         if (!id || !data.id) return;
         try {
             const result = await countryViewModel.update(id, data);
@@ -30,7 +30,7 @@ const CountryEdit = () => {
         } catch (err: any) {
             toastError(err?.message || 'Failed to update country');
         }
-    };
+    }, [id, countryViewModel, navigate]); // Using useCallback to memoize the method with dependencies => [id, countryViewModel, navigate]
 
     if (countryViewModel.isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>

@@ -5,6 +5,7 @@ import CountryForm from '../components/CountryForm.tsx';
 import { Country } from "../models/country.ts";
 import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
 import { useCountries } from "../viewModels/use-countries.ts";
+import { useCallback } from "react";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -14,10 +15,10 @@ const CountryEdit = () => {
 
     const { data, isLoading, error, isSuccess } = getById(id);
 
-    const handleEdit = async (data: Country) => {
+    const handleEdit = useCallback(async (data: Country) => {
         if (!id || !data.id) return;
         try {
-            const result = await updateMutation.mutateAsync({id, ...data});
+            const result = await updateMutation.mutateAsync({ id, ...data });
             if (updateMutation?.isSuccess || result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
                 navigate(COUNTRY_TANSTACK_PATHS.index());
@@ -27,7 +28,7 @@ const CountryEdit = () => {
         } catch (err: any) {
             toastError(err?.message || 'Failed to update country');
         }
-    };
+    }, [id, updateMutation, navigate]); // Using useCallback to memoize the method with dependencies => [id, updateMutation, navigate]
 
     if (isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>
