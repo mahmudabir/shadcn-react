@@ -166,7 +166,7 @@ export function useViewModel<
   const getSelectItems = useCallback(
     async (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
       const signal = getSignalFor(query?.queryKey);
-      // query.signal ??= signal;
+      query.signal ??= signal;
       const result = await executeAsync(() => {
         return http.getAll({ ...query, asDropdown: true })
       },
@@ -178,7 +178,7 @@ export function useViewModel<
           });
         }
       );
-      return generateSelectOptions(result.payload!.content, label, value, placeholder) ?? [];
+      return result;
     },
     [http]
   );

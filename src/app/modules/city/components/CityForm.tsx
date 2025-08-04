@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { confirmPopup } from "../../../../components/custom/confirmation-popup"
 import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../components/custom/form-field-item"
@@ -33,8 +33,12 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
         logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
 
+    const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
+
     useEffect(() => {
-        countryViewModel.getSelectItems("nameEn", "id", "Select a country");
+        countryViewModel.getSelectItems("nameEn", "id", "Select a country").then(() => {
+            setCountryOptions(countryViewModel.selectItems);
+        });
     }, []);
 
     const confirmationOptions = {
@@ -59,8 +63,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
             label: "Country",
             description: "Select the country for this city",
             placeholder: "Select a country",
-            className: "w-full",
-            options: countryViewModel.selectItems
+            className: "w-full"
         },
         {
             type: "text",
@@ -96,6 +99,9 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
         }
     ];
 
+    console.log(countryOptions);
+
+
     return (
         <Form {...form}>
             <form className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8"
@@ -116,7 +122,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                 {/* Countries Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {renderFormFieldsUsingFormFieldItemConfig
-                        ? <FormFieldItems items={cityFieldsConfig} />
+                        ? <FormFieldItems items={cityFieldsConfig} options={countryViewModel.selectItems} />
                         : (
                             <>
                                 <SelectFieldItem

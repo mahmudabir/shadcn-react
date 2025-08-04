@@ -7,24 +7,24 @@ import { FormFieldItemConfig } from "../../app/core/models/form-field-item-confi
 import { SelectOption } from "../../app/core/models/select-option";
 
 
-export function FormFieldItems(props: { items: FormFieldItemConfig<any>[] }) {
+export function FormFieldItems(props: { items: FormFieldItemConfig<any>[], options?: SelectOption[] }) {
 
-    // const options = props.options ?? [];
+    const options = props.options ?? [];
 
     return (
         <>
             {props.items.map((item, index) => (//<FormFieldItem key={index} {...item} />
                 item.type != "select"
                     ? <FormFieldItem key={index} {...item} />
-                    : <SelectFieldItem key={index} {...item} options={item.options} />
+                    : <SelectFieldItem key={index} {...item} options={options} />
             ))}
         </>
     );
 }
 
-export function FormFieldItem(props: { type?: string; control: any; name: string; label: string; description: string; placeholder?: string; className?: string }) {
+export function FormFieldItem(props: { type?: string; control: any; name: string; label: string; description: string; placeholder?: string; className?: string, options?: SelectOption[] }) {
 
-    const { type, control, name, label, description, placeholder, className = "w-full" } = props;
+    const { type, control, name, label, description, placeholder, options, className = "w-full" } = props;
 
     const fieldType = type || "text"; // Default to text if no type is provided
     const fieldElement = (field) => {
