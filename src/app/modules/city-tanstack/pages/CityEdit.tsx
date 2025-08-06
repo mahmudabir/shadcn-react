@@ -6,6 +6,7 @@ import { City } from "../models/city.ts";
 import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
 import { useCities } from "../viewModels/use-cities.ts";
 import { useCallback } from "react";
+import { useCountries } from "../../country-tanstack/viewModels/use-countries.ts";
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -13,12 +14,15 @@ const CityEdit = () => {
     const { update, getById } = useCities();
     const updateMutation = update();
 
+    const { getSelectItems } = useCountries();
+    const countrySelectItems = getSelectItems("nameEn", "id", "Select a country");
+
     const { data, isLoading, error, isSuccess } = getById(id);
 
     const handleEdit = useCallback(async (data: City) => {
         if (!id || !data.id) return;
         try {
-            const result = await updateMutation.mutateAsync({id, ...data});
+            const result = await updateMutation.mutateAsync({ id, ...data });
             if (updateMutation?.isSuccess || result?.isSuccess) {
                 toastSuccess(result?.message || 'Updated successfully');
                 navigate(CITY_TANSTACK_PATHS.index());
@@ -30,7 +34,7 @@ const CityEdit = () => {
         }
     }, [id, updateMutation, navigate]); // Using useCallback to memoize the method with dependencies => [id, updateMutation, navigate]
 
-    if (isLoading) return (
+    if (isLoading || countrySelectItems.isLoading) return (
         <div className="flex justify-center items-center h-40">Loading...</div>
     );
 
@@ -41,7 +45,7 @@ const CityEdit = () => {
     );
 
     return (
-        <CityForm initialData={data?.payload} onSubmit={handleEdit} submitLabel="Update" />
+        <CityForm initialData={data?.payload} countryOptions={countrySelectItems.data} onSubmit={handleEdit} submitLabel="Update" />
     );
 };
 

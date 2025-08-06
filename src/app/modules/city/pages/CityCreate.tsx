@@ -1,14 +1,23 @@
-import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useNavigate } from 'react-router-dom';
-import { useCities } from '../viewModels/use-cities.ts';
-import CountryForm from '../components/CityForm.tsx';
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
+import { useCallback, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useCountries } from "../../country/viewModels/use-countries.ts";
+import CountryForm from '../components/CityForm.tsx';
 import { CITY_PATHS } from "../routes/CityRoutes.tsx";
-import { useCallback } from "react";
+import { useCities } from '../viewModels/use-cities.ts';
 
 const CityCreate = () => {
   const navigate = useNavigate();
   const cityViewModel = useCities();
+  const countryViewModel = useCountries();
+
+  useEffect(() => {
+    countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: true, queryKey: "country_select_items" });
+    return () => {
+      countryViewModel.cancelRequest("country_select_items");
+    };
+  }, []);
 
   const handleCreate = useCallback(async (data: City) => {
     try {
@@ -24,8 +33,12 @@ const CityCreate = () => {
     }
   }, [cityViewModel, navigate]); // Using useCallback to memoize the method with dependencies => [cityViewModel, navigate]
 
+  if (countryViewModel.isLoading) return (
+    <div className="flex justify-center items-center h-40">Loading...</div>
+  );
+
   return (
-    <CountryForm onSubmit={handleCreate} submitLabel="Create" />
+    <CountryForm onSubmit={handleCreate} countryOptions={countryViewModel.selectItems} submitLabel="Create" />
   );
 };
 

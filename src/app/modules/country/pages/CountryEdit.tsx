@@ -14,7 +14,11 @@ const CountryEdit = () => {
 
     useEffect(() => {
         if (!id) return;
-        countryViewModel.getById(id);
+        countryViewModel.getById(id, { skipPreloader: true, queryKey: "country_by_id" });
+
+        return () => {
+            countryViewModel.cancelRequest("country_by_id");
+        };
     }, [id]);
 
     const handleEdit = useCallback(async (data: Country) => {

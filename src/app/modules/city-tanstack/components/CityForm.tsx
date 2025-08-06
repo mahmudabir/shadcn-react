@@ -8,17 +8,21 @@ import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../comp
 import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { useCountries } from "../../country-tanstack/viewModels/use-countries"
+import { SelectOption } from "../../../core/models/select-option"
 import { City } from "../models/city"
 
 
-// Main CountryForm component
-const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }) => {
-    const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
-    // const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
+export interface CityFormProps {
+    initialData?: City,
+    countryOptions: SelectOption[],
+    submitLabel: string,
+    onSubmit: (data) => void;
+}
 
-    const { getSelectItems } = useCountries();
-    const countrySelectItems = getSelectItems("nameEn", "id", "Select a country");
+// Main CountryForm component
+const CityForm = (props: CityFormProps) => {
+    const { initialData, countryOptions, submitLabel, onSubmit } = props;
+    const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
 
     // Initialize form with Zod schema validation
     const form = useForm({
@@ -56,7 +60,8 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
             label: "Country",
             description: "Select the country for this city",
             placeholder: "Select a country",
-            className: "w-full"
+            className: "w-full",
+            options: countryOptions,
         },
         {
             type: "text",
@@ -112,7 +117,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                 {/* Countries Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {renderFormFieldsUsingFormFieldItemConfig
-                        ? <FormFieldItems items={cityFieldsConfig} options={countrySelectItems.data} />
+                        ? <FormFieldItems items={cityFieldsConfig} />
                         : (
                             <>
                                 <SelectFieldItem
@@ -121,7 +126,7 @@ const CityForm = ({ initialData = new City(), onSubmit, submitLabel = 'Submit' }
                                     label="Country"
                                     description="Select the country for this city"
                                     placeholder="Select a country"
-                                    options={countrySelectItems.data}
+                                    options={countryOptions}
                                 />
                                 <FormFieldItem
                                     type="text"

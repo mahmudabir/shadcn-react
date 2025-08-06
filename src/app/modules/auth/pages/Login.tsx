@@ -11,9 +11,9 @@ import { Loader2Icon } from "lucide-react";
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
 
-const API_LOGIN = "/auth/token";
+const API_LOGIN = "/api/auth/token";
 
-export default function Login({ className , ...props }) {
+export default function Login({ className, ...props }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -62,7 +62,7 @@ export default function Login({ className , ...props }) {
                                             value={username} onChange={e => setUsername(e.target.value)}
                                         />
                                     </div>
-                                    
+
                                     <div className="grid gap-3">
                                         <div className="flex items-center">
                                             <Label htmlFor="password">Password</Label>
@@ -74,11 +74,11 @@ export default function Login({ className , ...props }) {
                                             </a>
                                         </div>
                                         <Input id="password" type="password" required value={password}
-                                               onChange={e => setPassword(e.target.value)}/>
+                                            onChange={e => setPassword(e.target.value)} />
                                     </div>
                                     <div className="flex flex-col gap-3">
                                         <Button disabled={isLoading} type="submit" className="w-full">
-                                            {isLoading && <Loader2Icon className="animate-spin"/>}
+                                            {isLoading && <Loader2Icon className="animate-spin" />}
                                             Login
                                         </Button>
                                         {/*<Button variant="outline" className="w-full">*/}

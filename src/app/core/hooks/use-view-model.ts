@@ -75,6 +75,7 @@ export function useViewModel<
   const controllerMapRef = useRef<Map<string, AbortController[]>>(new Map());
 
   function getSignalFor(key: string): AbortSignal {
+    if (!key) return;
     controllerMapRef.current.get(key)?.forEach((c) => c.abort());
     const controller = new AbortController();
 
@@ -112,6 +113,7 @@ export function useViewModel<
     dispatch({ type: ViewModelActionType.SetMessage, payload: null });
     try {
       const res = await operation();
+      dispatch({ type: ViewModelActionType.SetLoading, payload: false });
 
       if (res.isSuccess && res.payload !== undefined) {
         onSuccess?.(res);
@@ -136,11 +138,11 @@ export function useViewModel<
         type: ViewModelActionType.SetMessage,
         payload: err?.message ?? 'Unexpected error occurred',
       });
-
-      return null;
     } finally {
       dispatch({ type: ViewModelActionType.SetLoading, payload: false });
     }
+
+    return null;
   };
 
   const getAll = useCallback(async (query?: TQuery) => {

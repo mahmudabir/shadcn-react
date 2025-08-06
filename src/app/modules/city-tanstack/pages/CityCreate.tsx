@@ -5,11 +5,15 @@ import CountryForm from '../components/CityForm.tsx';
 import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
 import { useCities } from "../viewModels/use-cities.ts";
 import { useCallback } from "react";
+import { useCountries } from "../../country-tanstack/viewModels/use-countries.ts";
 
 const CityCreate = () => {
   const navigate = useNavigate();
   const { create } = useCities();
   const createMutation = create();
+
+  const { getSelectItems } = useCountries();
+  const countrySelectItems = getSelectItems("nameEn", "id", "Select a country");
 
   const handleCreate = useCallback(async (data: City) => {
     try {
@@ -25,8 +29,12 @@ const CityCreate = () => {
     }
   }, [createMutation, navigate]); // Using useCallback to memoize the method with dependencies => [createMutation, navigate]
 
+    if (countrySelectItems.isLoading) return (
+        <div className="flex justify-center items-center h-40">Loading...</div>
+    );
+
   return (
-    <CountryForm onSubmit={handleCreate} submitLabel="Create" />
+    <CountryForm countryOptions={countrySelectItems.data} onSubmit={handleCreate} submitLabel="Create" />
   );
 };
 

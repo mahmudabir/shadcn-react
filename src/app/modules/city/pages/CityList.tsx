@@ -56,6 +56,9 @@ const CityList = () => {
         <Button asChild>
           <Link to={CITY_PATHS.create()}>Create New city</Link>
         </Button>
+        <Button size="sm" variant="outline" asChild>
+          <Link to={CITY_PATHS.edit('1000')}>Edit</Link>
+        </Button>
       </div>
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
         <Input

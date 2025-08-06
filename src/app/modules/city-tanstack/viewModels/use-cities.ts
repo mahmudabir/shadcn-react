@@ -1,6 +1,7 @@
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/hooks/use-tanstack-view-model";
 import { City } from "../models/city";
+import { QUERY_STALE_TIME } from "../../../../lib/utils";
 
 // MVVM ViewModel for City using Tanstack Query
 export function useCities(options?: TanstackViewModelOptions<City>) {
@@ -12,7 +13,8 @@ export function useCities(options?: TanstackViewModelOptions<City>) {
     queryClient: queryClient,
     query: {
       getAll: (query: any) => ({
-        staleTime: 10_000,
+        staleTime: QUERY_STALE_TIME,
+        gcTime: QUERY_STALE_TIME,
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data) => {
@@ -20,7 +22,8 @@ export function useCities(options?: TanstackViewModelOptions<City>) {
         }
       }),
       getById: (id) => ({
-        staleTime: 10_000,
+        staleTime: QUERY_STALE_TIME,
+        gcTime: QUERY_STALE_TIME,
         queryKey: [apiBaseUrl, id],
         enabled: !!id,
         onSuccess: (data) => {
@@ -28,7 +31,8 @@ export function useCities(options?: TanstackViewModelOptions<City>) {
         }
       }),
       getSelectItems: (label: keyof City, value: keyof City, placeholder?: string, query?: any) => ({
-        staleTime: 10_000,
+        staleTime: QUERY_STALE_TIME,
+        gcTime: QUERY_STALE_TIME,
         queryKey: [apiBaseUrl],
         enabled: true,
         onSuccess: (data, placeholder?: string) => {

@@ -144,7 +144,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                 {/* Countries Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {renderFormFieldsUsingFormFieldItemConfig
-                        ? <FormFieldItems items={countryFieldsConfig} options={countryViewModel.selectItems} />
+                        ? <FormFieldItems items={countryFieldsConfig} />
                         : (
                             <>
                                 <FormFieldItem

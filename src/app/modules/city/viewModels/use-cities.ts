@@ -1,3 +1,4 @@
+import { HttpOptions } from "../../../core/api/axios-request-config";
 import { useViewModel } from "../../../core/hooks/use-view-model";
 import { City } from "../../city-tanstack/models/city";
 
@@ -13,5 +14,5 @@ export function useCities() {
   //   setCustomState,
   // };
 
-  return useViewModel<City, any>("/cities");
+  return useViewModel<City, HttpOptions>("/cities");
 }
