@@ -13,7 +13,7 @@ const CityCreate = () => {
   const countryViewModel = useCountries();
 
   useEffect(() => {
-    countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: true, queryKey: "country_select_items" });
+    countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: false, queryKey: "country_select_items" });
     return () => {
       countryViewModel.cancelRequest("country_select_items");
     };

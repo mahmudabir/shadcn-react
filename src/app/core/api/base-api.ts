@@ -8,7 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import { NavigateFunction } from "react-router-dom";
 
 export const baseApi = axios.create({
-    baseURL: "/api"
+    baseURL: import.meta.env.VITE_BASE_API_URL + "/api"
 });
 
 export let navigateFn: NavigateFunction | null = null;

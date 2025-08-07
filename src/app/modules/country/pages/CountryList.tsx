@@ -21,7 +21,7 @@ const CountryList = () => {
   }, []);
 
   const getAllData = async () => {
-    await getAll({ skipPreloader: true, queryKey: "countries_list" });
+    await getAll({ skipPreloader: false, queryKey: "countries_list" });
   };
 
   const abortRequest = () => {
@@ -43,7 +43,7 @@ const CountryList = () => {
     const getAllData = () => {
       const controller = new AbortController();
       abortController = controller;
-      getAll({ skipPreloader: true, signal: controller.signal });
+      getAll({ skipPreloader: false, signal: controller.signal });
     };
   
     const abortRequest = () => {

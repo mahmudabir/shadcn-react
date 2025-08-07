@@ -12,7 +12,7 @@ import { SelectOption } from "../../../core/models/select-option"
 import { City } from "../models/city"
 
 
-export interface CityFormProps {
+export type CityFormProps = {
     initialData?: City,
     countryOptions: SelectOption[],
     submitLabel: string,

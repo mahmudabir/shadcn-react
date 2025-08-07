@@ -6,12 +6,14 @@ import tailwindcss from "@tailwindcss/vite"
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
+  console.log(env);
+  
 
-  const nodeEnv = env['VITE_NODE_ENV'];
-  const baseApiUrl = env['VITE_BASE_API_URL'];
-  // const isProduction = nodeEnv === 'production';
-  console.log('VITE_NODE_ENV: ', nodeEnv);
-  console.log('VITE_BASE_API_URL: ', baseApiUrl);
+  // const nodeEnv = env['VITE_NODE_ENV'] ?? 'production';
+  // const baseApiUrl = env['VITE_BASE_API_URL'] ?? 'http://localhost:5000';
+  // // const isProduction = nodeEnv === 'production';
+  // console.log('VITE_NODE_ENV: ', nodeEnv);
+  // console.log('VITE_BASE_API_URL: ', baseApiUrl);
 
   return {
     plugins: [react(), tailwindcss()],
@@ -20,13 +22,13 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    server: {
-      proxy: {
-        '/api': {
-          target: baseApiUrl,
-          changeOrigin: true,
-        }
-      }
-    }
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: baseApiUrl,
+    //       changeOrigin: true,
+    //     }
+    //   }
+    // }
   };
 });

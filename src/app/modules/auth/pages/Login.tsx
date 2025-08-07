@@ -11,7 +11,7 @@ import { Loader2Icon } from "lucide-react";
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
 
-const API_LOGIN = "/api/auth/token";
+const API_LOGIN = import.meta.env.VITE_BASE_API_URL + "/api/auth/token";
 
 export default function Login({ className, ...props }) {
     const [username, setUsername] = useState("");

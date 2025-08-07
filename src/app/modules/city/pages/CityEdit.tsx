@@ -16,9 +16,9 @@ const CityEdit = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: true, queryKey: "country_select_items" });
+        countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: false, queryKey: "country_select_items" });
         if (id) {
-            cityViewModel.getById(id, { skipPreloader: true, queryKey: "city_by_id" });
+            cityViewModel.getById(id, { skipPreloader: false, queryKey: "city_by_id" });
         }
         return () => {
             countryViewModel.cancelRequest("country_select_items");
@@ -29,7 +29,7 @@ const CityEdit = () => {
     useEffect(() => {
         console.log('useEffect: ', new Date());
         console.log('useEffect: ', countryViewModel.isLoading);
-        
+
         setIsLoading(countryViewModel.isLoading);
     }, [countryViewModel.isLoading]);
 
@@ -52,11 +52,12 @@ const CityEdit = () => {
         <div className="flex justify-center items-center h-40">Loading...</div>
     );
 
-    // else if (!cityViewModel.item?.isSuccess) return (
-    //     <Card className="p-6">
-    //         <h2 className="text-xl font-bold mb-2">City not found</h2>
-    //     </Card>
-    // );
+    if (!cityViewModel.item?.isSuccess) return (
+        <Card className="p-6">
+            <h2 className="text-xl font-bold mb-2">City not found</h2>
+        </Card>
+    );
+
     return (<CityForm initialData={cityViewModel.item?.payload} countryOptions={countryViewModel.selectItems} onSubmit={handleEdit} submitLabel="Update" />);
 };
 

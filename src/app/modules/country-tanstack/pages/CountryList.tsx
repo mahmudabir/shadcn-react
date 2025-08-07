@@ -13,7 +13,7 @@ const CountryList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove, queryClient } = useCountries();
 
-  const result = getAll({ skipPreloader: true });
+  const result = getAll({ skipPreloader: false });
   var removeMutation = remove();
 
   const abortRequest = () => {

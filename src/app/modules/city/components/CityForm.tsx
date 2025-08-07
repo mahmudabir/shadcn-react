@@ -8,8 +8,8 @@ import { FormFieldItem, FormFieldItems, SelectFieldItem } from "../../../../comp
 import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { CityFormProps } from "../../city-tanstack/components/CityForm"
 import { City } from "../../city-tanstack/models/city"
+import { CityFormProps } from "../../city-tanstack/components/CityForm"
 
 
 // Main CountryForm component
