@@ -1,6 +1,6 @@
 import { useCallback, useReducer, useRef } from 'react';
-import { HttpOptions } from '../api/axios-request-config';
-import { useHttpClient } from '../api/use-http-client';
+import { HttpOptions } from '../api/api-request-config.ts';
+import { useAxiosClient } from '../api/use-axios-client.ts';
 import { PagedData } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
@@ -70,7 +70,7 @@ export function useViewModel<
     message: null,
   });
 
-  const http = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
+  const http = useAxiosClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
   const controllerMapRef = useRef<Map<string, AbortController[]>>(new Map());
 

@@ -1,9 +1,9 @@
 import { QueryClient, useMutation, UseMutationOptions, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { useHttpClient } from '../api/use-http-client';
+import { useAxiosClient } from '../api/use-axios-client.ts';
 import { PagedData, Pagination } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
-import { HttpOptions } from '../api/axios-request-config';
+import { HttpOptions } from '../api/api-request-config.ts';
 
 export interface TanstackViewModelOptions<
   T,
@@ -50,7 +50,7 @@ export function useTanstackViewModel<
 ) {
 
   const queryClient = options.queryClient ?? useQueryClient();
-  const api = useHttpClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
+  const api = useAxiosClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
   const getAll = (query?: TQuery) => {
     const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };

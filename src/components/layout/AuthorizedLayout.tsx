@@ -1,4 +1,4 @@
-import { setPreloaderHandler } from "@/app/core/api/base-api";
+import { setPreloaderHandler } from "@/app/core/api/base-axios.ts";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";

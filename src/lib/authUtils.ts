@@ -1,4 +1,4 @@
-import { navigateFn } from "@/app/core/api/base-api.ts";
+import { navigateFn } from "@/app/core/api/base-axios.ts";
 
 
 export const ACCESS_TOKEN_KEY = "access_token";

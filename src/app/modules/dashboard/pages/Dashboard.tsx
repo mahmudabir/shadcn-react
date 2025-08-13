@@ -34,15 +34,17 @@ export default function Dashboard() {
                     </Card>
                 </Link>
 
-                <Card className="hover:shadow-2xl">
-                    <CardHeader>
-                        <CardTitle>Statistics</CardTitle>
-                        <CardDescription>Your account overview</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Dashboard content goes here</p>
-                    </CardContent>
-                </Card>
+                <Link to="/flights">
+                    <Card className="hover:shadow-2xl">
+                        <CardHeader>
+                            <CardTitle>Flights</CardTitle>
+                            <CardDescription>Go to flights list</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Dashboard content goes here</p>
+                        </CardContent>
+                    </Card>
+                </Link>
 
                 <Link to="/countries-tanstack">
                     <Card className="hover:shadow-2xl">

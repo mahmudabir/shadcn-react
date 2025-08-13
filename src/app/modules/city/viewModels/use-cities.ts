@@ -1,4 +1,4 @@
-import { HttpOptions } from "../../../core/api/axios-request-config";
+import { HttpOptions } from "../../../core/api/api-request-config.ts";
 import { useViewModel } from "../../../core/hooks/use-view-model";
 import { City } from "../../city-tanstack/models/city";
 

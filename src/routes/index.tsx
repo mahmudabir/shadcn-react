@@ -12,6 +12,7 @@ import UnauthorizedLayout from "../components/layout/UnauthorizedLayout.tsx"
 import { CityRoutes } from "../app/modules/city/routes/CityRoutes.tsx"
 import { CityTanstackRoutes } from "../app/modules/city-tanstack/routes/CityTanstackRoutes.tsx"
 import { CountryTanstackRoutes } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
+import { FLightRoutes } from "@/app/modules/flight/routes/FlightRoutes.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -36,6 +37,7 @@ export const router = createBrowserRouter(
                     {CityRoutes}
                     {CityTanstackRoutes}
                     {CountryTanstackRoutes}
+                    {FLightRoutes}
 
                 </Route>
 

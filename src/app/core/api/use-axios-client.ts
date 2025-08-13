@@ -1,9 +1,9 @@
 import { PagedData } from "../models/pagination";
 import { Result } from "../models/result";
-import baseApi from "./base-api";
-import { HttpOptions } from "@/app/core/api/axios-request-config.ts";
+import baseAxios from "./base-axios.ts";
+import { HttpOptions } from "@/app/core/api/api-request-config.ts";
 
-export function useHttpClient<
+export function useAxiosClient<
     T,
     TQuery extends HttpOptions = HttpOptions,
     TCreate = T,
@@ -16,7 +16,7 @@ export function useHttpClient<
 
         const query: Record<string, any> = { asPage: props?.pagination?.asPage, asDropdown: props?.pagination?.asDropdown };
 
-        const res = await baseApi.get(apiBaseUrl, {
+        const res = await baseAxios.get(apiBaseUrl, {
             signal: props?.signal,
             skipPreloader: props?.skipPreloader || false,
             params: query
@@ -28,7 +28,7 @@ export function useHttpClient<
 
         const query: Record<string, any> = { ...props?.queryParams };
 
-        const res = await baseApi.get(`${apiBaseUrl}/${id}`, {
+        const res = await baseAxios.get(`${apiBaseUrl}/${id}`, {
             signal: props?.signal,
             skipPreloader: props?.skipPreloader || false,
             params: query
@@ -40,7 +40,7 @@ export function useHttpClient<
 
         const query: Record<string, any> = { ...props };
 
-        const res = await baseApi.post(apiBaseUrl, data, {
+        const res = await baseAxios.post(apiBaseUrl, data, {
             signal: props?.signal,
             skipPreloader: props?.skipPreloader || false,
             params: query
@@ -52,7 +52,7 @@ export function useHttpClient<
 
         const query: Record<string, any> = { ...props };
 
-        const res = await baseApi.put(`${apiBaseUrl}/${id}`, data, {
+        const res = await baseAxios.put(`${apiBaseUrl}/${id}`, data, {
             signal: props?.signal,
             skipPreloader: props?.skipPreloader || false,
             params: query
@@ -64,7 +64,7 @@ export function useHttpClient<
 
         const query: Record<string, any> = { ...props };
 
-        const res = await baseApi.delete(`${apiBaseUrl}/${id}`, {
+        const res = await baseAxios.delete(`${apiBaseUrl}/${id}`, {
             signal: props?.signal,
             skipPreloader: props?.skipPreloader || false,
             params: query
