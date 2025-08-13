@@ -206,6 +206,7 @@ async function eventStreamRequest<T = any>(
     path: string,
     options: EventStreamOptions = {}
 ): Promise<{ close: () => void }> {
+
     const {
         method = "GET",
         headers: inputHeaders,
@@ -218,194 +219,199 @@ async function eventStreamRequest<T = any>(
         _retry = false
     } = options;
 
-    // Default to skipping preloader for long-lived streams unless explicitly overridden
-    const skipPreloader = inputSkipPreloader ?? true;
+    try{
+        // Default to skipping preloader for long-lived streams unless explicitly overridden
+        const skipPreloader = inputSkipPreloader ?? true;
 
-    const url = buildUrl(path, params);
+        const url = buildUrl(path, params);
 
-    const headers = new Headers(inputHeaders || {});
-    // Override Accept for SSE
-    headers.set("Accept", "text/event-stream");
-    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-    if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-    }
-
-    // Handle body for POST requests
-    let body = inputBody;
-    if (method === "POST" && body !== undefined && body !== null && !isFormData(body)) {
-        if (isPlainObject(body) || Array.isArray(body)) {
-            headers.set("Content-Type", "application/json");
-            body = JSON.stringify(body);
+        const headers = new Headers(inputHeaders || {});
+        // Override Accept for SSE
+        headers.set("Accept", "text/event-stream");
+        const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
         }
-    }
 
-    const controller = new AbortController();
-    const combinedAbort = controller.signal;
-    if (signal) {
-        // Propagate external aborts
-        if (signal.aborted) {
-            controller.abort((signal as any).reason);
-        } else {
-            signal.addEventListener("abort", () => controller.abort((signal as any).reason), { once: true });
-        }
-    }
-
-    let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
-
-    const begin = async (): Promise<{ close: () => void }> => {
-        try {
-            if (preloaderHandler && !preloaderHandler.isManual && !skipPreloader) {
-                preloaderHandler.increment();
+        // Handle body for POST requests
+        let body = inputBody;
+        if (method === "POST" && body !== undefined && body !== null && !isFormData(body)) {
+            if (isPlainObject(body) || Array.isArray(body)) {
+                headers.set("Content-Type", "application/json");
+                body = JSON.stringify(body);
             }
+        }
 
-            const res = await fetch(url, {
-                method,
-                headers,
-                body,
-                signal: combinedAbort,
-                cache: "no-store",
-            });
+        const controller = new AbortController();
+        const combinedAbort = controller.signal;
+        if (signal) {
+            // Propagate external aborts
+            if (signal.aborted) {
+                controller.abort((signal as any).reason);
+            } else {
+                signal.addEventListener("abort", () => controller.abort((signal as any).reason), { once: true });
+            }
+        }
 
-            // Attempt token refresh on initial 401 (once)
-            if (res.status === 401 && !_retry) {
-                try {
-                    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-                    const refreshRes = await fetch(buildUrl("/auth/token"), {
-                        method: "POST",
-                        body: getRefreshTokenFormData(refreshToken ?? undefined),
-                        signal: combinedAbort
-                    });
-                    if (!refreshRes.ok) {
-                        throw new Error("Failed to refresh token");
-                    }
-                    const refreshData = (await parseJsonSafe<any>(refreshRes)) || {};
-                    const { access_token, refresh_token } = refreshData;
-                    if (!access_token || !refresh_token) {
-                        throw new Error("Invalid refresh token response");
-                    }
-                    setLoginData(access_token, refresh_token);
-                    // Retry stream once after refreshing token
-                    return await eventStreamRequest<T>(path, {
-                        ...options,
-                        method,
-                        body: inputBody,
-                        skipPreloader: true,
-                        _retry: true,
-                        signal: combinedAbort
-                    });
-                } catch (refreshError) {
-                    logout();
-                    if (navigateFn) {
-                        navigateFn(AUTH_PATHS.login());
-                    } else {
-                        window.location.href = AUTH_PATHS.login();
-                    }
-                    throw refreshError;
+        let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
+
+        const begin = async (): Promise<{ close: () => void }> => {
+            try {
+                if (preloaderHandler && !preloaderHandler.isManual && !skipPreloader) {
+                    preloaderHandler.increment();
                 }
-            }
 
-            if (!res.ok) {
-                throw new Error(`HTTP error: ${res.status}`);
-            }
+                const res = await fetch(url, {
+                    method,
+                    headers,
+                    body,
+                    signal: combinedAbort,
+                    cache: "no-store",
+                });
 
-            if (!res.body) {
-                throw new Error("Readable stream not supported by this environment");
-            }
+                // Attempt token refresh on initial 401 (once)
+                if (res.status === 401 && !_retry) {
+                    try {
+                        const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+                        const refreshRes = await fetch(buildUrl("/auth/token"), {
+                            method: "POST",
+                            body: getRefreshTokenFormData(refreshToken ?? undefined),
+                            signal: combinedAbort
+                        });
+                        if (!refreshRes.ok) {
+                            throw new Error("Failed to refresh token");
+                        }
+                        const refreshData = (await parseJsonSafe<any>(refreshRes)) || {};
+                        const { access_token, refresh_token } = refreshData;
+                        if (!access_token || !refresh_token) {
+                            throw new Error("Invalid refresh token response");
+                        }
+                        setLoginData(access_token, refresh_token);
+                        // Retry stream once after refreshing token
+                        return await eventStreamRequest<T>(path, {
+                            ...options,
+                            method,
+                            body: inputBody,
+                            skipPreloader: true,
+                            _retry: true,
+                            signal: combinedAbort
+                        });
+                    } catch (refreshError) {
+                        logout();
+                        if (navigateFn) {
+                            navigateFn(AUTH_PATHS.login());
+                        } else {
+                            window.location.href = AUTH_PATHS.login();
+                        }
+                        throw refreshError;
+                    }
+                }
 
-            reader = res.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-            let buffer = "";
+                if (!res.ok) {
+                    throw new Error(`HTTP error: ${res.status}`);
+                }
 
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                buffer += decoder.decode(value, { stream: true });
+                if (!res.body) {
+                    throw new Error("Readable stream not supported by this environment");
+                }
 
-                // Process complete SSE events separated by blank lines
-                let sepIndex = buffer.indexOf("\n\n");
-                while (sepIndex !== -1) {
-                    const rawEvent = buffer.slice(0, sepIndex).replace(/\r/g, "");
-                    buffer = buffer.slice(sepIndex + 2);
+                reader = res.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let buffer = "";
 
-                    const lines = rawEvent.split("\n");
-                    const evt: SSEMessage<T> = { raw: rawEvent } as SSEMessage<T>;
-                    const dataLines: string[] = [];
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
 
-                    for (const line of lines) {
-                        if (!line || line.startsWith(":")) continue;
-                        const colon = line.indexOf(":");
-                        const field = colon === -1 ? line : line.slice(0, colon);
-                        const value = colon === -1 ? "" : line.slice(colon + 1).replace(/^ /, "");
-                        switch (field) {
-                            case "event":
-                                evt.event = value;
-                                break;
-                            case "data":
-                                dataLines.push(value);
-                                break;
-                            case "id":
-                                evt.id = value;
-                                break;
-                            case "retry":
+                    // Process complete SSE events separated by blank lines
+                    let sepIndex = buffer.indexOf("\n\n");
+                    while (sepIndex !== -1) {
+                        const rawEvent = buffer.slice(0, sepIndex).replace(/\r/g, "");
+                        buffer = buffer.slice(sepIndex + 2);
+
+                        const lines = rawEvent.split("\n");
+                        const evt: SSEMessage<T> = { raw: rawEvent } as SSEMessage<T>;
+                        const dataLines: string[] = [];
+
+                        for (const line of lines) {
+                            if (!line || line.startsWith(":")) continue;
+                            const colon = line.indexOf(":");
+                            const field = colon === -1 ? line : line.slice(0, colon);
+                            const value = colon === -1 ? "" : line.slice(colon + 1).replace(/^ /, "");
+                            switch (field) {
+                                case "event":
+                                    evt.event = value;
+                                    break;
+                                case "data":
+                                    dataLines.push(value);
+                                    break;
+                                case "id":
+                                    evt.id = value;
+                                    break;
+                                case "retry":
                                 {
                                     const n = Number(value);
                                     if (!Number.isNaN(n)) evt.retry = n;
                                 }
-                                break;
-                            default:
-                                break;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
 
-                    const dataStr = dataLines.join("\n");
-                    try {
-                        // Try JSON first; fallback to raw string
-                        (evt as SSEMessage<any>).data = dataStr ? JSON.parse(dataStr) : ("" as any);
-                    } catch {
-                        (evt as SSEMessage<any>).data = dataStr as any;
-                    }
+                        const dataStr = dataLines.join("\n");
+                        try {
+                            // Try JSON first; fallback to raw string
+                            (evt as SSEMessage<any>).data = dataStr ? JSON.parse(dataStr) : ("" as any);
+                        } catch {
+                            (evt as SSEMessage<any>).data = dataStr as any;
+                        }
 
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                        onMessage && onMessage(evt);
+
+                        sepIndex = buffer.indexOf("\n\n");
+                    }
+                }
+            } catch (err) {
+                // Ignore AbortError
+                if ((err as any)?.name !== "AbortError") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                    onMessage && onMessage(evt);
-
-                    sepIndex = buffer.indexOf("\n\n");
+                    onError && onError(err);
+                }
+                throw err;
+            } finally {
+                if (preloaderHandler && !preloaderHandler.isManual && !skipPreloader) {
+                    preloaderHandler.decrement();
+                }
+                if (reader) {
+                    try {
+                        await reader.cancel();
+                    } catch {
+                        // ignore
+                    }
                 }
             }
-        } catch (err) {
-            // Ignore AbortError
-            if ((err as any)?.name !== "AbortError") {
+        };
+
+        // Start the stream asynchronously; bubble errors to onError if provided
+        begin().catch((e) => {
+            if ((e as any)?.name !== "AbortError") {
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                onError && onError(err);
+                onError && onError(e);
             }
-            throw err;
-        } finally {
-            if (preloaderHandler && !preloaderHandler.isManual && !skipPreloader) {
-                preloaderHandler.decrement();
-            }
-            if (reader) {
-                try {
-                    await reader.cancel();
-                } catch {
-                    // ignore
-                }
-            }
-        }
-    };
+        });
 
-    // Start the stream asynchronously; bubble errors to onError if provided
-    begin().catch((e) => {
-        if ((e as any)?.name !== "AbortError") {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            onError && onError(e);
-        }
-    });
-
-    return {
-        close: () => {
-            controller.abort();
-        }
-    };
+        return {
+            close: () => {
+                controller.abort();
+            }
+        };
+    } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        onError && onError(e);
+    }
 }
 
 const baseFetch = {

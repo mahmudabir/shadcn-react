@@ -83,13 +83,14 @@ export const FlightList = () => {
         }
     };
 
-    const handleError = (message) => {
+    const handleError = (message: string) => {
         setStatusText(message);
         setProgress(0);
         finishSearch();
     };
 
     const finishSearch = () => {
+        setSearchInProgress(false);
         if (streamRef.current) {
             streamRef.current.close();
             streamRef.current = null;
@@ -98,7 +99,6 @@ export const FlightList = () => {
             abortControllerRef.current.abort();
             abortControllerRef.current = null;
         }
-        setSearchInProgress(false);
     };
 
     const connectToEventStream = async (url) => {
@@ -111,13 +111,13 @@ export const FlightList = () => {
         abortControllerRef.current = new AbortController();
         const signal = abortControllerRef.current.signal;
 
-        // try {
         setStatusText("🔗 Connecting...");
         reconnectAttemptsRef.current = 0;
 
         console.log("SSE (baseFetch.eventStream) connection opening");
 
-        const stream = await baseFetch.eventStream(url, {
+        // Store the stream reference for cleanup
+        streamRef.current = await baseFetch.eventStream(url, {
             signal,
             onMessage: (message) => {
                 try {
@@ -171,33 +171,7 @@ export const FlightList = () => {
                 }
             }
         });
-
-        // Store the stream reference for cleanup
-        streamRef.current = stream;
         console.log("SSE (baseFetch.eventStream) connection opened");
-
-        // } catch (error) {
-        //     if (error?.name === "AbortError") {
-        //         console.log("BaseFetch stream setup aborted");
-        //         return;
-        //     }
-        //
-        //     console.error("SSE baseFetch setup error:", error);
-        //
-        //     if (reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS && searchInProgress) {
-        //         // Ensure current stream is closed before attempting reconnect
-        //         if (streamRef.current) {
-        //             streamRef.current.close();
-        //             streamRef.current = null;
-        //         }
-        //         reconnectAttemptsRef.current++;
-        //         setProgress(-1);
-        //         setStatusText(`🔄 Connection lost. Reconnecting... (${reconnectAttemptsRef.current}/${MAX_RECONNECT_ATTEMPTS})`);
-        //         setTimeout(() => connectToEventStream(url), 2000);
-        //     } else {
-        //         handleError("❌ Connection failed. Please try again.");
-        //     }
-        // }
     };
 
     const startSearch = async () => {
@@ -266,7 +240,7 @@ export const FlightList = () => {
                         >
                             {searchInProgress ? (
                                 <span className="flex items-center">
-                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                    <Loader2 className="mr-2 h-5 w-5 animate-spin"/>
                                     Searching...
                                 </span>
                             ) : (
@@ -287,7 +261,8 @@ export const FlightList = () => {
                         </div>
 
                         <div className="flex items-center space-x-2">
-                            <label htmlFor="url-postfix" className="text-sm font-medium text-foreground">URL Postfix:</label>
+                            <label htmlFor="url-postfix" className="text-sm font-medium text-foreground">URL
+                                Postfix:</label>
                             <Input
                                 id="url-postfix"
                                 type="text"
@@ -350,7 +325,7 @@ export const FlightList = () => {
                                         <div
                                             className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
                                             {searchInProgress ? (
-                                                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
                                             ) : (
                                                 <span className="text-2xl">✈️</span>
                                             )}
@@ -384,7 +359,7 @@ export const FlightList = () => {
                                         {progress === 100 ? (
                                             <span className="text-2xl">📭</span>
                                         ) : searchInProgress ? (
-                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground"/>
                                         ) : (
                                             <span className="text-2xl">🎯</span>
                                         )}
