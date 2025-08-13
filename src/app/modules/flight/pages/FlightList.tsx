@@ -1,5 +1,4 @@
-﻿// Flight component with beautiful card design
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import baseFetch from "@/app/core/api/base-fetch.ts";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -10,7 +9,6 @@ import { Loader2 } from "lucide-react";
 import { ProgressBar } from "@/app/modules/flight/components/ProgressBar.tsx";
 import { Flight } from "@/app/modules/flight/components/Flight.tsx";
 
-// Main App component
 export const FlightList = () => {
     const MAX_RECONNECT_ATTEMPTS = 3;
     const DEFAULT_URL_POSTFIX = '-stream';
