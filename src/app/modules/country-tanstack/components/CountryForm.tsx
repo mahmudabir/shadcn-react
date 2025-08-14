@@ -12,6 +12,7 @@ import { FormFieldItemConfig } from "../../../core/models/form-field-item-config
 import { City } from "../../city-tanstack/models/city.ts"
 import { useCountries } from "../../country/viewModels/use-countries"
 import { Country } from "../models/country.ts"
+import { useCityStore } from "@/stores/useCityStore.ts";
 
 
 // Main CountryForm component
@@ -19,6 +20,8 @@ import { Country } from "../models/country.ts"
 const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Submit' }) => {
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
     const countryViewModel = useCountries();
+
+    const cityStore = useCityStore();
 
     // Initialize form with Zod schema validation
     const form = useForm({
@@ -36,6 +39,10 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     });
 
     useEffect(() => {
+        console.log("Stored Cities: ", cityStore.citiesByCountry[initialData.id])
+    }, [initialData.id]);
+
+    useEffect(() => {
         logFormErrors(form.formState.errors);
         logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
@@ -50,6 +57,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
             console.log(formValues);
         },
         onConfirm() {
+            cityStore.setCities(initialData.id, formValues.cities as City[]);
             onSubmit(formValues);
         },
     };
@@ -127,7 +135,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     return (
         <Form {...form}>
             <form className="w-full mx-auto p-8 rounded-xl shadow-xl space-y-8"
-                onSubmit={form.handleSubmit(() => confirmPopup(confirmationOptions))}>
+                  onSubmit={form.handleSubmit(() => confirmPopup(confirmationOptions))}>
                 <div className="flex justify-between mb-4 border-b">
                     <h2 className="text-2xl font-semibold pb-2">
                         🌍 {submitLabel} Country (Tanstack)
@@ -144,7 +152,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                 {/* Countries Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {renderFormFieldsUsingFormFieldItemConfig
-                        ? <FormFieldItems items={countryFieldsConfig} />
+                        ? <FormFieldItems items={countryFieldsConfig}/>
                         : (
                             <>
                                 <FormFieldItem
@@ -195,7 +203,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                                         onClick={() => removeCity(idx)}
                                         title="Remove city"
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-5 h-5"/>
                                     </Button>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -205,7 +213,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                                         ? <FormFieldItems items={cityFieldsConfig.map(config => ({
                                             ...config,
                                             name: `cities.${idx}.${config.name}`
-                                        }))} />
+                                        }))}/>
                                         : (
                                             <>
                                                 <FormFieldItem
@@ -246,7 +254,13 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
                                 type="button"
                                 variant="outline"
                                 className="w-full md:w-1/3"
-                                onClick={() => appendCity({ nameEn: '', nameBn: '', nameAr: '', nameHi: '', countryId: 0 })}
+                                onClick={() => appendCity({
+                                    nameEn: '',
+                                    nameBn: '',
+                                    nameAr: '',
+                                    nameHi: '',
+                                    countryId: initialData.id
+                                })}
                             >
                                 + Add City
                             </Button>
