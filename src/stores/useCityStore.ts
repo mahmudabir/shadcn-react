@@ -2,6 +2,7 @@
 import { persist } from "zustand/middleware";
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { devtools } from 'zustand/middleware'
+import { indexedDBStorage } from "@/stores/zustandIndexedDb.ts";
 
 interface CityState {
     citiesByCountry: Record<string, City[]>; // countryId -> list of cities
@@ -61,6 +62,7 @@ export const useCityStore = create<CityState>()(
             {
                 name: "city-storage", // key in localStorage
                 partialize: (state) => ({ citiesByCountry: state.citiesByCountry }), // only store relevant state
+                storage: indexedDBStorage,
             }
         )
     )
