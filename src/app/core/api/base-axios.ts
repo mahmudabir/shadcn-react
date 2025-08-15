@@ -74,7 +74,7 @@ baseAxios.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-                const res = await axios.post(`/auth/token`, getRefreshTokenFormData(refreshToken));
+                const res = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/auth/token`, getRefreshTokenFormData(refreshToken));
                 const { access_token, refresh_token } = res.data;
                 setLoginData(access_token, refresh_token);
                 originalRequest.headers["Authorization"] = `Bearer ${access_token}`;

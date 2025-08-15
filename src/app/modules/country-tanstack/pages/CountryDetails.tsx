@@ -3,11 +3,20 @@ import { Card } from "@/components/ui/card";
 import { Link, useParams } from "react-router-dom";
 import { useCountries } from "../viewModels/use-countries.ts";
 import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
+import { useCityStore } from "../../../../stores/useCityStore.ts";
+import { useEffect } from "react";
 
 const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { getById } = useCountries();
   const { data, isLoading, isSuccess } = getById(id);
+  const cityStore = useCityStore();
+
+  useEffect(() => {
+    if (cityStore.citiesByCountry[id]) {
+      console.log(cityStore.citiesByCountry[id]);
+    }
+  }, []);
 
   if (isLoading) return (
     <div className="flex justify-center items-center h-40">Loading...</div>

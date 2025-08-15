@@ -5,13 +5,13 @@ import { Toaster } from "sonner";
 import { ConfirmationPopupContainer } from "./components/custom/confirmation-popup";
 import { ThemeProvider, useTheme } from './components/providers/theme-provider';
 import { router } from "./routes";
-import { QUERY_REFETCH_ON_WINDOW_FOCUS, QUERY_RETRY, QUERY_STALE_TIME } from "@/lib/utils.ts";
+import { QUERY_REFETCH_ON_WINDOW_FOCUS, QUERY_RETRY, QUERY_STALE_TIME_MS } from "@/lib/utils.ts";
 
 // Create a client
 const globalQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: QUERY_STALE_TIME,
+      staleTime: QUERY_STALE_TIME_MS,
       retry: QUERY_RETRY,
       refetchOnWindowFocus: QUERY_REFETCH_ON_WINDOW_FOCUS,
       enabled: true

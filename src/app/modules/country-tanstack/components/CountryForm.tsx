@@ -10,16 +10,14 @@ import { Switch } from "../../../../components/ui/switch"
 import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
 import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
 import { City } from "../../city-tanstack/models/city.ts"
-import { useCountries } from "../../country/viewModels/use-countries"
 import { Country } from "../models/country.ts"
-import { useCityStore } from "@/stores/useCityStore.ts";
+import { useCityStore } from "@/stores/useCityStore.ts"
 
 
 // Main CountryForm component
 
 const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Submit' }) => {
     const [renderFormFieldsUsingFormFieldItemConfig, setRenderFormFieldsUsingFormFieldItemConfig] = useState(true);
-    const countryViewModel = useCountries();
 
     const cityStore = useCityStore();
 
@@ -39,10 +37,6 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
     });
 
     useEffect(() => {
-        console.log("Stored Cities: ", cityStore.citiesByCountry[initialData.id])
-    }, [initialData.id]);
-
-    useEffect(() => {
         logFormErrors(form.formState.errors);
         logFormValues(formValues);
     }, [formValues, form.formState.errors]); // Run when values or errors change
@@ -58,6 +52,7 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         },
         onConfirm() {
             cityStore.setCities(initialData.id, formValues.cities as City[]);
+            console.log(cityStore.citiesByCountry);
             onSubmit(formValues);
         },
     };
