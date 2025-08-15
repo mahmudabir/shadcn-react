@@ -1,4 +1,3 @@
-import { setPreloaderHandler } from "@/app/core/api/base-axios.ts";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
@@ -8,14 +7,15 @@ import { PreloaderProvider, usePreloader } from "../providers/preloader-provider
 import { NavActions } from "../nav-actions";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { setPreloaderHandler } from "../../app/core/api/api-request-config";
 
 function AuthorizedLayoutContent() {
-    const { visible, increment, decrement, isManual } = usePreloader();
+    const { visible, increment, decrement } = usePreloader();
     useEffect(() => {
-        setPreloaderHandler({ increment, decrement, isManual });
+        setPreloaderHandler({ increment, decrement });
         // Optionally cleanup: unset handler on unmount
-        return () => setPreloaderHandler({ increment: () => { }, decrement: () => { }, isManual: false });
-    }, [increment, decrement, isManual]);
+        return () => setPreloaderHandler({ increment: () => { }, decrement: () => { } });
+    }, [increment, decrement]);
     return (
         <SidebarProvider>
             <AppSidebar />

@@ -1,10 +1,10 @@
 import { useCallback, useReducer, useRef } from 'react';
 import { HttpOptions } from '../api/api-request-config.ts';
-import { useAxiosClient } from '../api/use-axios-client.ts';
 import { PagedData } from '../models/pagination';
 import { Result } from '../models/result';
 import { SelectOption } from '../models/select-option';
 import { generateSelectOptions } from './use-tanstack-view-model';
+import { useFetchClient } from "@/app/core/api/use-fetch-client.ts";
 
 /* Enums */
 enum ViewModelActionType {
@@ -70,7 +70,7 @@ export function useViewModel<
     message: null,
   });
 
-  const http = useAxiosClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
+  const http = useFetchClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
   const controllerMapRef = useRef<Map<string, AbortController[]>>(new Map());
 

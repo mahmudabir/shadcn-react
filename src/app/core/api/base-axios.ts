@@ -4,28 +4,11 @@ import { ACCESS_TOKEN_KEY, getRefreshTokenFormData, logout, REFRESH_TOKEN_KEY, s
 import { getErrorMessages } from "@/lib/formUtils";
 import { toastError } from "@/lib/toasterUtils.tsx";
 import axios, { AxiosResponse } from "axios";
-
-import { NavigateFunction } from "react-router-dom";
+import { baseURL, navigateFn, preloaderHandler } from "@/app/core/api/api-request-config.ts";
 
 export const baseAxios = axios.create({
-    baseURL: import.meta.env.VITE_BASE_API_URL + "/api"
+    baseURL: baseURL
 });
-
-export let navigateFn: NavigateFunction | null = null;
-export const setNavigateFunction = (navigateFunction: NavigateFunction) => {
-    navigateFn = navigateFunction;
-};
-
-// Preloader handler for API calls
-type PreloaderHandler = {
-    increment: () => void;
-    decrement: () => void;
-    isManual: boolean;
-};
-let preloaderHandler: PreloaderHandler | null = null;
-export const setPreloaderHandler = (handler: PreloaderHandler) => {
-    preloaderHandler = handler;
-};
 
 // Request interceptor to add the JWT token and trigger preloader
 baseAxios.interceptors.request.use(
@@ -35,13 +18,13 @@ baseAxios.interceptors.request.use(
             config.headers["Authorization"] = `Bearer ${token}`;
         }
         // Allow skipping preloader for specific requests
-        if (preloaderHandler && !preloaderHandler.isManual && !config.skipPreloader) {
+        if (preloaderHandler && !config.skipPreloader) {
             preloaderHandler.increment();
         }
         return config;
     },
     (error) => {
-        if (preloaderHandler && !preloaderHandler.isManual && !(error.config && error.config.skipPreloader)) {
+        if (preloaderHandler && !(error.config && error.config.skipPreloader)) {
             preloaderHandler.decrement();
         }
         return Promise.reject(error);
@@ -51,7 +34,7 @@ baseAxios.interceptors.request.use(
 // Response interceptor for refresh token logic and preloader
 baseAxios.interceptors.response.use(
     (response: AxiosResponse<Result<any>, any>) => {
-        if (preloaderHandler && !preloaderHandler.isManual && !(response.config && response.config.skipPreloader)) {
+        if (preloaderHandler && !(response.config && response.config.skipPreloader)) {
             preloaderHandler.decrement();
         }
         if (response && !response.data.isSuccess) {
@@ -60,7 +43,7 @@ baseAxios.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (preloaderHandler && !preloaderHandler.isManual) {
+        if (preloaderHandler) {
             preloaderHandler.decrement();
         }
 
@@ -74,7 +57,7 @@ baseAxios.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-                const res = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/auth/token`, getRefreshTokenFormData(refreshToken));
+                const res = await axios.post(`${baseURL}/auth/token`, getRefreshTokenFormData(refreshToken));
                 const { access_token, refresh_token } = res.data;
                 setLoginData(access_token, refresh_token);
                 originalRequest.headers["Authorization"] = `Bearer ${access_token}`;

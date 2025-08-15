@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { setNavigateFunction } from "@/app/core/api/base-axios.ts";
 import { useAuthToken } from "@/hooks/use-auth-token.ts";
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts";
+import { setNavigateFunction } from "../api/api-request-config";
 
 export default function UnprotectedRoute() {
 

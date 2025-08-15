@@ -10,8 +10,10 @@ import { cn } from "@/lib/utils.ts";
 import { Loader2Icon } from "lucide-react";
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";
 import { toastError } from "@/lib/toasterUtils.tsx";
+import { baseURL } from "@/app/core/api/api-request-config.ts";
+import baseFetch from "@/app/core/api/base-fetch.ts";
 
-const API_LOGIN = import.meta.env.VITE_BASE_API_URL + "/api/auth/token";
+const API_LOGIN = baseURL + "/auth/token";
 
 export default function Login({ className, ...props }) {
     const [username, setUsername] = useState("");
@@ -26,8 +28,8 @@ export default function Login({ className, ...props }) {
         try {
             const formData = getLoginFormData(username, password);
 
-            const res = await axios.post(API_LOGIN, formData);
-            const { access_token, refresh_token } = res.data;
+            const res = await baseFetch.post(API_LOGIN, formData) as any;
+            const { access_token, refresh_token } = res;
             localStorage.setItem(USERNAME_KEY, username);
             setLoginData(access_token, refresh_token);
             setIsLoading(false);
