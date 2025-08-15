@@ -2,7 +2,7 @@
 import { persist } from "zustand/middleware";
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { devtools } from 'zustand/middleware'
-import { zustandLocalStorage, zustandSessionStorage } from "./zustandStorage";
+import { zustandSessionStorage } from "./zustandStorage";
 
 interface CityState {
     citiesByCountry: Record<any, City[]>; // countryId -> list of cities
@@ -60,7 +60,7 @@ export const useCityStore = create<CityState>()(
                     }),
             }),
             {
-                name: "city-storage", // key in localStorage
+                name: "city-storage", // key in storage
                 partialize: (state) => ({ citiesByCountry: state.citiesByCountry }), // only store relevant state
                 storage: zustandSessionStorage,
             }
