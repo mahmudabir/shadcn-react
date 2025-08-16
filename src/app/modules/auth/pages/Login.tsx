@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label.tsx"
 import { useNavigate } from "react-router-dom"
 import React, { useState } from "react";
 import { getLoginFormData, setLoginData, USERNAME_KEY } from "@/lib/authUtils.ts";
-import axios from "axios";
 import { cn } from "@/lib/utils.ts";
 import { Loader2Icon } from "lucide-react";
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts";

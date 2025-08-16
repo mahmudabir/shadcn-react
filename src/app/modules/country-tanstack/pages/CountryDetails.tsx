@@ -13,9 +13,9 @@ const CountryDetails = () => {
   const cityStore = useCityStore();
 
   useEffect(() => {
-    if (cityStore.citiesByCountry[id]) {
+    // if (cityStore.citiesByCountry()[id]) {
       console.log(cityStore.citiesByCountry[id]);
-    }
+    // }
   }, []);
 
   if (isLoading) return (
