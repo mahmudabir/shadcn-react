@@ -1,6 +1,6 @@
-import { HttpOptions } from "../../../core/api/api-request-config.ts";
-import { useViewModel } from "../../../core/hooks/use-view-model";
-import { City } from "../../city-tanstack/models/city";
+import { useViewModel } from "@/app/core/hooks/use-view-model.ts";
+import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { HttpOptions } from "@/app/core/api/api-request-config.ts";
 
 // MVVM ViewModel for Country
 export function useCities() {

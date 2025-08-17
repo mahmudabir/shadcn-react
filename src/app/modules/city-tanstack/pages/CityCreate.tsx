@@ -1,11 +1,11 @@
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate } from 'react-router-dom';
-import CountryForm from '../components/CityForm.tsx';
-import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
-import { useCities } from "../viewModels/use-cities.ts";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 import { useCallback } from "react";
-import { useCountries } from "../../country-tanstack/viewModels/use-countries.ts";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
+import CityForm from "@/app/modules/city-tanstack/components/CityForm.tsx";
 
 const CityCreate = () => {
   const navigate = useNavigate();
@@ -29,12 +29,12 @@ const CityCreate = () => {
     }
   }, [createMutation, navigate]); // Using useCallback to memoize the method with dependencies => [createMutation, navigate]
 
-    if (countrySelectItems.isLoading) return (
-        <div className="flex justify-center items-center h-40">Loading...</div>
-    );
+  if (countrySelectItems.isLoading) return (
+    <div className="flex justify-center items-center h-40">Loading...</div>
+  );
 
   return (
-    <CountryForm countryOptions={countrySelectItems.data} onSubmit={handleCreate} submitLabel="Create" />
+    <CityForm countryOptions={countrySelectItems.data} onSubmit={handleCreate} submitLabel="Create"/>
   );
 };
 

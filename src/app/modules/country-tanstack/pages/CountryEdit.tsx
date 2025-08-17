@@ -1,11 +1,11 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card } from "../../../../components/ui/card.tsx";
-import CountryForm from '../components/CountryForm.tsx';
-import { Country } from "../models/country.ts";
-import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
-import { useCountries } from "../viewModels/use-countries.ts";
+import { Card } from "@/components/ui/card.tsx";
+import { Country } from "@/app/modules/country-tanstack/models/country.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
 import { useCallback } from "react";
+import CountryForm from "@/app/modules/country-tanstack/components/CountryForm.tsx";
 
 const CountryEdit = () => {
     const { id } = useParams<{ id: string }>();

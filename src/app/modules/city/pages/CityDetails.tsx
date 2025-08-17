@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useCities } from '../viewModels/use-cities';
-import { CITY_PATHS } from "../routes/CityRoutes";
+import { useCities } from '@/app/modules/city/viewModels/use-cities.ts';
+import { CITY_PATHS } from "@/app/modules/city/routes/CityRoutes.tsx";
 
 const CityDetails = () => {
   const params = useParams<{ id: string }>();

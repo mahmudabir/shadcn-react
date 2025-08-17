@@ -5,9 +5,9 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { COUNTRY_PATHS } from "../routes/CountryRoutes";
-import { useCountries } from '../viewModels/use-countries';
+import { COUNTRY_PATHS } from "@/app/modules/country/routes/CountryRoutes.tsx";
+import { useCountries } from '@/app/modules/country/viewModels/use-countries.ts';
+import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");

@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
-import CountryCreate from "../pages/CountryCreate";
 import CountryList from "@/app/modules/country/pages/CountryList.tsx";
 import CountryEdit from "@/app/modules/country/pages/CountryEdit.tsx";
 import CountryDetails from "@/app/modules/country/pages/CountryDetails.tsx";
+import CountryCreate from "@/app/modules/country/pages/CountryCreate.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const COUNTRY_PATHS = {

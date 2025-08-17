@@ -3,67 +3,87 @@ import { persist } from "zustand/middleware";
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { devtools } from 'zustand/middleware'
 import { zustandStateStorage } from "./zustandStorage";
+import { BaseState, withLoggingAndExpiry } from "@/stores/middlewares/withLoggingAndExpiry.ts";
 
-interface CityState {
-  citiesByCountry: Record<any, City[]>; // countryId -> list of cities
-  addCity: (countryId: string, city: City) => void;
-  removeCity: (countryId: string, cityId: string) => void;
-  updateCity: (countryId: string, cityId: string, updated: Partial<City>) => void;
-  setCities: (countryId: string, cities: City[]) => void;
-  clearCities: (countryId: string) => void;
+interface CityState extends BaseState<Record<any, City[]>> {
+    getCitiesByCountry: () => Record<any, City[]>; // countryId -> list of cities
+    addCity: (countryId: string, city: City) => void;
+    removeCity: (countryId: string, cityId: string) => void;
+    updateCity: (countryId: string, cityId: string, updated: Partial<City>) => void;
+    setCities: (countryId: string, cities: City[]) => void;
+    clearCities: (countryId: string) => void;
 }
 
-export const useCityStore: () => CityState = create<CityState>()(
-  devtools(
-    persist(
-      (set, get) => ({
-        citiesByCountry: {},
+export const useCityStore: () => Omit<CityState, 'data' | 'timestamp'> = create<CityState>()(
+    devtools(
+        persist(
+            withLoggingAndExpiry(
+                (set, get, api) => ({
+                    data: {},
+                    timestamp: Date.now(),
 
-        addCity: (countryId, city) =>
-          set((state) => ({
-            citiesByCountry: {
-              ...state.citiesByCountry,
-              [countryId]: [...(state.citiesByCountry[countryId] || []), city],
-            },
-          })),
+                    getCitiesByCountry: () => {
+                        return get()?.data ?? {}
+                    },
 
-        removeCity: (countryId, cityId) =>
-          set((state) => ({
-            citiesByCountry: {
-              ...state.citiesByCountry,
-              [countryId]: (state.citiesByCountry[countryId] || []).filter(
-                (c) => c.id !== cityId
-              ),
-            },
-          })),
+                    addCity: (countryId, city) => {
+                        set((state: CityState) => ({
+                            data: {
+                                ...state.data,
+                                [countryId]: [...(state.data[countryId] || []), city],
+                            },
+                            timestamp: Date.now(),
+                        }));
+                    },
 
-        updateCity: (countryId, cityId, updated) =>
-          set((state) => ({
-            citiesByCountry: {
-              ...state.citiesByCountry,
-              [countryId]: (state.citiesByCountry[countryId] || []).map((c) =>
-                c.id === cityId ? { ...c, ...updated } : c
-              ),
-            },
-          })),
+                    updateCity: (countryId, cityId, updated) => {
+                        set((state: CityState) => ({
+                            data: {
+                                ...state.data,
+                                [countryId]: (state.data[countryId] || []).map((c) =>
+                                    c.id === cityId ? { ...c, ...updated } : c
+                                ),
+                            },
+                            timestamp: Date.now(),
+                        }));
+                    },
 
-        setCities: (countryId, cities) =>
-          set((state) => ({
-            citiesByCountry: { ...state.citiesByCountry, [countryId]: cities },
-          })),
+                    removeCity: (countryId, cityId) => {
+                        set((state: CityState) => ({
+                            data: {
+                                ...state.data,
+                                [countryId]: (state.data[countryId] || []).filter(
+                                    (c) => c.id !== cityId
+                                ),
+                            },
+                            timestamp: Date.now(),
+                        }));
+                    },
 
-        clearCities: (countryId) =>
-          set((state) => {
-            const newData = { ...state.citiesByCountry };
-            delete newData[countryId];
-            return { citiesByCountry: newData };
-          }),
-      }),
-      {
-        name: "city-storage", // key in storage
-        partialize: (state: CityState) => ({ citiesByCountry: state.citiesByCountry }), // only store relevant state
-        storage: zustandStateStorage(localStorage),
-      }
+                    setCities: (countryId, cities) => {
+                        set((state: CityState) => ({
+                            data: { ...state.data, [countryId]: cities },
+                            timestamp: Date.now(),
+                        }));
+                    },
+
+                    clearCities: (countryId) => {
+                        set((state: CityState) => {
+                            const newData = { ...state.data };
+                            delete newData[countryId];
+                            return {
+                                data: newData,
+                                timestamp: Date.now(),
+                            };
+                        });
+                    },
+                })
+            ),
+            {
+                name: "city-storage", // key in storage
+                partialize: (state: CityState) => ({ data: state.data, timestamp: state.timestamp }), // only store relevant state
+                storage: zustandStateStorage(localStorage),
+            }
+        )
     )
-  )
 );

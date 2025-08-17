@@ -1,4 +1,4 @@
 export const AUTH_PATHS = {
-    login: () => '/login',
-    register: () => '/register',
+  login: () => '/login',
+  register: () => '/register',
 };

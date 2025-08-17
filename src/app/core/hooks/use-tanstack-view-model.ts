@@ -5,12 +5,13 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions
-} from '@tanstack/react-query';
-import { PagedData } from '../models/pagination';
-import { Result } from '../models/result';
-import { SelectOption } from '../models/select-option';
-import { HttpOptions } from '../api/api-request-config.ts';
+} from "@tanstack/react-query";
+import { HttpOptions } from "@/app/core/api/api-request-config.ts";
+import { Result } from "@/app/core/models/result.ts";
+import { PagedData } from "@/app/core/models/pagination.ts";
+import { SelectOption } from "@/app/core/models/select-option.ts";
 import { useFetchClient } from "@/app/core/api/use-fetch-client.ts";
+
 
 export interface TanstackViewModelOptions<
   T,
@@ -60,7 +61,10 @@ export function useTanstackViewModel<
   const api = useFetchClient<T, TQuery, TCreate, TUpdate>(apiBaseUrl);
 
   const getAll = (query?: TQuery) => {
-    const customOptions = options?.query?.getAll?.(query) ?? { onSuccess: (data: Result<PagedData<T>>) => { } };
+    const customOptions = options?.query?.getAll?.(query) ?? {
+      onSuccess: (data: Result<PagedData<T>>) => {
+      }
+    };
     const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl];
     return useQuery<Result<PagedData<T>>, unknown>({
       queryKey: customQueryKey,
@@ -79,7 +83,10 @@ export function useTanstackViewModel<
   }
 
   const getById = (id?: any, query?: TQuery) => {
-    const customOptions = options?.query?.getById?.(id) ?? { onSuccess: (data: Result<T>) => { } };
+    const customOptions = options?.query?.getById?.(id) ?? {
+      onSuccess: (data: Result<T>) => {
+      }
+    };
     const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl, id];
     return useQuery<Result<T>, unknown>({
       queryKey: customQueryKey,
@@ -98,7 +105,10 @@ export function useTanstackViewModel<
   };
 
   const getSelectItems = (label: keyof T, value: keyof T, placeholder?: string, query?: TQuery) => {
-    const customOptions = options?.query?.getSelectItems(label, value, placeholder, query) ?? { onSuccess: (data: SelectOption[], placeholder?: string) => { } };
+    const customOptions = options?.query?.getSelectItems(label, value, placeholder, query) ?? {
+      onSuccess: (data: SelectOption[], placeholder?: string) => {
+      }
+    };
     const customQueryKey = query?.queryKey ? [query.queryKey] : [apiBaseUrl, 'selectItems'];
     return useQuery<SelectOption[], unknown>({
       queryKey: customQueryKey,

@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams } from "react-router-dom";
-import { useCountries } from "../viewModels/use-countries.ts";
-import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
-import { useCityStore } from "../../../../stores/useCityStore.ts";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
+import { useCityStore } from "@/stores/useCityStore.ts";
 import { useEffect } from "react";
 
 const CountryDetails = () => {
@@ -13,9 +13,7 @@ const CountryDetails = () => {
   const cityStore = useCityStore();
 
   useEffect(() => {
-    // if (cityStore.citiesByCountry()[id]) {
-      console.log(cityStore.citiesByCountry[id]);
-    // }
+    const citiesByCountry = cityStore.getCitiesByCountry()[id];
   }, []);
 
   if (isLoading) return (

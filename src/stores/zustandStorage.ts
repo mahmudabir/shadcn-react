@@ -1,6 +1,6 @@
 ﻿import { get, set, del } from 'idb-keyval';
 import { createJSONStorage, StateStorage } from 'zustand/middleware';
-import { QUERY_STALE_TIME_MS } from '../lib/utils';
+import { QUERY_STALE_TIME_MS } from '@/lib/utils.ts';
 
 type StoredData = {
   expiry: number;

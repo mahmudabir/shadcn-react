@@ -350,7 +350,6 @@ async function eventStreamRequest<T = any>(
             } catch {
               (evt as SSEMessage<any>).data = dataStr as any;
             }
-
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             onMessage && onMessage(evt);
 

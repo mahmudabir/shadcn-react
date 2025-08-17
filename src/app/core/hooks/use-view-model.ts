@@ -1,10 +1,10 @@
 import { useCallback, useReducer, useRef } from 'react';
-import { HttpOptions } from '../api/api-request-config.ts';
-import { PagedData } from '../models/pagination';
-import { Result } from '../models/result';
-import { SelectOption } from '../models/select-option';
-import { generateSelectOptions } from './use-tanstack-view-model';
 import { useFetchClient } from "@/app/core/api/use-fetch-client.ts";
+import { Result } from "@/app/core/models/result.ts";
+import { PagedData } from "@/app/core/models/pagination.ts";
+import { SelectOption } from "@/app/core/models/select-option.ts";
+import { HttpOptions } from "@/app/core/api/api-request-config.ts";
+import { generateSelectOptions } from "@/app/core/hooks/use-tanstack-view-model.ts";
 
 /* Enums */
 enum ViewModelActionType {
@@ -171,8 +171,8 @@ export function useViewModel<
       if (query) query.signal ??= signal;
       else query = { signal: signal } as TQuery;
       const result = await executeAsync(() => {
-        return http.getAll({ ...query, asDropdown: true })
-      },
+          return http.getAll({ ...query, asDropdown: true })
+        },
         (res) => {
           // dispatch({ type: ViewModelActionType.SetItems, payload: res });
           dispatch({
@@ -191,8 +191,8 @@ export function useViewModel<
     if (query) query.signal ??= signal;
     else query = { signal: signal } as TQuery;
     const result = await executeAsync(() => {
-      return http.create(data, query)
-    },
+        return http.create(data, query)
+      },
       (res) => {
         dispatch({ type: ViewModelActionType.SetItem, payload: res });
       });

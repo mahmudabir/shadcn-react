@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useCountries } from '../viewModels/use-countries';
-import { COUNTRY_PATHS } from "../routes/CountryRoutes";
+import { useCountries } from '@/app/modules/country/viewModels/use-countries.ts';
+import { COUNTRY_PATHS } from "@/app/modules/country/routes/CountryRoutes.tsx";
 
 const CountryDetails = () => {
   const params = useParams<{ id: string }>();

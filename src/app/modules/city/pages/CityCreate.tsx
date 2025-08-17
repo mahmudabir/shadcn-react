@@ -2,10 +2,10 @@ import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useCountries } from "../../country/viewModels/use-countries.ts";
-import CountryForm from '../components/CityForm.tsx';
-import { CITY_PATHS } from "../routes/CityRoutes.tsx";
-import { useCities } from '../viewModels/use-cities.ts';
+import { useCountries } from "@/app/modules/country/viewModels/use-countries.ts";
+import { CITY_PATHS } from "@/app/modules/city/routes/CityRoutes.tsx";
+import { useCities } from '@/app/modules/city/viewModels/use-cities.ts';
+import CityForm from "@/app/modules/city/components/CityForm.tsx";
 
 const CityCreate = () => {
   const navigate = useNavigate();
@@ -13,7 +13,10 @@ const CityCreate = () => {
   const countryViewModel = useCountries();
 
   useEffect(() => {
-    countryViewModel.getSelectItems("nameEn", "id", "Select a country", { skipPreloader: false, queryKey: "country_select_items" });
+    countryViewModel.getSelectItems("nameEn", "id", "Select a country", {
+      skipPreloader: false,
+      queryKey: "country_select_items"
+    });
     return () => {
       countryViewModel.cancelRequest("country_select_items");
     };
@@ -38,7 +41,7 @@ const CityCreate = () => {
   );
 
   return (
-    <CountryForm onSubmit={handleCreate} countryOptions={countryViewModel.selectItems} submitLabel="Create" />
+    <CityForm onSubmit={handleCreate} countryOptions={countryViewModel.selectItems} submitLabel="Create"/>
   );
 };
 

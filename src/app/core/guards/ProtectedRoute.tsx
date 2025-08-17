@@ -1,21 +1,21 @@
 import { useAuthToken } from "@/hooks/use-auth-token.ts"
 import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import { useEffect } from "react";
-import { setNavigateFunction } from "../api/api-request-config";
+import { setNavigateFunction } from "@/app/core/api/api-request-config.ts";
 
 export default function ProtectedRoute() {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        setNavigateFunction(navigate);
-    }, [navigate]);
+  useEffect(() => {
+    setNavigateFunction(navigate);
+  }, [navigate]);
 
-    const [hasToken] = useAuthToken()
+  const [hasToken] = useAuthToken()
 
-    if (!hasToken) {
-        return <Navigate to="/login" replace/>
-    }
+  if (!hasToken) {
+    return <Navigate to="/login" replace/>
+  }
 
-    return <Outlet/>
+  return <Outlet/>
 }

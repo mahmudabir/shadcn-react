@@ -1,12 +1,12 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card } from "../../../../components/ui/card.tsx";
-import { City } from "../../city-tanstack/models/city.ts";
-import CityForm from '../components/CityForm.tsx';
-import { useCities } from '../viewModels/use-cities.ts';
-import { CITY_PATHS } from "../routes/CityRoutes.tsx";
-import { useCountries } from "../../country/viewModels/use-countries.ts";
+import { Card } from "@/components/ui/card.tsx";
+import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { useCities } from '@/app/modules/city/viewModels/use-cities.ts';
+import { CITY_PATHS } from "@/app/modules/city/routes/CityRoutes.tsx";
+import { useCountries } from "@/app/modules/country/viewModels/use-countries.ts";
+import CityForm from "@/app/modules/city/components/CityForm.tsx";
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();
@@ -58,7 +58,7 @@ const CityEdit = () => {
         </Card>
     );
 
-    return (<CityForm initialData={cityViewModel.item?.payload} countryOptions={countryViewModel.selectItems} onSubmit={handleEdit} submitLabel="Update" />);
+    return <CityForm initialData={cityViewModel.item?.payload} countryOptions={countryViewModel.selectItems} onSubmit={handleEdit} submitLabel="Update" />;
 };
 
 export default CityEdit;

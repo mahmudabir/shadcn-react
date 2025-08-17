@@ -1,10 +1,10 @@
 import { Country } from "@/app/modules/country-tanstack/models/country.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate } from 'react-router-dom';
-import CountryForm from '../components/CountryForm.tsx';
-import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
-import { useCountries } from "../viewModels/use-countries.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
 import { useCallback } from "react";
+import CountryForm from "@/app/modules/country-tanstack/components/CountryForm.tsx";
 
 const CountryCreate = () => {
   const navigate = useNavigate();

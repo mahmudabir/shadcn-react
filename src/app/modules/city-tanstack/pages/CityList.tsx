@@ -5,9 +5,9 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes";
-import { useCities } from "../viewModels/use-cities";
+import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 
 const CityList = () => {
   const [search, setSearch] = useState("");

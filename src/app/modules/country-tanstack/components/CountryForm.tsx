@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
-import { confirmPopup } from "../../../../components/custom/confirmation-popup"
-import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
-import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
-import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { City } from "../../city-tanstack/models/city.ts"
-import { Country } from "../models/country.ts"
+import { confirmPopup } from "@/components/custom/confirmation-popup.tsx"
+import { FormFieldItem, FormFieldItems } from "@/components/custom/form-field-item.tsx"
+import { Switch } from "@/components/ui/switch.tsx"
+import { logFormErrors, logFormValues } from "@/lib/formUtils.tsx"
+import { FormFieldItemConfig } from "@/app/core/models/form-field-item-config.ts"
+import { City } from "@/app/modules/city-tanstack/models/city.ts"
+import { Country } from "@/app/modules/country-tanstack/models/country.ts"
 import { useCityStore } from "@/stores/useCityStore.ts"
 
 
@@ -52,7 +52,6 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         },
         onConfirm() {
             cityStore.setCities(initialData.id, formValues.cities as City[]);
-            console.log(cityStore.citiesByCountry);
             onSubmit(formValues);
         },
     };

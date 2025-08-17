@@ -5,12 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
-import { confirmPopup } from "../../../../components/custom/confirmation-popup"
-import { FormFieldItem, FormFieldItems } from "../../../../components/custom/form-field-item"
-import { Switch } from "../../../../components/ui/switch"
-import { logFormErrors, logFormValues } from "../../../../lib/formUtils"
-import { FormFieldItemConfig } from "../../../core/models/form-field-item-config"
-import { Country } from "../../country-tanstack/models/country"
+import { confirmPopup } from "@/components/custom/confirmation-popup.tsx"
+import { FormFieldItem, FormFieldItems } from "@/components/custom/form-field-item.tsx"
+import { Switch } from "@/components/ui/switch.tsx"
+import { logFormErrors, logFormValues } from "@/lib/formUtils.tsx"
+import { FormFieldItemConfig } from "@/app/core/models/form-field-item-config.ts"
+import { Country } from "@/app/modules/country-tanstack/models/country.ts"
 
 
 // Main CountryForm component

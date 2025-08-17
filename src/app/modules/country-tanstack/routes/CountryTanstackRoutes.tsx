@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
-import CountryCreate from "../pages/CountryCreate.tsx";
-import CountryDetails from "../pages/CountryDetails.tsx";
-import CountryEdit from "../pages/CountryEdit.tsx";
-import CountryList from "../pages/CountryList.tsx";
+import CountryList from "@/app/modules/country-tanstack/pages/CountryList.tsx";
+import CountryCreate from "@/app/modules/country-tanstack/pages/CountryCreate.tsx";
+import CountryEdit from "@/app/modules/country-tanstack/pages/CountryEdit.tsx";
+import CountryDetails from "@/app/modules/country-tanstack/pages/CountryDetails.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const COUNTRY_TANSTACK_PATHS = {

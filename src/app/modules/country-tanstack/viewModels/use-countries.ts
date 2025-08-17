@@ -1,8 +1,7 @@
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/hooks/use-tanstack-view-model";
-import { Country } from "../models/country.ts";
-import { HttpOptions } from "../../../core/api/api-request-config.ts";
-import { QUERY_STALE_TIME_MS } from "../../../../lib/utils.ts";
+import { TanstackViewModelOptions, useTanstackViewModel } from "@/app/core/hooks/use-tanstack-view-model.ts";
+import { Country } from "@/app/modules/country-tanstack/models/country.ts";
+import { HttpOptions } from "@/app/core/api/api-request-config.ts";
 
 // MVVM ViewModel for Country using Tanstack Query
 export function useCountries(options?: TanstackViewModelOptions<Country>) {

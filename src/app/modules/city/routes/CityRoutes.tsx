@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
-import CityCreate from "../pages/CityCreate";
-import CityDetails from "../pages/CityDetails";
-import CityEdit from "../pages/CityEdit";
-import CityList from "../pages/CityList";
+import CityList from "@/app/modules/city/pages/CityList.tsx";
+import CityCreate from "@/app/modules/city/pages/CityCreate.tsx";
+import CityEdit from "@/app/modules/city/pages/CityEdit.tsx";
+import CityDetails from "@/app/modules/city/pages/CityDetails.tsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CITY_PATHS = {

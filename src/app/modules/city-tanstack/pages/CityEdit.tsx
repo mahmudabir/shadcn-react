@@ -1,12 +1,12 @@
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card } from "../../../../components/ui/card.tsx";
-import CityForm from '../components/CityForm.tsx';
-import { City } from "../models/city.ts";
-import { CITY_TANSTACK_PATHS } from "../routes/CityTanstackRoutes.tsx";
-import { useCities } from "../viewModels/use-cities.ts";
+import { Card } from "@/components/ui/card.tsx";
+import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 import { useCallback } from "react";
-import { useCountries } from "../../country-tanstack/viewModels/use-countries.ts";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
+import CityForm from "@/app/modules/city-tanstack/components/CityForm.tsx";
 
 const CityEdit = () => {
     const { id } = useParams<{ id: string }>();

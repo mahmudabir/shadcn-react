@@ -5,16 +5,16 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { confirmPopup } from "../../../../components/custom/confirmation-popup";
-import { COUNTRY_TANSTACK_PATHS } from "../routes/CountryTanstackRoutes.tsx";
-import { useCountries } from "../viewModels/use-countries.ts";
+import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
+import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove, queryClient } = useCountries();
 
   const result = getAll({ skipPreloader: false });
-  var removeMutation = remove();
+  const removeMutation = remove();
 
   const abortRequest = () => {
     queryClient.cancelQueries({ queryKey: ['/countries'] });

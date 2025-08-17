@@ -1,7 +1,7 @@
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useTanstackViewModel, TanstackViewModelOptions } from "../../../core/hooks/use-tanstack-view-model";
-import { City } from "../models/city";
-import { QUERY_STALE_TIME_MS } from "../../../../lib/utils";
+import { useTanstackViewModel, TanstackViewModelOptions } from "@/app/core/hooks/use-tanstack-view-model.ts";
+import { City } from "@/app/modules/city-tanstack/models/city.ts";
+import { QUERY_STALE_TIME_MS } from "@/lib/utils.ts";
 
 // MVVM ViewModel for City using Tanstack Query
 export function useCities(options?: TanstackViewModelOptions<City>) {
