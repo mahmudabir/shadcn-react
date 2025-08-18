@@ -1,5 +1,5 @@
 import { Control } from "react-hook-form";
-import { SelectOption } from "./select-option";
+import { SelectOption } from "@/app/core/models/select-option.ts";
 
 
 export type FormFieldItemConfig<T> = {

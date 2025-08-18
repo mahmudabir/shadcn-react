@@ -6,10 +6,11 @@ import { useForm } from "react-hook-form"
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx"
 import { FormFieldItem, FormFieldItems, SelectFieldItem } from "@/components/custom/form-field-item.tsx"
 import { Switch } from "@/components/ui/switch.tsx"
-import { logFormErrors, logFormValues } from "@/lib/formUtils.tsx"
+import { logFormState } from "@/lib/formUtils.tsx"
 import { FormFieldItemConfig } from "@/app/core/models/form-field-item-config.ts"
 import { City } from "@/app/modules/city-tanstack/models/city.ts"
 import { CityFormProps } from "@/app/modules/city-tanstack/components/CityForm.tsx"
+import { useDebounce } from "@/hooks/use-debounce.ts";
 
 
 // Main CountryForm component
@@ -30,10 +31,9 @@ const CityForm = (props: CityFormProps) => {
 
   const formValues = form.watch(); // watch entire form
 
-  useEffect(() => {
-    logFormErrors(form.formState.errors);
-    logFormValues(formValues);
-  }, [formValues, form.formState.errors]); // Run when values or errors change
+  useDebounce(() => {
+    logFormState(formValues, form.formState.errors, "City Form State");
+  }, [formValues, form.formState.errors], 0); // Run when values or errors change
 
   const confirmationOptions = {
     title: `${submitLabel}?`,

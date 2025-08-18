@@ -1,8 +1,7 @@
 ﻿import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
-import { devtools } from 'zustand/middleware'
-import { zustandStateStorage } from "./zustandStorage";
+import { StorageType, zustandStateStorage } from "@/stores/zustandStorage.ts";
 import { BaseState, withLoggingAndExpiry } from "@/stores/middlewares/withLoggingAndExpiry.ts";
 
 interface CityState extends BaseState<Record<any, City[]>> {
@@ -82,7 +81,7 @@ export const useCityStore: () => Omit<CityState, 'data' | 'timestamp'> = create<
             {
                 name: "city-storage", // key in storage
                 partialize: (state: CityState) => ({ data: state.data, timestamp: state.timestamp }), // only store relevant state
-                storage: zustandStateStorage(localStorage),
+                storage: zustandStateStorage(StorageType.LocalStorage),
             }
         )
     )

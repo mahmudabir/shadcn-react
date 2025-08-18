@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx"
 import { FormFieldItem, FormFieldItems } from "@/components/custom/form-field-item.tsx"
 import { Switch } from "@/components/ui/switch.tsx"
-import { logFormErrors, logFormValues } from "@/lib/formUtils.tsx"
+import { logFormState } from "@/lib/formUtils.tsx"
 import { FormFieldItemConfig } from "@/app/core/models/form-field-item-config.ts"
 import { Country } from "@/app/modules/country-tanstack/models/country.ts"
+import { useDebounce } from "@/hooks/use-debounce.ts";
 
 
 // Main CountryForm component
@@ -33,10 +34,9 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         name: "cities",
     });
 
-    useEffect(() => {
-        logFormErrors(form.formState.errors);
-        logFormValues(formValues);
-    }, [formValues, form.formState.errors]); // Run when values or errors change
+  useDebounce(() => {
+    logFormState(formValues, form.formState.errors, "Country Form State");
+  }, [formValues, form.formState.errors], 0); // Run when values or errors change
 
     const confirmationOptions = {
         title: `${submitLabel}?`,
