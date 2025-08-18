@@ -38,7 +38,7 @@ export const router = createBrowserRouter(
 
           {CountryRoutes}
           {CityRoutes}
-          <Route path="/*" element={<Suspense fallback={<RouteLoader text={"CityTanstackRoutes"}/>}>
+          <Route path="/*" element={<Suspense fallback={<RouteLoader/>}>
             <CityTanstackRoutes/>
           </Suspense>}/>
           {CountryTanstackRoutes}
