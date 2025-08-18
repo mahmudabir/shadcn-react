@@ -6,7 +6,7 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 
 const CityList = () => {
@@ -14,7 +14,7 @@ const CityList = () => {
   const { getAll, remove } = useCities();
 
   const removeMutation = remove();
-  const result = getAll();
+  const result = getAll({ skipPreloader: true });
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -59,7 +59,7 @@ const CityList = () => {
               result.refetch();
             }
           }}>
-            Refresh
+              Refresh
           </Button>}
           <Button asChild>
             <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>

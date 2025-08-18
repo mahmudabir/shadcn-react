@@ -10,7 +10,7 @@ import { ProgressBar } from "@/app/modules/flight/components/ProgressBar.tsx";
 import { Flight } from "@/app/modules/flight/components/Flight.tsx";
 import { baseURL } from "@/app/core/api/api-request-config.ts";
 
-export const FlightList = () => {
+const FlightList = () => {
   const MAX_RECONNECT_ATTEMPTS = 3;
   const DEFAULT_URL_POSTFIX = '-stream';
 
@@ -386,3 +386,5 @@ export const FlightList = () => {
     </div>
   );
 };
+
+export default FlightList;

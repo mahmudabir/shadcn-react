@@ -11,7 +11,7 @@ const CountryDetails = () => {
 
   useEffect(() => {
     if (!params.id) return;
-    countryViewModel.getById(params.id);
+    countryViewModel.getById(params.id, { skipPreloader: true });
   }, [params.id]);
 
   if (countryViewModel.isLoading) return (

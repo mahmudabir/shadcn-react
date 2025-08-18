@@ -1,22 +1,33 @@
-import { Route } from "react-router-dom";
-import CityList from "@/app/modules/city-tanstack/pages/CityList.tsx";
-import CityCreate from "@/app/modules/city-tanstack/pages/CityCreate.tsx";
-import CityEdit from "@/app/modules/city-tanstack/pages/CityEdit.tsx";
-import CityDetails from "@/app/modules/city-tanstack/pages/CityDetails.tsx";
+import { lazy, Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/index.ts";
+import { RouteLoader } from "@/components/custom/route-loader.tsx";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const CITY_TANSTACK_PATHS = {
-    index: () => '/cities-tanstack',
-    create: () => '/cities-tanstack/create',
-    edit: (id: string = ':id') => `/cities-tanstack/${id}/edit`,
-    details: (id: string = ':id') => `/cities-tanstack/${id}`,
-};
+// Lazy imports
+const CityList = lazy(() => import("@/app/modules/city-tanstack/pages/CityList"));
+const CityCreate = lazy(() => import("@/app/modules/city-tanstack/pages/CityCreate"));
+const CityEdit = lazy(() => import("@/app/modules/city-tanstack/pages/CityEdit"));
+const CityDetails = lazy(() => import("@/app/modules/city-tanstack/pages/CityDetails"));
 
-export const CityTanstackRoutes = (
-    <Route path={CITY_TANSTACK_PATHS.index()}>
-        <Route index element={<CityList />} />
-        <Route path={CITY_TANSTACK_PATHS.create()} element={<CityCreate />} />
-        <Route path={CITY_TANSTACK_PATHS.edit()} element={<CityEdit />} />
-        <Route path={CITY_TANSTACK_PATHS.details()} element={<CityDetails />} />
-    </Route>
-);
+export default function CityTanstackRoutes() {
+  return (
+    <Routes>
+      <Route path={CITY_TANSTACK_PATHS.index()} element={<Suspense fallback={<RouteLoader text={"CityList"}/>}>
+        <CityList/>
+      </Suspense>
+      }/>
+      <Route path={CITY_TANSTACK_PATHS.create()} element={<Suspense fallback={<RouteLoader text={"CityCreate"}/>}>
+        <CityCreate/>
+      </Suspense>
+      }/>
+      <Route path={CITY_TANSTACK_PATHS.edit()} element={<Suspense fallback={<RouteLoader text={"CityEdit"}/>}>
+        <CityEdit/>
+      </Suspense>
+      }/>
+      <Route path={CITY_TANSTACK_PATHS.details()} element={<Suspense fallback={<RouteLoader text={"CityDetails"}/>}>
+        <CityDetails/>
+      </Suspense>
+      }/>
+    </Routes>
+  );
+}

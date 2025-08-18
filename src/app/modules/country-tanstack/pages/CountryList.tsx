@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
 import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
@@ -13,7 +13,7 @@ const CountryList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove, queryClient } = useCountries();
 
-  const result = getAll({ skipPreloader: false });
+  const result = getAll({ skipPreloader: true });
   const removeMutation = remove();
 
   const abortRequest = () => {

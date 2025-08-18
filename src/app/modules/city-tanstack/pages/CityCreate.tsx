@@ -1,7 +1,7 @@
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
 import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate } from 'react-router-dom';
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 import { useCallback } from "react";
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";

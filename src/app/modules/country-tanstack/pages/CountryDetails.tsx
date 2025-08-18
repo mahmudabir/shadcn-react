@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const CountryDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { getById } = useCountries();
-  const { data, isLoading, isSuccess } = getById(id);
+  const { data, isLoading, isSuccess } = getById(id, { skipPreloader: true });
   const cityStore = useCityStore();
 
   useEffect(() => {

@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams } from "react-router-dom";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
 
 const CityDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { getById } = useCities();
-  const { data, isLoading, isSuccess } = getById(id);
+  const { data, isLoading, isSuccess } = getById(id, { skipPreloader: true });
 
   if (isLoading) return (
     <div className="flex justify-center items-center h-40">Loading...</div>
