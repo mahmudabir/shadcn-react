@@ -37,6 +37,9 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
 
   useDebounce(() => {
     logFormState(formValues, form.formState.errors, "Country Form State");
+    return () => {
+      console.clear();
+    }
   }, [formValues, form.formState.errors], 0); // Run when values or errors change
 
   const confirmationOptions = {

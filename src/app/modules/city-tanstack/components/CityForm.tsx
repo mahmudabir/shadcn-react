@@ -36,6 +36,9 @@ const CityForm = (props: CityFormProps) => {
 
   useDebounce(() => {
     logFormState(formValues, form.formState.errors, "City Form State");
+    return () => {
+      console.clear();
+    }
   }, [formValues, form.formState.errors], 0); // Run when values or errors change
 
   const confirmationOptions = {
