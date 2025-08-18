@@ -177,13 +177,13 @@ class FormLogger {
         result[newKey] = {
           Value: value,
           Type: value === null ? 'null' : 'undefined',
-          Length: '-'
+          // Length: '-'
         };
       } else if (Array.isArray(value)) {
         result[newKey] = {
           Value: `[${value.length} items]`,
           Type: 'Array',
-          Length: value.length
+          // Length: value.length
         };
 
         // Show array items in table format
@@ -195,7 +195,7 @@ class FormLogger {
             result[arrayKey] = {
               Value: this.formatValueForTable(item),
               Type: Array.isArray(item) ? 'Array' : typeof item,
-              Length: typeof item === 'string' ? item.length : '-'
+              // Length: typeof item === 'string' ? item.length : '-'
             };
           }
         });
@@ -203,7 +203,7 @@ class FormLogger {
         result[newKey] = {
           Value: '[Object]',
           Type: 'Object',
-          Length: Object.keys(value).length + ' props'
+          // Length: Object.keys(value).length + ' props'
         };
         // Recursively flatten nested objects
         this.flattenObjectForTable(value, newKey, result);
@@ -211,7 +211,7 @@ class FormLogger {
         result[newKey] = {
           Value: this.formatValueForTable(value),
           Type: typeof value,
-          Length: typeof value === 'string' ? value.length : '-'
+          // Length: typeof value === 'string' ? value.length : '-'
         };
       }
     });
