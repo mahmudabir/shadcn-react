@@ -11,13 +11,11 @@ import { FLightRoutes } from "@/app/modules/flight/routes/FlightRoutes.tsx";
 import UnauthorizedLayout from "@/components/layout/UnauthorizedLayout.tsx";
 import ProtectedRoute from "@/app/core/guards/ProtectedRoute.tsx";
 import { CityRoutes } from "@/app/modules/city/routes/CityRoutes.tsx";
-import { lazy, Suspense } from "react";
-import { RouteLoader } from "@/components/custom/route-loader.tsx";
+import CreateRoutes from "@/lib/routeUtils.tsx";
+import SuspenseWithFallback from "@/components/custom/suspense-with-fallback.tsx";
+import { routesList } from "@/routes/routes.ts";
 
-const CityTanstackRoutes = lazy(() => import("@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx"));
-const CountryTanstackRoutes = lazy(() => import("@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx"));
-
-export const router = createBrowserRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Unprotected Routes */}
@@ -39,10 +37,13 @@ export const router = createBrowserRouter(
           {CountryRoutes}
           {CityRoutes}
           {FLightRoutes}
-          <Route path="/*" element={<Suspense fallback={<RouteLoader/>}>
-            <CountryTanstackRoutes/>
-            <CityTanstackRoutes/>
-          </Suspense>}/>
+          <Route path="/*"
+                 element={
+                   <SuspenseWithFallback>
+                     <CreateRoutes routesList={routesList}/>
+                   </SuspenseWithFallback>
+                 }
+          />
 
         </Route>
 
@@ -55,4 +56,6 @@ export const router = createBrowserRouter(
       <Route path="*" element={<NotFound/>}/>
     </>
   )
-)
+);
+
+export default router;

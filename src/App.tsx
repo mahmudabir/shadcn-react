@@ -4,7 +4,7 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ConfirmationPopupContainer } from "@/components/custom/confirmation-popup.tsx";
 import { ThemeProvider, useTheme } from '@/components/providers/theme-provider.tsx';
-import { router } from "@/routes";
+import router from "@/routes/router.tsx";
 import { QUERY_REFETCH_ON_WINDOW_FOCUS, QUERY_RETRY, QUERY_STALE_TIME_MS } from "@/lib/utils.ts";
 
 // Create a client
