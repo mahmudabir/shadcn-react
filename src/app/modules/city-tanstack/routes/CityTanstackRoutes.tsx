@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/index.ts";
 import { RouteLoader } from "@/components/custom/route-loader.tsx";
+import SuspenseWithFallback from "@/components/custom/suspense-with-fallback.tsx";
 
 const CityList = lazy(() => import("@/app/modules/city-tanstack/pages/CityList"));
 const CityCreate = lazy(() => import("@/app/modules/city-tanstack/pages/CityCreate"));
@@ -14,26 +15,10 @@ export default function CityTanstackRoutes() {
 
   return (
     <Routes>
-      <Route path={CITY_TANSTACK_PATHS.index()} element={
-        <Suspense fallback={<RouteLoader/>} key={pathname}>
-          <CityList/>
-        </Suspense>
-      }/>
-      <Route path={CITY_TANSTACK_PATHS.create()} element={
-        <Suspense fallback={<RouteLoader/>} key={pathname}>
-          <CityCreate/>
-        </Suspense>
-      }/>
-      <Route path={CITY_TANSTACK_PATHS.edit()} element={
-        <Suspense fallback={<RouteLoader/>} key={pathname}>
-          <CityEdit/>
-        </Suspense>
-      }/>
-      <Route path={CITY_TANSTACK_PATHS.details()} element={
-        <Suspense fallback={<RouteLoader/>} key={pathname}>
-          <CityDetails/>
-        </Suspense>
-      }/>
+      <Route path={CITY_TANSTACK_PATHS.index()} element={<SuspenseWithFallback children={<CityList/>}/>}/>
+      <Route path={CITY_TANSTACK_PATHS.create()} element={<SuspenseWithFallback children={<CityCreate/>}/>}/>
+      <Route path={CITY_TANSTACK_PATHS.edit()} element={<SuspenseWithFallback children={<CityEdit/>}/>}/>
+      <Route path={CITY_TANSTACK_PATHS.details()} element={<SuspenseWithFallback children={<CityDetails/>}/>}/>
     </Routes>
   );
 }
