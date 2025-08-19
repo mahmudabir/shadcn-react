@@ -11,10 +11,10 @@ import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts"
 
 const CityList = () => {
   const [search, setSearch] = useState("");
-  const { getAll, remove } = useCities();
+  const { getAll, remove, queryClient } = useCities();
 
+  const getAllQuery = getAll({ skipPreloader: true });
   const removeMutation = remove();
-  const result = getAll({ skipPreloader: true });
 
   const handleDelete = async (id: string) => {
     confirmPopup({
@@ -31,7 +31,7 @@ const CityList = () => {
           } else {
             toastError(removeMutation.data?.message || "Failed to delete city");
           }
-          await result.refetch({});
+          await getAllQuery.refetch({});
         } catch (err: any) {
           toastError(err?.message || "Failed to delete city");
         }
@@ -54,13 +54,12 @@ const CityList = () => {
         <h1 className="text-2xl font-bold">Cities (Tanstack)</h1>
 
         <div className="flex gap-2">
-          {result.isStale && <Button onClick={() => {
-            if (result.isStale) {
-              result.refetch();
-            }
-          }}>
-              Refresh
-          </Button>}
+          <Button disabled={!getAllQuery.isFetching} onClick={() => {
+            queryClient.cancelQueries({ queryKey: ['/cities'] })
+          }}>Abort</Button>
+          <Button disabled={getAllQuery.isFetching} onClick={() => {
+            getAllQuery.refetch()
+          }}>Refresh</Button>
           <Button asChild>
             <Link to={CITY_TANSTACK_PATHS.create()}>Create New city</Link>
           </Button>
@@ -86,16 +85,16 @@ const CityList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {result.isLoading ? (
+          {(getAllQuery.isFetching || getAllQuery.isLoading) ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !result.data?.payload?.content?.length ? (
+          ) : !getAllQuery.data?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            result.data?.payload?.content?.map((city: any) => (
+            getAllQuery.data?.payload?.content?.map((city: any) => (
               <TableRow key={city.id}>
                 <TableCell>{city.nameEn}</TableCell>
                 <TableCell>{city.nameBn}</TableCell>

@@ -15,22 +15,22 @@ export default function CityTanstackRoutes() {
   return (
     <Routes>
       <Route path={CITY_TANSTACK_PATHS.index()} element={
-        <Suspense fallback={<RouteLoader/>} key={`${pathname}`}>
+        <Suspense fallback={<RouteLoader/>} key={pathname}>
           <CityList/>
         </Suspense>
       }/>
       <Route path={CITY_TANSTACK_PATHS.create()} element={
-        <Suspense fallback={<RouteLoader/>} key={`${pathname}`}>
+        <Suspense fallback={<RouteLoader/>} key={pathname}>
           <CityCreate/>
         </Suspense>
       }/>
       <Route path={CITY_TANSTACK_PATHS.edit()} element={
-        <Suspense fallback={<RouteLoader/>} key={`${pathname}`}>
+        <Suspense fallback={<RouteLoader/>} key={pathname}>
           <CityEdit/>
         </Suspense>
       }/>
       <Route path={CITY_TANSTACK_PATHS.details()} element={
-        <Suspense fallback={<RouteLoader/>} key={`${pathname}`}>
+        <Suspense fallback={<RouteLoader/>} key={pathname}>
           <CityDetails/>
         </Suspense>
       }/>

@@ -6,18 +6,18 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
-import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");
   const { getAll, remove, queryClient } = useCountries();
 
-  const result = getAll({ skipPreloader: true });
+  const getAllQuery = getAll({ skipPreloader: true });
   const removeMutation = remove();
 
-  const abortRequest = () => {
-    queryClient.cancelQueries({ queryKey: ['/countries'] });
+  const abortRequest = async () => {
+    await queryClient.cancelQueries({ queryKey: ['/countries'] });
   }
 
   const handleDelete = async (id: string) => {
@@ -35,7 +35,7 @@ const CountryList = () => {
           } else {
             toastError(removeMutation.data?.message || "Failed to delete country");
           }
-          await result.refetch();
+          await getAllQuery.refetch();
         } catch (err: any) {
           toastError(err?.message || "Failed to delete country");
         }
@@ -58,11 +58,12 @@ const CountryList = () => {
         <h1 className="text-2xl font-bold">Countries (Tanstack)</h1>
 
         <div className="flex gap-2">
-          <Button onClick={abortRequest} disabled={!result.isFetching}>Abort</Button>
-          <Button onClick={() => { result.refetch() }}
-            disabled={result.isFetching}>
-            Refresh
-          </Button>
+          <Button disabled={!getAllQuery.isFetching} onClick={() => {
+            queryClient.cancelQueries({ queryKey: ['/cities'] })
+          }}>Abort</Button>
+          <Button disabled={getAllQuery.isFetching} onClick={() => {
+            getAllQuery.refetch()
+          }}>Refresh</Button>
           <Button asChild>
             <Link to={COUNTRY_TANSTACK_PATHS.create()}>Create New country</Link>
           </Button>
@@ -88,16 +89,16 @@ const CountryList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {result.isLoading ? (
+          {(getAllQuery.isFetching || getAllQuery.isLoading) ? (
             <TableRow>
               <TableCell colSpan={5}>Loading...</TableCell>
             </TableRow>
-          ) : !result.data?.payload?.content?.length ? (
+          ) : !getAllQuery.data?.payload?.content?.length ? (
             <TableRow>
               <TableCell colSpan={5}>No countries found</TableCell>
             </TableRow>
           ) : (
-            result.data?.payload?.content?.map((country: any) => (
+            getAllQuery.data?.payload?.content?.map((country: any) => (
               <TableRow key={country.id}>
                 <TableCell>{country.nameEn}</TableCell>
                 <TableCell>{country.nameBn}</TableCell>

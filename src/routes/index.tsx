@@ -7,7 +7,6 @@ import UnprotectedRoute from "@/app/core/guards/UnprotectedRoute.tsx"
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts"
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts"
 import { CountryRoutes } from "@/app/modules/country/routes/CountryRoutes.tsx"
-import { CountryTanstackRoutes } from "@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx";
 import { FLightRoutes } from "@/app/modules/flight/routes/FlightRoutes.tsx";
 import UnauthorizedLayout from "@/components/layout/UnauthorizedLayout.tsx";
 import ProtectedRoute from "@/app/core/guards/ProtectedRoute.tsx";
@@ -16,6 +15,7 @@ import { lazy, Suspense } from "react";
 import { RouteLoader } from "@/components/custom/route-loader.tsx";
 
 const CityTanstackRoutes = lazy(() => import("@/app/modules/city-tanstack/routes/CityTanstackRoutes.tsx"));
+const CountryTanstackRoutes = lazy(() => import("@/app/modules/country-tanstack/routes/CountryTanstackRoutes.tsx"));
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,11 +38,11 @@ export const router = createBrowserRouter(
 
           {CountryRoutes}
           {CityRoutes}
+          {FLightRoutes}
           <Route path="/*" element={<Suspense fallback={<RouteLoader/>}>
+            <CountryTanstackRoutes/>
             <CityTanstackRoutes/>
           </Suspense>}/>
-          {CountryTanstackRoutes}
-          {FLightRoutes}
 
         </Route>
 
