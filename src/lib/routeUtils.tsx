@@ -5,7 +5,7 @@ import SuspenseWithFallback from "@/components/custom/suspense-with-fallback.tsx
 
 export default function CreateRoutes({ routesList }: { routesList: RouteItem[][] }) {
   return (
-    routesList && routesList.length > 0 &&
+    (routesList && routesList.length > 0 && routesList.some(x => x.length > 0)) &&
     <Routes>
       {routesList.map((routes, idx1) => (
         routes.map((route, idx2) => (
