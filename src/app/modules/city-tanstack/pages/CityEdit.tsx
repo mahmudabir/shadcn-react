@@ -2,7 +2,7 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from "@/components/ui/card.tsx";
 import { City } from "@/app/modules/city-tanstack/models/city.ts";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/paths.ts";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 import { useCallback } from "react";
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";

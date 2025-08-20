@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
 import { useCallback } from "react";
 import CountryForm from "@/app/modules/country-tanstack/components/CountryForm.tsx";
-import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/paths.ts";
 
 const CountryCreate = () => {
   const navigate = useNavigate();

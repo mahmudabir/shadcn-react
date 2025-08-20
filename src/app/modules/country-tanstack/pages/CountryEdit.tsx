@@ -2,7 +2,7 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from "@/components/ui/card.tsx";
 import { Country } from "@/app/modules/country-tanstack/models/country.ts";
-import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/index.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/paths.ts";
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
 import { useCallback } from "react";
 import CountryForm from "@/app/modules/country-tanstack/components/CountryForm.tsx";

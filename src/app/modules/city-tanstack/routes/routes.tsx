@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { RouteItem } from "@/types/route.ts";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/index.ts";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/paths.ts";
 
 const CityList = lazy(() => import("@/app/modules/city-tanstack/pages/CityList"));
 const CityCreate = lazy(() => import("@/app/modules/city-tanstack/pages/CityCreate"));

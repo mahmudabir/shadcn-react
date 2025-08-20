@@ -7,7 +7,6 @@ import UnprotectedRoute from "@/app/core/guards/UnprotectedRoute.tsx"
 import { BASE_PATHS } from "@/app/modules/dashboard/routes/dashboard-paths.ts"
 import { AUTH_PATHS } from "@/app/modules/auth/routes/auth-paths.ts"
 import { CountryRoutes } from "@/app/modules/country/routes/CountryRoutes.tsx"
-import { FLightRoutes } from "@/app/modules/flight/routes/FlightRoutes.tsx";
 import UnauthorizedLayout from "@/components/layout/UnauthorizedLayout.tsx";
 import ProtectedRoute from "@/app/core/guards/ProtectedRoute.tsx";
 import { CityRoutes } from "@/app/modules/city/routes/CityRoutes.tsx";
@@ -36,7 +35,6 @@ const router = createBrowserRouter(
 
           {CountryRoutes}
           {CityRoutes}
-          {FLightRoutes}
           <Route path="/*"
                  element={
                    <SuspenseWithFallback>

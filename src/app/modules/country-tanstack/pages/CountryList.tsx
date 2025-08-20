@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
 import { useCountries } from "@/app/modules/country-tanstack/viewModels/use-countries.ts";
-import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/paths.ts";
 
 const CountryList = () => {
   const [search, setSearch] = useState("");

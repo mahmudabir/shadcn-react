@@ -6,7 +6,7 @@ import { toastError, toastSuccess } from "@/lib/toasterUtils.tsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { confirmPopup } from "@/components/custom/confirmation-popup.tsx";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/paths.ts";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
 
 const CityList = () => {

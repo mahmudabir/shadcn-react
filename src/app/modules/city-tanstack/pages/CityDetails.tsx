@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams } from "react-router-dom";
 import { useCities } from "@/app/modules/city-tanstack/viewModels/use-cities.ts";
-import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes";
+import { CITY_TANSTACK_PATHS } from "@/app/modules/city-tanstack/routes/paths.ts";
 
 const CityDetails = () => {
   const { id } = useParams<{ id: string }>();

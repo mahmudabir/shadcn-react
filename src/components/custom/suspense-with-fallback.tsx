@@ -1,9 +1,10 @@
 ﻿import { useLocation } from "react-router-dom";
-import { Suspense } from "react";
+import { JSX, Suspense } from "react";
 import { RouteLoader } from "@/components/custom/route-loader.tsx";
 
-export default function SuspenseWithFallback({ children }) {
+export default function SuspenseWithFallback(props: { children: JSX.Element }) {
   const { pathname } = useLocation();
+  const { children } = props;
   return (
     <Suspense fallback={<RouteLoader/>} key={pathname}>
       {children}

@@ -1,4 +1,4 @@
-import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/index.ts";
+import { COUNTRY_TANSTACK_PATHS } from "@/app/modules/country-tanstack/routes/paths.ts";
 import { lazy } from "react";
 import { RouteItem } from "@/types/route.ts";
 
