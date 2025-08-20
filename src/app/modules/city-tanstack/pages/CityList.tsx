@@ -24,12 +24,12 @@ const CityList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await removeMutation.mutateAsync(id);
-          if (removeMutation.isSuccess) {
-            toastSuccess(removeMutation.data?.message || "Deleted successfully");
+          const result = await removeMutation.mutateAsync(id);
+          if (result?.isSuccess) {
+            toastSuccess(result?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(removeMutation.data?.message || "Failed to delete city");
+            toastError(result?.message || "Failed to delete city");
           }
           await getAllQuery.refetch({});
         } catch (err: any) {

@@ -12,6 +12,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Globe
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -52,10 +53,21 @@ const data = {
   ],
   navMain: [
     {
+      title: "Application",
+      url: "#",
+      icon: Globe,
+      isActive: true,
+      items: [
+        {
+          title: "Dashboard",
+          url: "/",
+        }
+      ]
+    },
+    {
       title: "Playground",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
           title: "History",
@@ -160,16 +172,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={data.teams}/>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain}/>
+        <NavProjects projects={data.projects}/>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={data.user}/>
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail/>
     </Sidebar>
   )
 }

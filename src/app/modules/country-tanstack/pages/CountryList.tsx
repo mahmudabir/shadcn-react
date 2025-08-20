@@ -28,12 +28,12 @@ const CountryList = () => {
       confirmText: `Delete`,
       onConfirm: async () => {
         try {
-          await removeMutation.mutateAsync(id);
-          if (removeMutation.isSuccess) {
-            toastSuccess(removeMutation.data?.message || "Deleted successfully");
+          const result = await removeMutation.mutateAsync(id);
+          if (result?.isSuccess) {
+            toastSuccess(result?.message || "Deleted successfully");
             // Optionally update pagination here
           } else {
-            toastError(removeMutation.data?.message || "Failed to delete country");
+            toastError(result?.message || "Failed to delete country");
           }
           await getAllQuery.refetch();
         } catch (err: any) {
