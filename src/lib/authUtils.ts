@@ -11,8 +11,8 @@ const GRANT_TYPE_KEY = "grant_type";
 
 export const TOKEN_CHANGE_EVENT = 'accessTokenChange';
 
-const CLIENT_ID_KEY = "clientId";
-const CLIENT_SECRET_KEY = "clientSecret";
+const CLIENT_ID_KEY = "client_id";
+const CLIENT_SECRET_KEY = "client_secret";
 
 const CLIENT_ID = "Softoverse";
 const CLIENT_SECRET = "CqrsKit";
