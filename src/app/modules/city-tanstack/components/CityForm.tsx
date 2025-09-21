@@ -46,11 +46,11 @@ const CityForm = (props: CityFormProps) => {
     description: `Are you sure you want to ${submitLabel.toLowerCase()} this city?`,
     cancelText: "Cancel",
     confirmText: submitLabel,
-    onCancel() {
+    onCancel: () => {
       form.reset({ ...initialData }, { keepValues: false }); // Reset form to initial data
       console.log(formValues);
     },
-    onConfirm() {
+    onConfirm: () => {
       onSubmit(formValues);
     },
   };

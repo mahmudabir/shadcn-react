@@ -15,6 +15,7 @@ type ConfirmationPopupOptions = {
 };
 let showDialog: ((options: ConfirmationPopupOptions) => void);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function confirmPopup(options: ConfirmationPopupOptions) {
   if (!showDialog) throw new Error("ConfirmationPopup is not mounted");
   return showDialog(options);

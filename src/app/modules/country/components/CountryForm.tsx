@@ -46,11 +46,11 @@ const CountryForm = ({ initialData = new Country(), onSubmit, submitLabel = 'Sub
         description: `Are you sure you want to ${submitLabel.toLowerCase()} this country?`,
         cancelText: "Cancel",
         confirmText: submitLabel,
-        onCancel() {
+        onCancel: () => {
             form.reset({ ...initialData }, { keepValues: false }); // Reset form to initial data
             console.log(formValues);
         },
-        onConfirm() {
+        onConfirm: () => {
             onSubmit(formValues);
         },
     };
