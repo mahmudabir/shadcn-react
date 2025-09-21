@@ -7,16 +7,17 @@ import axios, { AxiosResponse } from "axios";
 import { baseURL, navigateFn, preloaderHandler } from "@/app/core/api/api-request-config.ts";
 
 export const baseAxios = axios.create({
-  baseURL: baseURL
+  baseURL: baseURL,
+  withCredentials: true,
 });
 
 // Request interceptor to add the JWT token and trigger preloader
 baseAxios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
+    // if (token) {
+    //   config.headers["Authorization"] = `Bearer ${token}`;
+    // }
     // Allow skipping preloader for specific requests
     if (preloaderHandler && !config.skipPreloader) {
       preloaderHandler.increment();
@@ -63,7 +64,7 @@ baseAxios.interceptors.response.use(
         originalRequest.headers["Authorization"] = `Bearer ${access_token}`;
         return baseAxios(originalRequest);
       } catch (refreshError) {
-        logout();
+        await logout();
         if (navigateFn) {
           navigateFn(AUTH_PATHS.login());
         } else {

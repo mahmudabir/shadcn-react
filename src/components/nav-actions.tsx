@@ -117,10 +117,8 @@ export function NavActions() {
             </Button>
             <ModeToggle />
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
-                setIsLoading(true)
-                setTimeout(() => {
-                    logout()
-                }, 250)
+                setIsLoading(true);
+                logout();
             }}>
                 {hasToken && isLoading ? <LucideLoader2 className="animate-spin"></LucideLoader2> : <LogOutIcon />}
                 {/* <LogOutIcon /> */}

@@ -1,4 +1,5 @@
 import { navigateFn } from "@/app/core/api/api-request-config.ts";
+import baseFetch from "@/app/core/api/base-fetch";
 
 
 export const ACCESS_TOKEN_KEY = "access_token";
@@ -35,7 +36,9 @@ export function getRefreshTokenFormData(refreshToken: string, username?: string)
   return formData;
 }
 
-export function logout() {
+export async function logout() {
+  await baseFetch.post("/auth/logout", {}, { skipPreloader: false });
+
   removeAccessToken();
   removeRefreshToken();
   localStorage.removeItem(USERNAME_KEY);

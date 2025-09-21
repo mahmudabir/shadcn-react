@@ -66,10 +66,10 @@ async function request<T>(path: string, options: FetchRequestOptions = {}): Prom
   const url = buildUrl(path, params);
 
   const headers = new Headers(inputHeaders || {});
-  const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
+  // const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+  // if (token) {
+  //   headers.set("Authorization", `Bearer ${token}`);
+  // }
   if (!headers.has("Accept")) {
     headers.set("Accept", "application/json");
   }
@@ -91,7 +91,8 @@ async function request<T>(path: string, options: FetchRequestOptions = {}): Prom
       method,
       headers,
       body,
-      signal
+      signal,
+      credentials: 'include'
     });
 
     // Auto-refresh on 401 (once)
@@ -129,7 +130,7 @@ async function request<T>(path: string, options: FetchRequestOptions = {}): Prom
           _retry: true
         });
       } catch (refreshError) {
-        logout();
+        await logout();
         if (navigateFn) {
           navigateFn(AUTH_PATHS.login());
         } else {
@@ -281,7 +282,7 @@ async function eventStreamRequest<T = any>(
               signal: combinedAbort
             });
           } catch (refreshError) {
-            logout();
+            await logout();
             if (navigateFn) {
               navigateFn(AUTH_PATHS.login());
             } else {
