@@ -18,40 +18,43 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Unprotected Routes */}
-      <Route element={<UnprotectedRoute/>}>
-        <Route element={<UnauthorizedLayout/>}>
-          <Route path={AUTH_PATHS.login()} element={<Login className=""/>}/>
+      <Route element={<UnprotectedRoute />}>
+        <Route element={<UnauthorizedLayout />}>
+          <Route path={AUTH_PATHS.login()} element={<Login className="" />} />
         </Route>
+
+        {/* 404 Not Found */}
+        <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* Protected Routes */}
-      <Route element={<ProtectedRoute/>}>
-        <Route element={<AuthorizedLayout/>}>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AuthorizedLayout />}>
 
           <Route path={BASE_PATHS.index()}>
-            <Route index element={<Dashboard/>}/>
-            <Route path={BASE_PATHS.dashboard()} element={<Dashboard/>}/>
+            <Route index element={<Dashboard />} />
+            <Route path={BASE_PATHS.dashboard()} element={<Dashboard />} />
           </Route>
 
           {CountryRoutes}
           {CityRoutes}
           <Route path="/*"
-                 element={
-                   <SuspenseWithFallback>
-                     <CreateRoutes routesList={routesList}/>
-                   </SuspenseWithFallback>
-                 }
+            element={
+              <SuspenseWithFallback>
+                <CreateRoutes routesList={routesList} />
+              </SuspenseWithFallback>
+            }
           />
 
         </Route>
 
         {/* Redirect to home page */}
-        <Route path={BASE_PATHS.home()} element={<Navigate to="/" replace/>}/>
-        <Route path={AUTH_PATHS.register()} element={<Navigate to={AUTH_PATHS.login()} replace/>}/>
-      </Route>
+        <Route path={BASE_PATHS.home()} element={<Navigate to="/" replace />} />
+        <Route path={AUTH_PATHS.register()} element={<Navigate to={AUTH_PATHS.login()} replace />} />
 
-      {/* 404 Not Found */}
-      <Route path="*" element={<NotFound/>}/>
+        {/* 404 Not Found */}
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </>
   )
 );

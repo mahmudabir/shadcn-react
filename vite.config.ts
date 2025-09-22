@@ -22,13 +22,17 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    // server: {
-    //   proxy: {
-    //     '/api': {
-    //       target: baseApiUrl,
-    //       changeOrigin: true,
-    //     }
-    //   }
-    // }
+    server: {
+      allowedHosts: [
+        'all',
+        'localhost',
+      ],
+      // proxy: {
+      //   '/api': {
+      //     target: baseApiUrl,
+      //     changeOrigin: true,
+      //   }
+      // }
+    }
   };
 });
