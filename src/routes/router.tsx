@@ -22,9 +22,6 @@ const router = createBrowserRouter(
         <Route element={<UnauthorizedLayout />}>
           <Route path={AUTH_PATHS.login()} element={<Login className="" />} />
         </Route>
-
-        {/* 404 Not Found */}
-        <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* Protected Routes */}
@@ -51,10 +48,10 @@ const router = createBrowserRouter(
         {/* Redirect to home page */}
         <Route path={BASE_PATHS.home()} element={<Navigate to="/" replace />} />
         <Route path={AUTH_PATHS.register()} element={<Navigate to={AUTH_PATHS.login()} replace />} />
-
-        {/* 404 Not Found */}
-        <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* 404 Not Found */}
+      <Route path="*" element={<NotFound />} />
     </>
   )
 );
