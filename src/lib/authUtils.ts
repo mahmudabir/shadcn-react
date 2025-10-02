@@ -37,7 +37,11 @@ export function getRefreshTokenFormData(refreshToken: string, username?: string)
 }
 
 export async function logout() {
-  await baseFetch.post("/auth/logout", {}, { skipPreloader: false });
+  try {
+    await baseFetch.post("/auth/logout", {}, { skipPreloader: false });
+  } catch (e) {
+    // Ignore errors
+  }
 
   removeAccessToken();
   removeRefreshToken();
