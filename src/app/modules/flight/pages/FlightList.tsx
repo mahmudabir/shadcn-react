@@ -192,7 +192,7 @@ const FlightList = () => {
     const origin = "DXB";
     const destination = "LHR";
     const departureDate = "2025-08-15";
-    const url = `${baseURL}/flights/search${urlPostfix}?origin=${origin}&destination=${destination}&departureDate=${departureDate}&isEventStream=${enableEventStream}&responsePerSupplier=${responsePerSupplier}`;
+    const url = `${baseURL}/test-flights/search${urlPostfix}?origin=${origin}&destination=${destination}&departureDate=${departureDate}&isEventStream=${enableEventStream}&responsePerSupplier=${responsePerSupplier}`;
 
     if (enableEventStream) {
       if (streamRef.current) {
