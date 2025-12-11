@@ -83,7 +83,7 @@ const CityList = () => {
             </TableRow>
           ) : !cityViewModel.items?.payload?.content?.length ? (
             <TableRow>
-              <TableCell colSpan={5}>No countries found</TableCell>
+              <TableCell colSpan={5}>No cities found</TableCell>
             </TableRow>
           ) : (
             cityViewModel.items?.payload?.content?.map((city: any) => (

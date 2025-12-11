@@ -91,7 +91,7 @@ const CityList = () => {
             </TableRow>
           ) : !getAllQuery.data?.payload?.content?.length ? (
             <TableRow>
-              <TableCell colSpan={5}>No countries found</TableCell>
+              <TableCell colSpan={5}>No cities found</TableCell>
             </TableRow>
           ) : (
             getAllQuery.data?.payload?.content?.map((city: any) => (
