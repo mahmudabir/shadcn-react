@@ -61,7 +61,7 @@ const CityForm = (props: CityFormProps) => {
       control: form.control,
       name: "countryId",
       label: "Country",
-      description: "Select the country for this city",
+      description: "Select a country for this city",
       placeholder: "Select a country",
       className: "w-full",
       options: countryOptions,
@@ -127,7 +127,7 @@ const CityForm = (props: CityFormProps) => {
                   control={form.control}
                   name="countryId"
                   label="Country"
-                  description="Select the country for this city"
+                  description="Select a country for this city"
                   placeholder="Select a country"
                   options={countryOptions}
                 />
